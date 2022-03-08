@@ -1,14 +1,14 @@
 <nav id="sidebar">
   <!-- Sidebar Header-->
-  <div class="sidebar-header d-flex align-items-center p-4"><img class="avatar shadow-0 img-fluid rounded-circle"
-      src="img/avatar-6.jpg" alt="...">
+  <div class="sidebar-header d-flex align-items-center p-4">
+    <img class="avatar shadow-0 img-fluid rounded-circle" src="img/avatar-6.jpg" alt="...">
     <div class="ms-3 title">
       <h1 class="h5 mb-1">{{ auth()->user()->username }}</h1>
       <p class="text-sm text-gray-700 mb-0 lh-1">Web Designer</p>
     </div>
   </div>
 
-  <span class="text-uppercase text-gray-600 text-xs mx-3 px-2 heading mb-2">General</span>
+  <span class="text-uppercase text-gray-600 text-xs heading mb-2 mx-3 text-wrap d-block">General</span>
   <ul class="list-unstyled">
 
     <li class="sidebar-item {{ Request::is('/') ? 'active' : '' }}">
@@ -21,7 +21,7 @@
     </li>
   </ul>
 
-  <span class="text-uppercase text-gray-600 text-xs mx-3 px-2 heading mb-2">Super Admin</span>
+  <span class="text-uppercase text-gray-600 text-xs heading mb-2 mx-3 text-wrap d-block">Super Admin</span>
   <ul class="list-unstyled">
 
     <li class="sidebar-item {{ Request::is('addresses*') ? 'active' : '' }}">
