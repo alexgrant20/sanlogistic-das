@@ -574,3 +574,8 @@
     </section>
   </div>
 @endsection
+
+@section('footJS')
+  <script src="/vendor/chart.js/Chart.min.js"></script>
+  <script src="/js/charts-home.js"></script>
+@endsection

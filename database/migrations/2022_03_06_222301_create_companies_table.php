@@ -16,15 +16,15 @@ return new class extends Migration
     Schema::create('companies', function (Blueprint $table) {
       $table->id();
       $table->foreignId('address_id');
-      $table->string('name');
-      $table->string('type');
+      $table->foreignId('company_type_id');
+      $table->string('name')->unique();
       $table->string('phone_number');
       $table->string('email');
-      $table->text('catatan');
-      $table->string('website');
+      $table->text('note')->nullable();
+      $table->string('website')->nullable();
       $table->string('director');
       $table->string('npwp');
-      $table->string('fax');
+      $table->string('fax')->nullable();
       $table->timestamps();
     });
   }

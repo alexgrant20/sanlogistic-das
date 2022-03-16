@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
@@ -15,7 +18,9 @@ class ProjectController extends Controller
    */
   public function index()
   {
-    return view('projects.index');
+    return view('projects.index', [
+      'projects' => Project::latest()->get(),
+    ]);
   }
 
   /**
@@ -25,7 +30,9 @@ class ProjectController extends Controller
    */
   public function create()
   {
-    //
+    return view('projects.create', [
+      'customers' => Company::all(),
+    ]);
   }
 
   /**
@@ -36,7 +43,20 @@ class ProjectController extends Controller
    */
   public function store(StoreProjectRequest $request)
   {
-    //
+    try {
+      $validatedData = $request->safe()->all();
+
+      DB::beginTransaction();
+
+      Project::create($validatedData);
+
+      DB::commit();
+
+      return redirect('/projects')->with('success', 'New project has been added!');
+    } catch (Exception $e) {
+      DB::rollBack();
+      return redirect('/projects/create')->withInput()->with('error', $e->getMessage());
+    }
   }
 
   /**
@@ -58,7 +78,10 @@ class ProjectController extends Controller
    */
   public function edit(Project $project)
   {
-    //
+    return view('projects.edit', [
+      'project' => $project,
+      'customers' => Company::all(),
+    ]);
   }
 
   /**
@@ -70,7 +93,21 @@ class ProjectController extends Controller
    */
   public function update(UpdateProjectRequest $request, Project $project)
   {
-    //
+    try {
+
+      $validatedData = $request->safe()->all();
+
+      DB::beginTransaction();
+
+      Project::where('id', $project->id)->update($validatedData);
+
+      DB::commit();
+
+      return redirect('/projects')->with('success', 'Project has been updated!');
+    } catch (Exception $e) {
+      DB::rollBack();
+      return redirect('/projects')->withInput()->with('error', $e->getMessage());
+    }
   }
 
   /**

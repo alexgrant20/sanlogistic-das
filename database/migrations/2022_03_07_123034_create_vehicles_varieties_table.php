@@ -16,7 +16,7 @@ return new class extends Migration
     Schema::create('vehicles_varieties', function (Blueprint $table) {
       $table->id();
       $table->foreignId('vehicle_type_id');
-      $table->string('name');
+      $table->string('name')->unique();
       $table->timestamps();
     });
   }

@@ -7,5 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class VehicleMaintenance extends Model
 {
-    use HasFactory;
+  use HasFactory;
+
+  public function vehicle()
+  {
+    return $this->belongsTo(Vehicle::class);
+  }
 }

@@ -15,7 +15,9 @@ class AddressController extends Controller
    */
   public function index()
   {
-    return view('addresses.index');
+    return view('addresses.index', [
+      'addresses' => Address::with(['addressType'])->latest()->get()
+    ]);
   }
 
   /**
@@ -25,7 +27,7 @@ class AddressController extends Controller
    */
   public function create()
   {
-    //
+    return view('addresses.create');
   }
 
   /**
@@ -58,7 +60,7 @@ class AddressController extends Controller
    */
   public function edit(Address $address)
   {
-    //
+    return view('addresses.edit');
   }
 
   /**

@@ -16,10 +16,10 @@ return new class extends Migration
     Schema::create('projects', function (Blueprint $table) {
       $table->id();
       $table->foreignId('company_id');
-      $table->string('name');
+      $table->string('name')->unique();
       $table->date('date_start');
       $table->date('date_end');
-      $table->text('catatan');
+      $table->text('catatan')->nullable();
       $table->timestamps();
     });
   }

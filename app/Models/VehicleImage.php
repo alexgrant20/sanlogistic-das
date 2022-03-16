@@ -7,5 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class VehicleImage extends Model
 {
-    use HasFactory;
+  use HasFactory;
+
+  protected $table = 'vehicles_images';
+
+  protected $guarded = ['id'];
+
+  public function vehicle()
+  {
+    return $this->belongsTo(Vehicle::class);
+  }
 }

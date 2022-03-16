@@ -19,15 +19,14 @@ return new class extends Migration
       $table->foreignId('department_id');
       $table->foreignId('area_id');
       $table->foreignId('address_id');
-      $table->string('kode_rfid');
       $table->string('name');
       $table->string('image');
       $table->string('place_of_birth');
       $table->date('date_of_birth');
       $table->string('phone_number');
       $table->date('joined_at');
-      $table->text('catatan');
-      $table->boolean('active');
+      $table->text('note');
+      $table->tinyInteger('active')->default(1);
       $table->timestamps();
     });
   }

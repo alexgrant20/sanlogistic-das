@@ -7,5 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
-    use HasFactory;
+  use HasFactory;
+
+  protected $guarded = [
+    'id'
+  ];
+
+  public function company()
+  {
+    return $this->belongsTo(Company::class);
+  }
+
+  public function getRouteKeyName()
+  {
+    return 'name';
+  }
 }

@@ -7,5 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Subdistrict extends Model
 {
-    use HasFactory;
+  use HasFactory;
+
+  public function district()
+  {
+    return $this->belongsTo(District::class);
+  }
 }

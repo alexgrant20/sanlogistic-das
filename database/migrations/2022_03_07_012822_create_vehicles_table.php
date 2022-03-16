@@ -15,28 +15,28 @@ return new class extends Migration
   {
     Schema::create('vehicles', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('project_id')->nullable();
+      $table->foreignId('project_id');
       $table->foreignId('area_id');
       $table->foreignId('vehicle_variety_id');
       $table->foreignId('address_id');
       $table->foreignId('owner_id');
       $table->foreignId('vehicle_towing_id');
-      $table->string('last_do_number');
-      $table->date('last_do_date');
-      $table->string('license_plate');
-      $table->string('license_plate_color');
+      $table->foreignId('vehicle_license_plate_color_id');
+      $table->string('last_do_number')->nullable();
+      $table->date('last_do_date')->nullable();
+      $table->string('license_plate')->unique();
       $table->string('frame_number');
       $table->string('registration_number');
       $table->string('engine_number');
       $table->string('modification');
       $table->string('internal_code');
-      $table->string('status');
+      $table->string('status')->default("active");
       $table->string('capacity');
       $table->string('wheel');
       $table->integer('odo');
       $table->year('registration_year');
-      $table->boolean('is_maintenance');
-      $table->text('catatan')->nullable();
+      $table->boolean('is_maintenance')->default(0);
+      $table->text('note')->nullable();
       $table->timestamps();
     });
   }

@@ -7,5 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class VehicleVariety extends Model
 {
-    use HasFactory;
+  use HasFactory;
+
+  protected $table = 'vehicles_varieties';
+
+  protected $with = ['vehicleType'];
+
+  public function vehicleType()
+  {
+    return $this->belongsTo(VehicleType::class, 'vehicle_type_id');
+  }
 }

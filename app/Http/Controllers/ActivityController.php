@@ -25,7 +25,7 @@ class ActivityController extends Controller
    */
   public function create()
   {
-    //
+    return view('activities.create');
   }
 
   /**
@@ -58,7 +58,7 @@ class ActivityController extends Controller
    */
   public function edit(Activity $activity)
   {
-    //
+    return view('activities.edit');
   }
 
   /**

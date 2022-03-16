@@ -5,12 +5,10 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-  use HasApiTokens, HasFactory, Notifiable;
+  use HasFactory;
 
   /**
    * The attributes that are mass assignable.
@@ -37,4 +35,24 @@ class User extends Authenticatable
    * @var array<string, string>
    */
   protected $casts = [];
+
+  public function person()
+  {
+    return $this->belongsTo(Person::class);
+  }
+
+  public function role()
+  {
+    return $this->belongsTo(Role::class);
+  }
+
+  public function lastActivity()
+  {
+    return $this->belongsTo(Activity::class, 'last_activity_id');
+  }
+
+  public function activities()
+  {
+    return $this->hasMany(Activity::class);
+  }
 }

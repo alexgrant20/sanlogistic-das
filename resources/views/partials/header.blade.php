@@ -25,8 +25,8 @@
     <div class="container-fluid d-flex align-items-center justify-content-between py-1">
       <div class="navbar-header d-flex align-items-center"><a class="navbar-brand text-uppercase text-reset"
           href="index.html">
-          <div class="brand-text brand-big"><strong class="text-primary">Dark</strong><strong>Admin</strong></div>
-          <div class="brand-text brand-sm"><strong class="text-primary">D</strong><strong>A</strong></div>
+          <div class="brand-text brand-big"><strong class="text-primary">San</strong><strong>Logistic</strong></div>
+          <div class="brand-text brand-sm"><strong class="text-primary">S</strong><strong>L</strong></div>
         </a>
         <button class="sidebar-toggle">
           <i class="bi bi-caret-left-fill"></i>
@@ -45,7 +45,7 @@
             </svg><span class="badge bg-dash-color-1">5</span></a>
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="navbarDropdownMenuLink1">
             <li><a class="dropdown-item d-flex align-items-center" href="#">
-                <div class="position-relative"><img class="avatar avatar-md" src="img/avatar-3.jpg" alt="Nadia Halsey">
+                <div class="position-relative"><img class="avatar avatar-md" src="/img/avatar-3.jpg" alt="Nadia Halsey">
                   <div class="availability-status bg-success"></div>
                 </div>
                 <div class="ms-3"> <strong class="d-block">Nadia Halsey</strong><span
@@ -53,7 +53,7 @@
                     class="d-block">9:30am</small></div>
               </a></li>
             <li><a class="dropdown-item d-flex align-items-center" href="#">
-                <div class="position-relative"><img class="avatar avatar-md" src="img/avatar-2.jpg" alt="Peter Ramsy">
+                <div class="position-relative"><img class="avatar avatar-md" src="/img/avatar-2.jpg" alt="Peter Ramsy">
                   <div class="availability-status bg-warning"></div>
                 </div>
                 <div class="ms-3"> <strong class="d-block">Nadia Halsey</strong><span
@@ -61,7 +61,7 @@
                     class="d-block">9:30am</small></div>
               </a></li>
             <li><a class="dropdown-item d-flex align-items-center" href="#">
-                <div class="position-relative"><img class="avatar avatar-md" src="img/avatar-1.jpg" alt="Sam Kaheil">
+                <div class="position-relative"><img class="avatar avatar-md" src="/img/avatar-1.jpg" alt="Sam Kaheil">
                   <div class="availability-status bg-danger"></div>
                 </div>
                 <div class="ms-3"> <strong class="d-block">Nadia Halsey</strong><span
@@ -69,7 +69,7 @@
                     class="d-block">9:30am</small></div>
               </a></li>
             <li><a class="dropdown-item d-flex align-items-center" href="#">
-                <div class="position-relative"><img class="avatar avatar-md" src="img/avatar-5.jpg" alt="Sara Wood">
+                <div class="position-relative"><img class="avatar avatar-md" src="/img/avatar-5.jpg" alt="Sara Wood">
                   <div class="availability-status bg-secondary"></div>
                 </div>
                 <div class="ms-3"> <strong class="d-block">Nadia Halsey</strong><span
@@ -232,20 +232,26 @@
         <!-- Languages dropdown    -->
         <li class="list-inline-item dropdown"><a class="nav-link dropdown-toggle text-sm text-reset px-1 px-lg-0"
             id="languages" rel="nofollow" data-bs-target="#" href="#" data-bs-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false"><img src="img/flags/16/GB.png" alt="English"><span
+            aria-expanded="false"><img src="/img/flags/16/GB.png" alt="English"><span
               class="d-none d-sm-inline-block ms-2">English</span></a>
           <ul class="dropdown-menu dropdown-menu-end mt-sm-3 dropdown-menu-dark" aria-labelledby="languages">
             <li><a class="dropdown-item" rel="nofollow" href="#"> <img class="me-2"
-                  src="img/flags/16/DE.png" alt="English"><span>German</span></a></li>
+                  src="/img/flags/16/DE.png" alt="English"><span>German</span></a></li>
             <li><a class="dropdown-item" rel="nofollow" href="#"> <img class="me-2"
-                  src="img/flags/16/FR.png" alt="English"><span>French </span></a></li>
+                  src="/img/flags/16/FR.png" alt="English"><span>French </span></a></li>
           </ul>
         </li>
-        <li class="list-inline-item logout px-lg-2"> <a class="nav-link text-sm text-reset px-1 px-lg-0" id="logout"
-            href="/login"> <span class="d-none d-sm-inline-block">Logout </span>
-            <svg class="svg-icon svg-icon-xs svg-icon-heavy">
-              <use xlink:href="#disable-1"> </use>
-            </svg></a></li>
+        <li class="list-inline-item logout px-lg-2">
+          <form action="/logout" method="POST">
+            @csrf
+            <button type="submit" class="nav-link px-3 bg-dark border-0">
+              Logout
+              <i class="svg-icon svg-icon-xs svg-icon-heavy bi bi-box-arrow-right">
+                <use xlink:href="#logout" />
+              </i>
+            </button>
+          </form>
+        </li>
       </ul>
     </div>
   </nav>

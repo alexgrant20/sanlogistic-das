@@ -15,7 +15,7 @@ return new class extends Migration
   {
     Schema::create('people_mutations', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('people_id');
+      $table->foreignId('person_id');
       $table->foreignId('created_by');
       $table->date('date');
       $table->string('mutation_number');

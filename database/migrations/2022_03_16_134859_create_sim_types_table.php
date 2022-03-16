@@ -13,9 +13,9 @@ return new class extends Migration
    */
   public function up()
   {
-    Schema::create('addresses_type', function (Blueprint $table) {
+    Schema::create('sim_types', function (Blueprint $table) {
       $table->id();
-      $table->string('type');
+      $table->string('name')->unique();
       $table->timestamps();
     });
   }
@@ -27,6 +27,6 @@ return new class extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('addresses_type');
+    Schema::dropIfExists('sim_types');
   }
 };

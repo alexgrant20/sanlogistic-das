@@ -7,5 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class AddressProject extends Model
 {
-    use HasFactory;
+  use HasFactory;
+
+  public function address()
+  {
+    return $this->belongsTo(Address::class);
+  }
+
+  public function project()
+  {
+    return $this->belongsTo(Project::class);
+  }
 }

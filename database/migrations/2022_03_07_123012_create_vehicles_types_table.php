@@ -16,7 +16,7 @@ return new class extends Migration
     Schema::create('vehicles_types', function (Blueprint $table) {
       $table->id();
       $table->foreignId('vehicle_brand_id');
-      $table->string('type');
+      $table->string('name')->unique();
       $table->timestamps();
     });
   }

@@ -8,6 +8,7 @@
   <script src="https://kit.fontawesome.com/2d78a8b052.js" crossorigin="anonymous"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
+  <script type='text/javascript' src="/vendor/jquery/jquery-3.6.0.min.js"></script>
   <link rel="stylesheet" type="text/css" href="css/login.css" />
 </head>
 
@@ -24,9 +25,9 @@
             yang bermalas-malasan.
           </p>
         </div>
-        @if (session()->has('loginError'))
+        @if (session()->has('error'))
           <div class="alert alert-danger" role="alert">
-            {{ session('loginError') }}
+            {{ session('error') }}
           </div>
         @endif
         <form action="/login" method="post" class="loginForm needs-validation" id="loginForm">
@@ -57,5 +58,11 @@
     </div>
   </div>
 </body>
+
+<script>
+  $('#loginForm').on('submit', () => {
+    $('.submitBtn').attr('disabled', true);
+  })
+</script>
 
 </html>

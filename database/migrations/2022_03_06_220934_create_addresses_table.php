@@ -19,8 +19,8 @@ return new class extends Migration
       $table->foreignId('area_id');
       $table->foreignId('subdistrict_id');
       $table->foreignId('pool_type_id');
-      $table->string('name');
-      $table->string('full_address');
+      $table->string('name')->unique();
+      $table->text('full_address');
       $table->double('longitude');
       $table->double('latitude');
       $table->string('post_number');

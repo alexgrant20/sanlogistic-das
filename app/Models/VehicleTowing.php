@@ -7,5 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class VehicleTowing extends Model
 {
-    use HasFactory;
+  use HasFactory;
+
+  protected $table = 'vehicles_towings';
+
+  protected $guarded = ['id'];
 }
