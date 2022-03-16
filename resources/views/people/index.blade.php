@@ -42,16 +42,22 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-              <a href="#" class="badge bg-primary"><i class="bi bi-pencil"></i></a>
-            </td>
-          </tr>
+          @foreach ($people as $person)
+            <tr>
+              <td>{{ $person->name }}</td>
+              <td>{{ $person->project->name }}</td>
+              <td>{{ $person->phone_number }}</td>
+              <td>{{ $person->department->name }}</td>
+              @if (isset($person->user->username))
+                <td>{{ $person->user->username }}</td>
+              @else
+                <td>None</td>
+              @endif
+              <td>
+                <a href="/people/{{ $person->id }}/edit" class="badge bg-primary"><i class="bi bi-pencil"></i></a>
+              </td>
+            </tr>
+          @endforeach
         </tbody>
       </table>
     </section>

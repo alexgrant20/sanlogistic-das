@@ -30,4 +30,9 @@ class Person extends Model
   {
     return $this->belongsTo(Address::class);
   }
+
+  public function user()
+  {
+    return $this->hasOne(User::class);
+  }
 }
