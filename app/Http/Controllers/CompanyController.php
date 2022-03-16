@@ -151,7 +151,7 @@ class CompanyController extends Controller
 
       DB::beginTransaction();
 
-      Company::where('id', $company->id)->update($request->safe()->except($otherTable));
+      $company->update($request->safe()->except($otherTable));
 
       foreach ($types as $type) {
         $document = $company->companyDocuments->where('type', $type)->first();
@@ -163,7 +163,7 @@ class CompanyController extends Controller
           $imagePath = $request->file("{$type}_image")->storeAs("{$type}-images", $fileName, 'public');
         }
 
-        CompanyDocument::where('id', $document->id)->update([
+        $document->update([
           'number' => $request[$type],
           'expire' => $request["{$type}_expire"],
           'active' => $request["{$type}_expire"] > now() ? 1 : 0,

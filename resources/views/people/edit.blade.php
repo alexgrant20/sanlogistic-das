@@ -201,7 +201,7 @@
                 <div class="col-xl-12">
                   <label for="ktp" class="form-label">Nomor KTP</label>
                   <input type="text" class="form-control form-control-lg @error('ktp') is-invalid @enderror" id="ktp"
-                    name="ktp" value="{{ old('ktp') }}">
+                    name="ktp" value="{{ old('ktp', $ktp['number']) }}">
                   @error('ktp')
                     <div class="invalid-feedback">
                       {{ $message }}
@@ -212,7 +212,7 @@
                 <div class="col-xl-12">
                   <label for="ktp_address" class="form-label">Alamat berdasarkan KTP</label>
                   <input type="text" class="form-control form-control-lg @error('ktp_address') is-invalid @enderror"
-                    id="ktp_address" name="ktp_address" value="{{ old('ktp_address') }}">
+                    id="ktp_address" name="ktp_address" value="{{ old('ktp_address', $ktp['address']) }}">
                   @error('ktp_address')
                     <div class="invalid-feedback">
                       {{ $message }}
@@ -237,7 +237,8 @@
             <div class="col-xl-6">
               <div class="w-100 h-100 d-flex justify-content-center align-items-center"
                 style="background-color: transparent;">
-                <img src="" class="img-fluid rounded mw-100" style="max-height: 200px" id="ktp_image-preview" alt=""
+                <img src="{{ asset('storage/' . ($ktp['image'] ?? 'default/default.jpg')) }}"
+                  class="img-fluid rounded mw-100" style="max-height: 200px" id="ktp_image-preview" alt=""
                   data-action="zoom">
               </div>
             </div>
@@ -255,7 +256,7 @@
                 <div class="col-xl-12">
                   <label for="sim" class="form-label">Nomor SIM</label>
                   <input type="text" class="form-control form-control-lg @error('sim') is-invalid @enderror" id="sim"
-                    name="sim" value="{{ old('sim') }}">
+                    name="sim" value="{{ old('sim', $sim['number']) }}">
                   @error('sim')
                     <div class="invalid-feedback">
                       {{ $message }}
@@ -269,7 +270,7 @@
                     name='sim_type_id' id="sim_type_id">
                     <option hidden value=''></option>
                     @foreach ($simTypes as $simType)
-                      @if ($simType->id == old('sim_type_id'))
+                      @if ($simType->id == old('sim_type_id', $sim['specialID']))
                         <option value='{{ $simType->id }}' selected>{{ $simType->name }}</option>
                       @else
                         <option value='{{ $simType->id }}'>{{ $simType->name }}</option>
@@ -286,7 +287,7 @@
                 <div class="col-xl-6">
                   <label for="sim_expire" class="form-label">Masa Berlaku SIM</label>
                   <input type="date" class="form-control form-control-lg @error('sim_expire') is-invalid @enderror"
-                    id="sim_expire" name="sim_expire" value="{{ old('sim_expire') }}">
+                    id="sim_expire" name="sim_expire" value="{{ old('sim_expire', $sim['expire']) }}">
                   @error('sim_expire')
                     <div class="invalid-feedback">
                       {{ $message }}
@@ -297,7 +298,7 @@
                 <div class="col-xl-12">
                   <label for="sim_address" class="form-label">Alamat Berdasarkan SIM</label>
                   <input type="text" class="form-control form-control-lg @error('sim_address') is-invalid @enderror"
-                    id="sim_address" name="sim_address" value="{{ old('sim_address') }}">
+                    id="sim_address" name="sim_address" value="{{ old('sim_address', $sim['address']) }}">
                   @error('sim_address')
                     <div class="invalid-feedback">
                       {{ $message }}
@@ -322,7 +323,8 @@
 
               <div class="w-100 h-100 d-flex justify-content-center align-items-center"
                 style="background-color: transparent;">
-                <img src="" class="img-fluid rounded mw-100" style="max-height: 200px" id="sim_image-preview" alt=""
+                <img src="{{ asset('storage/' . ($sim['image'] ?? 'default/default.jpg')) }}"
+                  class="img-fluid rounded mw-100" style="max-height: 200px" id="sim_image-preview" alt=""
                   data-action="zoom">
               </div>
 
@@ -339,7 +341,7 @@
               <div class="mb-2">
                 <label for="assurance" class="form-label">Jaminan</label>
                 <input class="form-control form-control-lg @error('assurance') is-invalid @enderror" type="text"
-                  name="assurance" id="assurance" value="{{ old('assurance') }}">
+                  name="assurance" id="assurance" value="{{ old('assurance', $assurance['number']) }}">
                 @error('assurance')
                   <div class="invalid-feedback">
                     {{ $message }}
@@ -362,8 +364,9 @@
 
             <div class="col-xl-6">
               <div class="mb-2 w-100 p-2" style="background-color: transparent;">
-                <img src="" class="img-fluid rounded mx-auto d-block" style="max-height: 200px"
-                  id="assurance_image-preview" alt="" data-action="zoom">
+                <img src="{{ asset('storage/' . ($assurance['image'] ?? 'default/default.jpg')) }}"
+                  class="img-fluid rounded mx-auto d-block" style="max-height: 200px" id="assurance_image-preview" alt=""
+                  data-action="zoom">
               </div>
             </div>
 
@@ -379,7 +382,8 @@
               <div class="mb-2">
                 <label for="bpjs_kesehatan" class="form-label">Nomor BPJS Kesehatan</label>
                 <input class="form-control form-control-lg @error('bpjs_kesehatan') is-invalid @enderror" type="text"
-                  name="bpjs_kesehatan" id="bpjs_kesehatan" value="{{ old('bpjs_kesehatan') }}">
+                  name="bpjs_kesehatan" id="bpjs_kesehatan"
+                  value="{{ old('bpjs_kesehatan', $bpjs_kesehatan['number']) }}">
                 @error('bpjs_kesehatan')
                   <div class="invalid-feedback">
                     {{ $message }}
@@ -404,7 +408,8 @@
 
             <div class="col-xl-6">
               <div class="mb-2 w-100 p-2" style="background-color: transparent;">
-                <img src="" class="img-fluid rounded mx-auto d-block mw-100" style="max-height: 200px"
+                <img src="{{ asset('storage/' . ($bpjs_kesehatan['image'] ?? 'default/default.jpg')) }}"
+                  class="img-fluid rounded mx-auto d-block mw-100" style="max-height: 200px"
                   id="bpjs_kesehatan_image-preview" alt="" data-action="zoom">
               </div>
             </div>
@@ -423,7 +428,7 @@
                   Ketenagakerjaan</label>
                 <input class="form-control form-control-lg  @error('bpjs_ketenagakerjaan') is-invalid @enderror"
                   type="text" name="bpjs_ketenagakerjaan" id="bpjs_ketenagakerjaan"
-                  value="{{ old('bpjs_ketenagakerjaan') }}">
+                  value="{{ old('bpjs_ketenagakerjaan', $bpjs_ketenagakerjaan['number']) }}">
                 @error('bpjs_ketenagakerjaan')
                   <div class="invalid-feedback">
                     {{ $message }}
@@ -448,7 +453,8 @@
 
             <div class="col-xl-6">
               <div class="mb-2 w-100 p-2" style="background-color: transparent;">
-                <img src="" class="img-fluid rounded mx-auto d-block mw-100" style="max-height: 200px"
+                <img src="{{ asset('storage/' . ($bpjs_ketenagakerjaan['image'] ?? 'default/default.jpg')) }}"
+                  class="img-fluid rounded mx-auto d-block mw-100" style="max-height: 200px"
                   id="bpjs_ketenagakerjaan_image-preview" alt="" data-action="zoom">
               </div>
             </div>
@@ -465,7 +471,7 @@
               <div class="mb-2">
                 <label for="npwp" class="form-label">Nomor Pokok Wajib Pajak</label>
                 <input class="form-control form-control-lg @error('npwp') is-invalid @enderror" type="text" name="npwp"
-                  id="npwp" value="{{ old('npwp') }}">
+                  id="npwp" value="{{ old('npwp', $npwp['number']) }}">
                 @error('npwp')
                   <div class="invalid-feedback">
                     {{ $message }}
@@ -488,8 +494,9 @@
 
             <div class="col-xl-6">
               <div class="mb-2 w-100 p-2" style="background-color: transparent;">
-                <img src="" class="img-fluid rounded mx-auto d-block mw-100" style="max-height: 200px;"
-                  id="npwp_image-preview" alt="" data-action="zoom">
+                <img src="{{ asset('storage/' . ($npwp['image'] ?? 'default/default.jpg')) }}"
+                  class="img-fluid rounded mx-auto d-block mw-100" style="max-height: 200px;" id="npwp_image-preview"
+                  alt="" data-action="zoom">
               </div>
             </div>
 
@@ -498,7 +505,7 @@
 
         <div class="form-floating mb-3">
           <textarea class="form-control @error('note') is-invalid @enderror" placeholder="Leave a comment here" id="note"
-            name="note" style="height: 100px">{{ old('note') }}</textarea>
+            name="note" style="height: 100px">{{ old('note', $person->note) }}</textarea>
           <label for="note">Comments</label>
           @error('note')
             <div class="invalid-feedback">

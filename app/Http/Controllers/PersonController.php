@@ -24,7 +24,7 @@ class PersonController extends Controller
   public function index()
   {
     return view('people.index', [
-      'people' => Person::all(),
+      'people' => Person::with('department')->latest()->get(),
     ]);
   }
 
@@ -148,6 +148,12 @@ class PersonController extends Controller
    */
   public function edit(Person $person)
   {
+    $ktp = $person->personDocuments->where('type', 'ktp')->first();
+    $sim = $person->personDocuments->where('type', 'sim')->first();
+    $assurance = $person->personDocuments->where('type', 'assurance')->first();
+    $bpjs_kesehatan = $person->personDocuments->where('type', 'bpjs_kesehatan')->first();
+    $bpjs_ketenagakerjaan = $person->personDocuments->where('type', 'bpjs_ketenagakerjaan')->first();
+    $npwp = $person->personDocuments->where('type', 'npwp')->first();
 
     return view('people.edit', [
       'person' => $person,
@@ -156,6 +162,12 @@ class PersonController extends Controller
       'projects' => Project::all(),
       'addresses' => Address::all(),
       'simTypes' => SimType::all(),
+      'ktp' => $ktp,
+      'sim' => $sim,
+      'assurance' => $assurance,
+      'bpjs_kesehatan' => $bpjs_kesehatan,
+      'bpjs_ketenagakerjaan' => $bpjs_ketenagakerjaan,
+      'npwp' => $npwp,
     ]);
   }
 
@@ -168,7 +180,84 @@ class PersonController extends Controller
    */
   public function update(UpdatePersonRequest $request, Person $person)
   {
-    //
+
+    try {
+
+
+
+      // Init Configuration
+      $otherTable = [
+        'ktp',
+        'ktp_address',
+        'ktp_image',
+        'sim',
+        'sim_type_id',
+        'sim_expire',
+        'sim_address',
+        'sim_image',
+        'assurance',
+        'assurance_image',
+        'bpjs_kesehatan',
+        'bpjs_kesehatan_image',
+        'bpjs_ketenagakerjaan',
+        'bpjs_ketenagakerjaan_image',
+        'npwp',
+        'npwp_image',
+      ];
+
+      $timestamp = now()->timestamp;
+      $types = ['ktp', 'sim', 'assurance', 'bpjs_kesehatan', 'bpjs_ketenagakerjaan', 'npwp'];
+
+      $personUpdatedData = $request->safe()->except($otherTable);
+      $personName = $request->name;
+      $personID = $person->id;
+
+      if ($request->file("image")) {
+        $fileName = "person_image-{$personName}-{$timestamp}.{$request->file("image")->extension()}";
+        $imagePath = $request->file("image")->storeAs("person-images", $fileName, 'public');
+        $personUpdatedData['image'] = $imagePath;
+      }
+
+      DB::beginTransaction();
+
+      $person->update($personUpdatedData);
+
+      foreach ($types as $type) {
+
+        $document = $person->personDocuments->where('type', $type)->first();
+
+        $imagePath = $document->image;
+
+        if ($request->file("{$type}_image")) {
+          $fileName = "{$type}-{$personName}-{$timestamp}.{$request->file("{$type}_image")->extension()}";
+          $imagePath = $request->file("{$type}_image")->storeAs("{$type}-images", $fileName, 'public');
+        }
+
+        if (isset($type["{$type}_expire"])) {
+          $active = $type["{$type}_expire"] > now() ? 1 : 0;
+        } else {
+          $active = 1;
+        }
+
+        $document->update([
+          'specialID' => $request["{$type}_type_id"] ?? null,
+          'number' => $request[$type],
+          'address' => $request["{$type}_address"] ?? null,
+          'image' => $imagePath,
+          'expire' => $request["{$type}_expire"] ?? null,
+          'active' => $active,
+        ]);
+      }
+
+
+
+      DB::commit();
+
+      return redirect("/people")->with('success', "Person has been updated!");
+    } catch (Exception $e) {
+      DB::rollback();
+      return redirect("/people/{$personID}/edit")->withInput()->with('error', $e->getMessage());
+    }
   }
 
   /**

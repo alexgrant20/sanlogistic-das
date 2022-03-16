@@ -30,7 +30,7 @@ class StorePersonRequest extends FormRequest
       'address_id' => 'required|integer',
       'name' => 'required|string',
       'image' => 'required|image',
-      'place_of_birth' => 'required|alpha',
+      'place_of_birth' => 'required|string',
       'date_of_birth' => 'required|date',
       'phone_number' => 'required|integer',
       'joined_at' => 'required|date',

@@ -224,8 +224,7 @@ class VehicleController extends Controller
 
       DB::beginTransaction();
 
-      Vehicle::where('id', $vehicle->id)->update($request->safe()->except($otherTable));
-
+      $vehicle->update($request->safe()->except($otherTable));
 
       foreach ($documents as $doc) {
 
@@ -237,7 +236,7 @@ class VehicleController extends Controller
           $imagePath = $request->file("{$doc}_image")->storeAs("{$doc}-images", $fileName, 'public');
         }
 
-        VehicleDocument::where('id', $document->id)->update([
+        $document->update([
           'number' => $request["${doc}_number"],
           'image' => $imagePath,
           'expire' => $request["${doc}_expire"],
@@ -255,7 +254,7 @@ class VehicleController extends Controller
           $imagePath = $request->file("{$imgType}_image")->storeAs("{$imgType}-images", $fileName, 'public');
         }
 
-        VehicleImage::where('id', $vehicleImage->id)->update([
+        $vehicleImage->update([
           'image' => $imagePath,
         ]);
       }
