@@ -58,8 +58,9 @@ function previewImage(id) {
   } else {
     imgPreview.src = "";
   }
-
-  spinner.remove();
   imgPreview.classList.remove('d-none');
+  spinner.remove();
+
+
 
 }

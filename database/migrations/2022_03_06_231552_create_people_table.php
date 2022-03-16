@@ -25,7 +25,7 @@ return new class extends Migration
       $table->date('date_of_birth');
       $table->string('phone_number');
       $table->date('joined_at');
-      $table->text('note');
+      $table->text('note')->nullable();
       $table->tinyInteger('active')->default(1);
       $table->timestamps();
     });

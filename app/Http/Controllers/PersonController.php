@@ -23,7 +23,9 @@ class PersonController extends Controller
    */
   public function index()
   {
-    return view('people.index');
+    return view('people.index', [
+      'people' => Person::all(),
+    ]);
   }
 
   /**
@@ -82,9 +84,11 @@ class PersonController extends Controller
         $imagePath = $request->file('image')->storeAs("person-images", $fileName, 'public');
       }
 
+      $personData['image'] = $imagePath;
+
       DB::beginTransaction();
 
-      $newPerson = Person::create($request->safe()->except($otherTable));
+      $newPerson = Person::create($personData);
       $personID = $newPerson['id'];
       $personName = str_replace(' ', '', $newPerson['name']);
 
@@ -144,7 +148,15 @@ class PersonController extends Controller
    */
   public function edit(Person $person)
   {
-    return view('people.edit');
+
+    return view('people.edit', [
+      'person' => $person,
+      'areas' => Area::all(),
+      'departments' => Department::all(),
+      'projects' => Project::all(),
+      'addresses' => Address::all(),
+      'simTypes' => SimType::all(),
+    ]);
   }
 
   /**

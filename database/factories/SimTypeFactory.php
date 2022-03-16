@@ -17,7 +17,7 @@ class SimTypeFactory extends Factory
   public function definition()
   {
     return [
-      'name' => $this->faker->randomLetter(),
+      'name' => $this->faker->unique()->randomLetter(),
     ];
   }
 }
