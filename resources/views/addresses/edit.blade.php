@@ -116,7 +116,7 @@
                 id="province_id">
                 <option hidden></option>
                 @foreach ($provinces as $province)
-                  @if ($province->id == old('province_id', $address->subdistrict->district->city->province->id))
+                  @if ($province->id == old('province_id', $address->subdistrict->district->city->province->id ?? null))
                     <option value="{{ $province->id }}" selected>{{ $province->name }}</option>
                   @else
                     <option value="{{ $province->id }}">{{ $province->name }}</option>
@@ -130,7 +130,8 @@
               @enderror
             </div>
 
-            <input type="hidden" id="ci_id" value="{{ old('city_id', $address->subdistrict->district->city->id) }}">
+            <input type="hidden" id="ci_id"
+              value="{{ old('city_id', $address->subdistrict->district->city->id ?? null) }}">
             <div class="col-xl-3">
               <label for="city_id" class="form-label">Kota</label>
               <div class="position-relative">
@@ -146,7 +147,8 @@
               </div>
             </div>
 
-            <input type="hidden" id="di_id" value="{{ old('district_id', $address->subdistrict->district->id) }}">
+            <input type="hidden" id="di_id"
+              value="{{ old('district_id', $address->subdistrict->district->id ?? null) }}">
             <div class="col-xl-3">
               <label for="district_id" class="form-label">Districts</label>
               <div class="position-relative">
@@ -162,7 +164,7 @@
               </div>
             </div>
 
-            <input type="hidden" id="su_id" value="{{ old('subdistrict_id', $address->subdistrict_id) }}">
+            <input type="hidden" id="su_id" value="{{ old('subdistrict_id', $address->subdistrict_id ?? null) }}">
             <div class="col-xl-3">
               <label for="subdistrict_id" class="form-label">Sub Districts</label>
               <div class="position-relative">
