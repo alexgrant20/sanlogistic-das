@@ -23,9 +23,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-  return view('index', [
-    'title' => 'Home'
-  ]);
+	return view('index', [
+		'title' => 'Home'
+	]);
 })->middleware('auth');
 
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
@@ -51,3 +51,6 @@ Route::resource('/projects', ProjectController::class)->middleware('auth');
 // Option
 Route::get('/option/vehicle-type/{id}', [OptionController::class, 'vehicleType']);
 Route::get('/option/vehicle-variety/{id}', [OptionController::class, 'vehicleVariety']);
+Route::get('/option/city/{id}', [OptionController::class, 'city']);
+Route::get('/option/district/{id}', [OptionController::class, 'district']);
+Route::get('/option/sub-district/{id}', [OptionController::class, 'subDistrict']);

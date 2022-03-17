@@ -9,6 +9,8 @@ use App\Models\AddressType;
 use App\Models\Area;
 use App\Models\PoolType;
 use App\Models\Province;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class AddressController extends Controller
 {
@@ -49,7 +51,18 @@ class AddressController extends Controller
 	 */
 	public function store(StoreAddressRequest $request)
 	{
-		//
+		try {
+
+			DB::beginTransaction();
+
+			Address::create($request->safe()->all());
+
+			DB::commit();
+			return redirect('/addresses')->with('success', "New address has been added!");
+		} catch (Exception $e) {
+			DB::rollBack();
+			return redirect('/addresses/create')->withInput()->with('error', $e->getMessage());
+		}
 	}
 
 	/**

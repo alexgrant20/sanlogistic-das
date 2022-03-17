@@ -7,25 +7,27 @@ use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
 {
-  use HasFactory;
+	use HasFactory;
 
-  public function addressType()
-  {
-    return $this->belongsTo(AddressType::class, 'address_type_id');
-  }
+	protected $guarded = ['id'];
 
-  public function area()
-  {
-    return $this->belongsTo(Area::class);
-  }
+	public function addressType()
+	{
+		return $this->belongsTo(AddressType::class, 'address_type_id');
+	}
 
-  public function subdistrict()
-  {
-    return $this->belongsTo(Subdistrict::class);
-  }
+	public function area()
+	{
+		return $this->belongsTo(Area::class);
+	}
 
-  public function poolType()
-  {
-    return $this->belongsTo(PoolType::class, 'pool_type_id');
-  }
+	public function subdistrict()
+	{
+		return $this->belongsTo(Subdistrict::class);
+	}
+
+	public function poolType()
+	{
+		return $this->belongsTo(PoolType::class, 'pool_type_id');
+	}
 }

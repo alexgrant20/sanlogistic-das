@@ -23,41 +23,41 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DatabaseSeeder extends Seeder
 {
-  /**
-   * Seed the application's database.
-   *
-   * @return void
-   */
-  public function run()
-  {
-    User::create([
-      'person_id' => '1',
-      'role_id' => '1',
-      'username' => 'stevenAlexander',
-      'password' => bcrypt('password')
-    ]);
+	/**
+	 * Seed the application's database.
+	 *
+	 * @return void
+	 */
+	public function run()
+	{
+		User::create([
+			'person_id' => '1',
+			'role_id' => '1',
+			'username' => 'stevenAlexander',
+			'password' => bcrypt('password')
+		]);
 
-    VehicleLicensePlateColor::create([
-      'name' => 'yellow'
-    ]);
+		VehicleLicensePlateColor::create([
+			'name' => 'yellow'
+		]);
 
-    VehicleLicensePlateColor::create([
-      'name' => 'black'
-    ]);
+		VehicleLicensePlateColor::create([
+			'name' => 'black'
+		]);
 
-    Address::factory(100)->create();
-    Company::factory(2000)->create();
-    AddressType::factory(10)->create();
-    CompanyType::factory(5)->create();
-    VehicleBrand::factory(10)->create();
-    VehicleType::factory(30)->create();
-    VehicleVariety::factory(200)->create();
-    Project::factory(100)->create();
-    Area::factory(30)->create();
-    Regional::factory(20)->create();
-    VehicleTowing::factory(100)->create();
-    Vehicle::factory(2000)->create();
-    Department::factory(10)->create();
-    SimType::factory(5)->create();
-  }
+		Address::factory(100)->create();
+		Company::factory(20)->create();
+		AddressType::factory(10)->create();
+		CompanyType::factory(5)->create();
+		VehicleBrand::factory(10)->create();
+		VehicleType::factory(30)->create();
+		VehicleVariety::factory(200)->create();
+		Project::factory(100)->create();
+		Area::factory(30)->create();
+		Regional::factory(20)->create();
+		VehicleTowing::factory(100)->create();
+		Vehicle::factory(20)->create();
+		Department::factory(10)->create();
+		SimType::factory(5)->create();
+	}
 }
