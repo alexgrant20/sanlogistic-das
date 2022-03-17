@@ -32,6 +32,7 @@ Route::get('/login', [LoginController::class, 'index'])->name('login')->middlewa
 Route::post('/login', [LoginController::class, 'authenticate'])->middleware('guest');
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
 
+// Route::get('/addresses/getAllLocation')
 Route::resource('/addresses', AddressController::class)->middleware('auth');
 
 Route::resource('/activities', ActivityController::class)->middleware('auth');
@@ -47,10 +48,3 @@ Route::get('/companies/migrate/image', [CompanyController::class, 'migrateImage'
 Route::resource('/companies', CompanyController::class)->middleware('auth');
 
 Route::resource('/projects', ProjectController::class)->middleware('auth');
-
-// Option
-Route::get('/option/vehicle-type/{id}', [OptionController::class, 'vehicleType']);
-Route::get('/option/vehicle-variety/{id}', [OptionController::class, 'vehicleVariety']);
-Route::get('/option/city/{id}', [OptionController::class, 'city']);
-Route::get('/option/district/{id}', [OptionController::class, 'district']);
-Route::get('/option/sub-district/{id}', [OptionController::class, 'subDistrict']);

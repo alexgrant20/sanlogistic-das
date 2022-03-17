@@ -9,6 +9,9 @@ use App\Models\AddressType;
 use App\Models\Area;
 use App\Models\PoolType;
 use App\Models\Province;
+use App\Models\City;
+use App\Models\District;
+use App\Models\Subdistrict;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -126,5 +129,23 @@ class AddressController extends Controller
 	public function destroy(Address $address)
 	{
 		//
+	}
+
+	public function city($id)
+	{
+		$data = City::where('province_id', $id)->get();
+		return response()->json($data);
+	}
+
+	public function district($id)
+	{
+		$data = District::where('city_id', $id)->get();
+		return response()->json($data);
+	}
+
+	public function subDistrict($id)
+	{
+		$data = Subdistrict::where('district_id', $id)->get();
+		return response()->json($data);
 	}
 }

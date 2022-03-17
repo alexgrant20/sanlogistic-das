@@ -12,6 +12,8 @@ use App\Models\VehicleBrand;
 use App\Models\VehicleImage;
 use App\Models\VehicleTowing;
 use App\Models\VehicleDocument;
+use App\Models\VehicleType;
+use App\Models\VehicleVariety;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\VehicleLicensePlateColor;
@@ -356,5 +358,17 @@ class VehicleController extends Controller
 			DB::rollBack();
 			return redirect('/vehicles')->with('error', $e->getMessage());
 		}
+	}
+
+	public function vehicleType($id)
+	{
+		$data = VehicleType::where('vehicle_brand_id', $id)->get();
+		return response()->json($data);
+	}
+
+	public function vehicleVariety($id)
+	{
+		$data = VehicleVariety::where('vehicle_type_id', $id)->get();
+		return response()->json($data);
 	}
 }
