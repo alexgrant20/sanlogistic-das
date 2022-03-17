@@ -27,3 +27,4 @@ Route::get('/vehicles/vehicle-variety/{id}', [VehicleController::class, 'vehicle
 Route::get('/addresses/city/{id}', [AddressController::class, 'city']);
 Route::get('/addresses/district/{id}', [AddressController::class, 'district']);
 Route::get('/addresses/sub-district/{id}', [AddressController::class, 'subDistrict']);
+Route::get('/addresses/location', [AddressController::class, 'location']);

@@ -148,4 +148,10 @@ class AddressController extends Controller
 		$data = Subdistrict::where('district_id', $id)->get();
 		return response()->json($data);
 	}
+
+	public function location()
+	{
+		$data = Address::all(['name', 'latitude', 'longitude']);
+		return response()->json($data->toArray());
+	}
 }
