@@ -6,35 +6,37 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-  /**
-   * Run the migrations.
-   *
-   * @return void
-   */
-  public function up()
-  {
-    Schema::create('addresses', function (Blueprint $table) {
-      $table->id();
-      $table->foreignId('address_type_id');
-      $table->foreignId('area_id');
-      $table->foreignId('subdistrict_id');
-      $table->foreignId('pool_type_id');
-      $table->string('name')->unique();
-      $table->text('full_address');
-      $table->double('longitude');
-      $table->double('latitude');
-      $table->string('post_number');
-      $table->timestamps();
-    });
-  }
+	/**
+	 * Run the migrations.
+	 *
+	 * @return void
+	 */
+	public function up()
+	{
+		Schema::create('addresses', function (Blueprint $table) {
+			$table->id();
+			$table->foreignId('address_type_id');
+			$table->foreignId('area_id');
+			$table->foreignId('subdistrict_id');
+			$table->foreignId('pool_type_id');
+			$table->string('name')->unique();
+			$table->text('full_address');
+			$table->double('longitude');
+			$table->double('latitude');
+			$table->string('post_number');
+			$table->timestamp('created_at')->useCurrent();
+			$table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+			$table->softDeletes();
+		});
+	}
 
-  /**
-   * Reverse the migrations.
-   *
-   * @return void
-   */
-  public function down()
-  {
-    Schema::dropIfExists('addresses');
-  }
+	/**
+	 * Reverse the migrations.
+	 *
+	 * @return void
+	 */
+	public function down()
+	{
+		Schema::dropIfExists('addresses');
+	}
 };

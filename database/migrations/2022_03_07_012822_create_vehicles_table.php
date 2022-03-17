@@ -37,7 +37,9 @@ return new class extends Migration
       $table->year('registration_year');
       $table->boolean('is_maintenance')->default(0);
       $table->text('note')->nullable();
-      $table->timestamps();
+			$table->timestamp('created_at')->useCurrent();
+			$table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+			$table->softDeletes();
     });
   }
 
