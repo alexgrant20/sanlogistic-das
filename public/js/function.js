@@ -1,38 +1,15 @@
 "use strict";
 
-function fetch_option(url, val, type, ids, idSelected = false) {
-    $.ajax({
-        type: "post",
-        url,
-        data: {
-            get_option: val,
-            type,
-            idSelected,
-        },
-        beforeSend: function () {
-            ids.forEach((id, index) => {
-                if (index === 0) {
-                    $(`#${id}`)
-                        .siblings(".spinner-border")
-                        .removeClass("d-none");
-                }
-                $(`#${id} option:gt(0)`).remove();
-                $(`#${id}`).attr("disabled", "true");
-            });
-        },
-        success: function (response) {
-            ids.forEach((id, index) => {
-                if (index === 0) {
-                    $(`#${id}`).append(response);
-                    $(`#${id}`).removeAttr("disabled");
-                    $(`#${id}`).siblings(".spinner-border").addClass("d-none");
-                }
-            });
-        },
-    });
+const { wrap } = require("lodash");
+
+function insertAfter(referenceNode, newNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
 
 function fetchOption(url, id, depArr, chooseID) {
+    const wrapper = document.createElement("div");
+    const spinner = document.createElement("div");
+
     $.ajax({
         url,
         type: "GET",
@@ -41,6 +18,17 @@ function fetchOption(url, id, depArr, chooseID) {
         beforeSend: function () {
             if (depArr.length > 0) {
                 depArr.forEach((id, index) => {
+                    if (index === 0) {
+                        const element = document.getElementById(id);
+                        const parent = element.parentNode;
+                        wrapper.className = "relative";
+                        spinner.className =
+                            "spinner-border text-primary absolute center";
+                        parent.replaceChild(wrapper, element);
+                        wrapper.appendChild(element);
+                        insertAfter(element, spinner);
+                    }
+
                     $(`#${id}`).empty();
                     $(`#${id}`).prop("disabled", true);
                 });
@@ -63,12 +51,10 @@ function fetchOption(url, id, depArr, chooseID) {
             } else {
                 $(`#${id}`).empty();
             }
+            spinner.remove();
+            wrapper.replaceWith(...wrapper.children);
         },
     });
-}
-
-function insertAfter(referenceNode, newNode) {
-    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
 
 function previewImage(id) {
