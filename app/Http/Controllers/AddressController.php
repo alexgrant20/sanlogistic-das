@@ -25,7 +25,13 @@ class AddressController extends Controller
 	public function index()
 	{
 		return view('addresses.index', [
-			'addresses' => Address::with(['addressType'])->latest()->get(),
+			'addresses' => Address::with([
+				'addressType',
+				'subdistrict',
+				'subdistrict.district',
+				'subdistrict.district.city',
+				'subdistrict.district.city.province'
+			])->latest()->get(),
 			'title' => 'Addresses',
 		]);
 	}
