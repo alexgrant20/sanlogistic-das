@@ -21,8 +21,8 @@ return new class extends Migration
 			$table->foreignId('pool_type_id');
 			$table->string('name')->unique();
 			$table->text('full_address');
-			$table->double('longitude');
-			$table->double('latitude');
+			$table->double('longitude')->nullable();
+			$table->double('latitude')->nullable();
 			$table->string('post_number');
 			$table->timestamp('created_at')->useCurrent();
 			$table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
