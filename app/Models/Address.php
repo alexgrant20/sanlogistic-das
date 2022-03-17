@@ -30,4 +30,9 @@ class Address extends Model
 	{
 		return $this->belongsTo(PoolType::class, 'pool_type_id');
 	}
+
+	public function getRouteKeyName()
+	{
+		return 'name';
+	}
 }

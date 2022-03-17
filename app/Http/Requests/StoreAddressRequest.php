@@ -26,9 +26,12 @@ class StoreAddressRequest extends FormRequest
 		return [
 			'address_type_id' => 'required|integer',
 			'area_id' => 'required|integer',
+			'province_id' => 'required|integer',
+			'city_id' => 'required|integer',
+			'district_id' => 'required|integer',
 			'subdistrict_id' => 'required|integer',
 			'pool_type_id' => 'required|integer',
-			'name' => 'required|string',
+			'name' => 'required|string|unique:addresses',
 			'full_address' => 'required|string',
 			'longitude' => 'required|string',
 			'latitude' => 'required|string',

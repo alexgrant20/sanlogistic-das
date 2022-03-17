@@ -52,7 +52,7 @@
               <td>{{ $address->subdistrict->district->city->name }}</td>
               <td>{{ $address->subdistrict->district->city->province->name }}</td>
               <td>
-                <a href="/projects/{{ $address->name }}/edit" class="badge bg-primary"><i
+                <a href="/addresses/{{ $address->name }}/edit" class="badge bg-primary"><i
                     class="bi bi-pencil"></i></a>
               </td>
             </tr>

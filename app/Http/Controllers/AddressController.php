@@ -23,7 +23,7 @@ class AddressController extends Controller
 	{
 		return view('addresses.index', [
 			'addresses' => Address::with(['addressType'])->latest()->get(),
-			'title' => 'Addresses'
+			'title' => 'Addresses',
 		]);
 	}
 
@@ -55,7 +55,7 @@ class AddressController extends Controller
 
 			DB::beginTransaction();
 
-			Address::create($request->safe()->all());
+			Address::create($request->safe()->except(['province_id', 'city_id', 'district_id']));
 
 			DB::commit();
 			return redirect('/addresses')->with('success', "New address has been added!");
@@ -85,7 +85,12 @@ class AddressController extends Controller
 	public function edit(Address $address)
 	{
 		return view('addresses.edit', [
-			'title' => 'Update Address'
+			'title' => 'Update Address',
+			'address' => $address,
+			'areas' => Area::all(),
+			'pool_types' => PoolType::all(),
+			'address_types' => AddressType::all(),
+			'provinces' => Province::all(),
 		]);
 	}
 
@@ -98,7 +103,18 @@ class AddressController extends Controller
 	 */
 	public function update(UpdateAddressRequest $request, Address $address)
 	{
-		//
+		try {
+
+			DB::beginTransaction();
+
+			$address->update($request->safe()->except(['province_id', 'city_id', 'district_id']));
+
+			DB::commit();
+			return redirect('/addresses')->with('success', "New address has been added!");
+		} catch (Exception $e) {
+			DB::rollBack();
+			return redirect('/addresses/create')->withInput()->with('error', $e->getMessage());
+		}
 	}
 
 	/**

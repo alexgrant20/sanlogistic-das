@@ -144,6 +144,7 @@
                 @enderror
               </div>
             </div>
+
             <input type="hidden" id="di_id" value="{{ old('district_id') }}">
             <div class="col-xl-3">
               <label for="district_id" class="form-label">Districts</label>
@@ -243,6 +244,5 @@
 @endsection
 
 @section('footJS')
-  <script src="/js/addAddress.js"></script>
   <script src="/js/address.js"></script>
 @endsection
