@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Address;
 use App\Http\Requests\StoreAddressRequest;
 use App\Http\Requests\UpdateAddressRequest;
+use App\Models\AddressType;
+use App\Models\Area;
+use App\Models\PoolType;
+use App\Models\Province;
 
 class AddressController extends Controller
 {
@@ -29,7 +33,11 @@ class AddressController extends Controller
   public function create()
   {
     return view('addresses.create', [
-      'title' => 'Create Address'
+      'title' => 'Create Address',
+      'areas' => Area::all(),
+      'pool_types' => PoolType::all(),
+      'address_types' => AddressType::all(),
+      'provinces' => Province::all(),
     ]);
   }
 

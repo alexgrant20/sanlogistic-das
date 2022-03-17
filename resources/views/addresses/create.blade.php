@@ -24,7 +24,7 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form action="/address" method="POST" id="myForm">
+      <form action="/address" method="POST">
         <div class="mb-5">
           <h4 class="text-primary fw-bold">Data Alamat</h4>
           <hr>
@@ -37,36 +37,53 @@
             <div class="col-xl-3">
               <label for="area_id" class="form-label">Area</label>
               <select class='form-select form-select-lg' name='area_id' id="area_id" required>
-                <option value='' class="d-none"></option>
+                <option hidden></option>
+                @foreach ($areas as $area)
+                  @if ($area == old('area_id'))
+                    <option value="{{ $area->id }}" selected>{{ $area->name }}</option>
+                  @else
+                    <option value="{{ $area->id }}">{{ $area->name }}</option>
+                  @endif
+                @endforeach
               </select>
             </div>
             <div class="col-xl-3">
               <label for="pool_type_id" class="form-label">Jenis Pool</label>
               <select class='form-select form-select-lg' name='pool_type_id' id="pool_type_id" required>
-                <option value='1' class="d-none">Test</option>
-                <option value='2' class="d-none">Test</option>
-                <option value='3' class="d-none">Test</option>
-
+                <option hidden></option>
+                @foreach ($pool_types as $pool_type)
+                  @if ($pool_type == old('pool_type_id'))
+                    <option value="{{ $pool_type->id }}" selected>{{ $pool_type->name }}</option>
+                  @else
+                    <option value="{{ $pool_type->id }}">{{ $pool_type->name }}</option>
+                  @endif
+                @endforeach
               </select>
             </div>
             <div class="col-xl-3">
               <label for="address_type_id" class="form-label">Jenis Alamat</label>
               <select class='form-select form-select-lg' name='address_type_id' id="address_type_id" required>
-                <option value='' class="d-none"></option>
-
+                <option hidden></option>
+                @foreach ($address_types as $address_type)
+                  @if ($address_type == old('address_type_id'))
+                    <option value="{{ $address_type->id }}" selected>{{ $address_type->name }}</option>
+                  @else
+                    <option value="{{ $address_type->id }}">{{ $address_type->name }}</option>
+                  @endif
+                @endforeach
               </select>
             </div>
             <div class="col-xl-3">
               <label for="province_id" class="form-label">Provinsi</label>
               <select class='form-select form-select-lg' name='province_id' id="province_id" required>
-                <option value='' class="d-none"></option>
+                <option hidden></option>
               </select>
             </div>
             <div class="col-xl-3">
               <label for="city_id" class="form-label">Kota</label>
               <div class="position-relative">
                 <select class='form-select form-select-lg' name='city_id' id="city_id" required>
-                  <option value='' class="d-none"></option>
+                  <option hidden></option>
                 </select>
                 <div class="spinner-border spinner-border-sm text-primary d-none spinner-input" role="status">
                   <span class="visually-hidden">Loading...</span>
@@ -77,7 +94,7 @@
               <label for="dist_id" class="form-label">Districts</label>
               <div class="position-relative">
                 <select class='form-select form-select-lg' name='dist_id' id="dist_id" required>
-                  <option value='' class="d-none"></option>
+                  <option hidden></option>
                 </select>
                 <div class="spinner-border spinner-border-sm text-primary d-none spinner-input" role="status">
                   <span class="visually-hidden">Loading...</span>
@@ -88,7 +105,7 @@
               <label for="subdis_id" class="form-label">Sub Districts</label>
               <div class="position-relative">
                 <select class='form-select form-select-lg' name='subdis_id' id="subdis_id" required>
-                  <option value='' class="d-none"></option>
+                  <option hidden></option>
                 </select>
                 <div class="spinner-border spinner-border-sm text-primary d-none spinner-input" role="status">
                   <span class="visually-hidden">Loading...</span>
