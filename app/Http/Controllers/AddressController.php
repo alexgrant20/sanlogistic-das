@@ -157,7 +157,9 @@ class AddressController extends Controller
 
 	public function location()
 	{
-		$data = Address::all(['name', 'latitude', 'longitude']);
+		$data = Address::where('latitude', '!=', 'null')
+			->where('longitude', '!=', 'null')
+			->get(['name', 'latitude', 'longitude']);
 		return response()->json($data->toArray());
 	}
 }
