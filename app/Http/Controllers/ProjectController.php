@@ -20,6 +20,7 @@ class ProjectController extends Controller
   {
     return view('projects.index', [
       'projects' => Project::latest()->get(),
+      'title' => 'Projects'
     ]);
   }
 
@@ -32,6 +33,7 @@ class ProjectController extends Controller
   {
     return view('projects.create', [
       'customers' => Company::all(),
+      'title' => 'Create Project',
     ]);
   }
 
@@ -81,6 +83,7 @@ class ProjectController extends Controller
     return view('projects.edit', [
       'project' => $project,
       'customers' => Company::all(),
+      'title' => "Update Project : {$project->name}"
     ]);
   }
 

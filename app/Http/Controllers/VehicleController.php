@@ -45,6 +45,7 @@ class VehicleController extends Controller
     return view('vehicles.index', [
       'vehicles' => $vehicles,
       'imagesMigrated' => $imagesMigrated,
+      'title' => 'Vehicles'
     ]);
   }
 
@@ -63,6 +64,7 @@ class VehicleController extends Controller
       'addresses' => Address::all(),
       'vehiclesTowings' => VehicleTowing::all(),
       'vehiclesLPColors' => VehicleLicensePlateColor::all(),
+      'title' => 'Create Vehicle',
     ]);
   }
 
@@ -186,7 +188,8 @@ class VehicleController extends Controller
       'front' => $front,
       'back' => $back,
       'left' => $left,
-      'right' => $right
+      'right' => $right,
+      'title' => "Update Vehicle {$vehicle->license_plate}"
     ]);
   }
 

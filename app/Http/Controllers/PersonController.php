@@ -25,6 +25,7 @@ class PersonController extends Controller
   {
     return view('people.index', [
       'people' => Person::with('department')->latest()->get(),
+      'title' => 'People'
     ]);
   }
 
@@ -41,6 +42,7 @@ class PersonController extends Controller
       'projects' => Project::all(),
       'addresses' => Address::all(),
       'simTypes' => SimType::all(),
+      'title' => 'Create Person',
     ]);
   }
 
@@ -168,6 +170,7 @@ class PersonController extends Controller
       'bpjs_kesehatan' => $bpjs_kesehatan,
       'bpjs_ketenagakerjaan' => $bpjs_ketenagakerjaan,
       'npwp' => $npwp,
+      'title' => "Update Person : {$person->name}"
     ]);
   }
 
@@ -182,9 +185,6 @@ class PersonController extends Controller
   {
 
     try {
-
-
-
       // Init Configuration
       $otherTable = [
         'ktp',
@@ -248,8 +248,6 @@ class PersonController extends Controller
           'active' => $active,
         ]);
       }
-
-
 
       DB::commit();
 

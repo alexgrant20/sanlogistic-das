@@ -31,7 +31,7 @@ class CompanyController extends Controller
     return view('companies.index', [
       'companies' => $companies,
       'imagesMigrated' => $totalCompany * count($companiesDocuments) === $totalCompanyDocument,
-
+      'title' => 'Companies'
     ]);
   }
 
@@ -45,6 +45,7 @@ class CompanyController extends Controller
     return view('companies.create', [
       'addresses' => Address::all(),
       'companiesTypes' => CompanyType::all(),
+      'title' => 'Create Company'
     ]);
   }
 
@@ -130,6 +131,7 @@ class CompanyController extends Controller
       'siup' => is_null($siup) ? [] : $siup,
       'sipa' => is_null($sipa) ? [] : $sipa,
       'companies_types' => CompanyType::all(),
+      'title' => "Update Company : {$company->name}"
     ]);
   }
 
