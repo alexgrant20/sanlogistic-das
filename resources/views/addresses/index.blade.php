@@ -94,7 +94,6 @@
         const res = await fetch('/api/addresses/location', {
           method: 'GET'
         });
-
         const data = await res.json();
         const locations = data.map(el => Object.values(el));
 
@@ -103,13 +102,10 @@
             .bindPopup(locations[i][0])
             .addTo(map);
         }
-
-
       } catch (err) {
         return err.message;
       }
     }
-
     getLocation();
   </script>
 @endsection
