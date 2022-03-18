@@ -55,7 +55,7 @@ class DatabaseSeeder extends Seeder
 		Project::factory(100)->create();
 		Area::factory(30)->create();
 		Regional::factory(20)->create();
-		VehicleTowing::factory(100)->create();
+		VehicleTowing::factory(10)->create();
 		Vehicle::factory(20)->create();
 		Department::factory(10)->create();
 		SimType::factory(5)->create();

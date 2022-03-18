@@ -10,6 +10,7 @@
 
 @section('container')
   <div class="page-content">
+
     <!-- Page Header-->
     <div class="bg-dash-dark-2 py-4">
       <div class="container-fluid">
@@ -30,12 +31,49 @@
         </div>
       @endif
 
-      @if (!$imagesMigrated)
-        <form action="/vehicles/migrate/image" class="mb-3">
+      <div class="d-flex mb-4">
+        <form class="me-2" action="/vehicles/export_excel">
           @csrf
-          <button class="btn btn-primary">Migrate</button>
+          <button class="btn btn-success">Export Excel</button>
         </form>
-      @endif
+
+        <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#importExcel">
+          Import Excel
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
+          <form method="post" action="/vehicles/import_excel" enctype="multipart/form-data">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="importExcelLabel">Modal title</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  @csrf
+
+                  <label>Pilih file excel</label>
+                  <div class="form-group">
+                    <input type="file" name="file" required="required">
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Import</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        @if (!$imagesMigrated)
+          <form action="/vehicles/migrate/image">
+            @csrf
+            <button class="btn btn-primary">Migrate</button>
+          </form>
+        @endif
+      </div>
 
       <table class="table table-hover text-center  table-dark table-striped" id="myTable">
         <thead>

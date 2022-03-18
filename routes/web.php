@@ -40,6 +40,8 @@ Route::resource('/activities', ActivityController::class)->middleware('auth');
 Route::resource('/people', PersonController::class)->middleware('auth');
 
 
+Route::get('/vehicles/export_excel', [VehicleController::class, 'exportExcel']);
+Route::post('/vehicles/import_excel', [VehicleController::class, 'importExcel']);
 Route::get('/vehicles/migrate/image', [VehicleController::class, 'migrateImage'])->middleware('auth');
 Route::resource('/vehicles', VehicleController::class)->middleware('auth');
 

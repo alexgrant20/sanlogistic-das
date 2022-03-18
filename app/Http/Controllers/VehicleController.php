@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\VehicleExport;
 use Exception;
 use App\Models\Area;
 use App\Models\Address;
@@ -15,10 +16,13 @@ use App\Models\VehicleDocument;
 use App\Models\VehicleType;
 use App\Models\VehicleVariety;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use App\Models\VehicleLicensePlateColor;
 use App\Http\Requests\StoreVehicleRequest;
 use App\Http\Requests\UpdateVehicleRequest;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\Controller;
+use App\Imports\VehicleImport;
 
 class VehicleController extends Controller
 {
@@ -360,6 +364,30 @@ class VehicleController extends Controller
 		}
 	}
 
+	public function exportExcel()
+	{
+		return Excel::download(new VehicleExport, 'vehicle.xlsx');
+	}
+
+	public function importExcel(Request $request)
+	{
+		try {
+			$request->validate([
+				'file' => 'required|mimes:csv,xls,xlsx'
+			]);
+			$file = $request->file('file');
+			$fileName = rand() . $file->getClientOriginalName();
+			$file->move('file-import-vehicle', $fileName);
+
+			Excel::import(new VehicleImport, public_path("/file-import-vehicle/{$fileName}"));
+
+			return redirect('/vehicles')->with('success', 'Import completed!');
+		} catch (Exception $e) {
+			return redirect('/vehicles')->with('error', 'Import Failed! ' . $e->getMessage());
+		}
+	}
+
+	// Api Route
 	public function vehicleType($id)
 	{
 		$data = VehicleType::where('vehicle_brand_id', $id)->get();
