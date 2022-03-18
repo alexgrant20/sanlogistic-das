@@ -41,13 +41,13 @@ $(document).ready(function () {
 	if (DIS_ID) {
 		if (SUBDIS_ID) {
 			fetchOption(
-				`${API_ROUTE}/sub-district/${DIS_ID}`,
+				`${API_ROUTE}/sub_district/${DIS_ID}`,
 				"subdistrict_id",
 				["subdistrict_id"],
 				SUBDIS_ID
 			);
 		} else {
-			fetchOption(`${API_ROUTE}/sub-district/${DIS_ID}`, "subdistrict_id", [
+			fetchOption(`${API_ROUTE}/sub_district/${DIS_ID}`, "subdistrict_id", [
 				"subdistrict_id",
 			]);
 		}
@@ -82,7 +82,7 @@ $(document).ready(function () {
 		const district_id = $(this).val();
 		if (district_id) {
 			fetchOption(
-				`${API_ROUTE}/sub-district/${district_id}`,
+				`${API_ROUTE}/sub_district/${district_id}`,
 				"subdistrict_id",
 				["subdistrict_id"]
 			);

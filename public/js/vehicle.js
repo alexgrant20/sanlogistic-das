@@ -7,13 +7,13 @@ $(document).ready(function () {
 	if (brandID) {
 		if (typeID) {
 			fetchOption(
-				`${API_ROUTE}/vehicle-type/${brandID}`,
+				`${API_ROUTE}/vehicle_type/${brandID}`,
 				"vehicle_type_id",
 				["vehicle_type_id"],
 				typeID
 			);
 		} else {
-			fetchOption(`${API_ROUTE}/vehicle-type/${brandID}`, "vehicle_type_id", [
+			fetchOption(`${API_ROUTE}/vehicle_type/${brandID}`, "vehicle_type_id", [
 				"vehicle_type_id",
 			]);
 		}
@@ -22,14 +22,14 @@ $(document).ready(function () {
 	if (typeID) {
 		if (varietyID) {
 			fetchOption(
-				`${API_ROUTE}/vehicle-variety/${typeID}`,
+				`${API_ROUTE}/vehicle_variety/${typeID}`,
 				"vehicle_variety_id",
 				["vehicle_variety_id"],
 				varietyID
 			);
 		} else {
 			fetchOption(
-				`${API_ROUTE}/vehicle-variety/${typeID}`,
+				`${API_ROUTE}/vehicle_variety/${typeID}`,
 				"vehicle_variety_id",
 				["vehicle_variety_id"]
 			);
@@ -39,7 +39,7 @@ $(document).ready(function () {
 	$("#vehicle_brand_id").on("change", function () {
 		const brandID = $(this).val();
 		if (brandID) {
-			fetchOption(`${API_ROUTE}/vehicle-type/${brandID}`, "vehicle_type_id", [
+			fetchOption(`${API_ROUTE}/vehicle_type/${brandID}`, "vehicle_type_id", [
 				"vehicle_type_id",
 				"vehicle_variety_id",
 			]);
@@ -52,7 +52,7 @@ $(document).ready(function () {
 		const typeID = $(this).val();
 		if (typeID) {
 			fetchOption(
-				`${API_ROUTE}/vehicle-variety/${typeID}`,
+				`${API_ROUTE}/vehicle_variety/${typeID}`,
 				"vehicle_variety_id",
 				["vehicle_variety_id"]
 			);

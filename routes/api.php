@@ -21,10 +21,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Option
-Route::get('/vehicles/vehicle-type/{id}', [VehicleController::class, 'vehicleType']);
-Route::get('/vehicles/vehicle-variety/{id}', [VehicleController::class, 'vehicleVariety']);
+Route::get('/vehicles/vehicle_type/{id}', [VehicleController::class, 'vehicleType']);
+Route::get('/vehicles/vehicle_variety/{id}', [VehicleController::class, 'vehicleVariety']);
 
 Route::get('/addresses/city/{id}', [AddressController::class, 'city']);
 Route::get('/addresses/district/{id}', [AddressController::class, 'district']);
-Route::get('/addresses/sub-district/{id}', [AddressController::class, 'subDistrict']);
+Route::get('/addresses/sub_district/{id}', [AddressController::class, 'subDistrict']);
 Route::get('/addresses/location', [AddressController::class, 'location']);
