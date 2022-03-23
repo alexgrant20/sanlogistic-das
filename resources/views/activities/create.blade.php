@@ -59,7 +59,7 @@
             </div>
 
             <div class="col-xl-4">
-              <label for="vehicle_id" class="form-label">Kendaraan</label>
+              <label for="vehicle_id" class="form-label">User</label>
               <select class='form-select form-select-lg @error('vehicle_id') is-invalid @enderror' name='vehicle_id'>
                 <option value='' hidden></option>
                 @foreach ($users as $user)
