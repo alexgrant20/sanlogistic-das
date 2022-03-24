@@ -20,6 +20,8 @@ return new class extends Migration
 			$table->date('date_start');
 			$table->date('date_end');
 			$table->text('catatan')->nullable();
+			$table->foreignId('created_by')->nullable();
+			$table->foreignId('updated_by')->nullable();
 			$table->timestamp('created_at')->useCurrent();
 			$table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 			$table->softDeletes();

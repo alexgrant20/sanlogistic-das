@@ -37,6 +37,8 @@ return new class extends Migration
 			$table->year('registration_year');
 			$table->tinyInteger('is_maintenance')->nullable()->default(0);
 			$table->text('note')->nullable();
+			$table->foreignId('created_by')->nullable();
+			$table->foreignId('updated_by')->nullable();
 			$table->timestamp('created_at')->useCurrent();
 			$table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 			$table->softDeletes();

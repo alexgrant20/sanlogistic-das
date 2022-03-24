@@ -25,6 +25,8 @@ return new class extends Migration
 			$table->string('director');
 			$table->string('npwp');
 			$table->string('fax')->nullable();
+			$table->foreignId('created_by')->nullable();
+			$table->foreignId('updated_by')->nullable();
 			$table->timestamp('created_at')->useCurrent();
 			$table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 			$table->softDeletes();

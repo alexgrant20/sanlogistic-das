@@ -49,6 +49,8 @@ return new class extends Migration
 			$table->string('end_lat')->nullable();
 			$table->string('end_lon')->nullable();
 			$table->string('end_loc')->nullable();
+			$table->foreignId('created_by')->nullable();
+			$table->foreignId('updated_by')->nullable();
 			$table->timestamp('created_at')->useCurrent();
 			$table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 		});

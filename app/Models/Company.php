@@ -2,34 +2,35 @@
 
 namespace App\Models;
 
+use App\Blameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
 {
-  use HasFactory;
+	use HasFactory, Blameable;
 
-  protected $guarded = [
-    'id'
-  ];
+	protected $guarded = [
+		'id'
+	];
 
-  public function companyType()
-  {
-    return $this->hasMany(CompanyType::class);
-  }
+	public function companyType()
+	{
+		return $this->hasMany(CompanyType::class);
+	}
 
-  public function companyDocuments()
-  {
-    return $this->hasMany(CompanyDocument::class);
-  }
+	public function companyDocuments()
+	{
+		return $this->hasMany(CompanyDocument::class);
+	}
 
-  public function address()
-  {
-    return $this->belongsTo(Address::class);
-  }
+	public function address()
+	{
+		return $this->belongsTo(Address::class);
+	}
 
-  public function getRouteKeyName()
-  {
-    return 'name';
-  }
+	public function getRouteKeyName()
+	{
+		return 'name';
+	}
 }

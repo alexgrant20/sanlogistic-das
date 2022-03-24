@@ -27,6 +27,8 @@ return new class extends Migration
 			$table->date('joined_at');
 			$table->text('note')->nullable();
 			$table->tinyInteger('active')->default(1);
+			$table->foreignId('created_by')->nullable();
+			$table->foreignId('updated_by')->nullable();
 			$table->timestamp('created_at')->useCurrent();
 			$table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 			$table->softDeletes();
