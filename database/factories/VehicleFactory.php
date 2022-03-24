@@ -17,7 +17,7 @@ class VehicleFactory extends Factory
   public function definition()
   {
     return [
-      'project_id' => $this->faker->numberBetween(1, 100),
+      'project_id' => $this->faker->numberBetween(1, 20),
       'area_id' => $this->faker->numberBetween(1, 30),
       'vehicle_variety_id' => $this->faker->numberBetween(1, 200),
       'address_id' => $this->faker->numberBetween(1, 200),
