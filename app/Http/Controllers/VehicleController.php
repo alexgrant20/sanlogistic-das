@@ -377,7 +377,7 @@ class VehicleController extends Controller
 			]);
 			$file = $request->file('file');
 			$fileName = rand() . $file->getClientOriginalName();
-			$file->move('file-import-vehicle', $fileName);
+			$file->move('file-import/vehicle', $fileName);
 
 			Excel::import(new VehicleImport, public_path("/file-import-vehicle/{$fileName}"));
 
