@@ -152,9 +152,9 @@
 
             <div class="col-xl-4">
               <label for="departure_date" class="form-label">Waktu Keberangkatan</label>
-              <input type="datetime-local"
+              <input type="datetime"
                 class="form-control form-control-lg @error('departure_date') is-invalid @enderror" id="departure_date"
-                name="departure_date" value="{{ old('departure_date') }}" step="1">
+                name="departure_date" value="{{ old('departure_date') }}">
 
               @error('departure_date')
                 <div class="invalid-feedback">
@@ -166,9 +166,9 @@
 
             <div class="col-xl-4">
               <label for="arrival_date" class="form-label">Waktu Kedatangan</label>
-              <input type="datetime-local"
+              <input type="datetime"
                 class="form-control form-control-lg @error('arrival_date') is-invalid @enderror" id="arrival_date"
-                name="arrival_date" value="{{ old('arrival_date') }}" step="1">
+                name="arrival_date" value="{{ old('arrival_date') }}">
 
               @error('arrival_date')
                 <div class="invalid-feedback">
@@ -202,10 +202,10 @@
             </div>
 
             <div class="col-xl-4">
-              <label for="status" class="form-label">Status</label>
-              <input class="form-control form-control-lg" name="status" list="statusListOptions"
-                value="{{ old('status') }}" id="status">
-              <datalist id="statusListOptions">
+              <label for="type" class="form-label">Tipe</label>
+              <input class="form-control form-control-lg" name="type" list="typeListOptions" value="{{ old('type') }}"
+                id="type">
+              <datalist id="typeListOptions">
                 <option value="SDP">
                 <option value="MDP-1">
                 <option value="MDP-2">
@@ -219,7 +219,7 @@
                 <option value="KIR">
               </datalist>
 
-              @error('status')
+              @error('type')
                 <div class="invalid-feedback">
                   {{ $message }}
                 </div>
@@ -227,10 +227,10 @@
             </div>
 
             <div class="col-xl-4">
-              <label for="type" class="form-label">Tipe</label>
-              <input class="form-control form-control-lg" name="type" list="datalistOptions" value="{{ old('type') }}"
-                id="type">
-              <datalist id="datalistOptions">
+              <label for="status" class="form-label">Status</label>
+              <input class="form-control form-control-lg" name="status" list="statuslistOptions"
+                value="{{ old('status') }}" id="status">
+              <datalist id="statuslistOptions">
                 <option value="draft">
                 <option value="pending">
                 <option value="paid">
@@ -384,9 +384,9 @@
             </div>
 
             <div class="col-xl-4">
-              <label for="retribution_image" class="form-label">Parkir</label>
+              <label for="retribution_image" class="form-label">Retribusi</label>
               <input type="file" accept="image/*"
-                class="form-control form-control-lg mb-3 @error('retribution_image') is-invalid @enderror"
+                class="form-control form-control-lg mb-3  @error('retribution_image') is-invalid @enderror"
                 id="retribution_image" name="retribution_image" onchange="previewImage('retribution_image')">
               @error('retribution_image')
                 <div class="invalid-feedback">
@@ -397,35 +397,12 @@
                 id="retribution_image-preview" alt="" data-action="zoom">
             </div>
 
-
           </div>
         </div>
-
         <button type="submit" class="btn btn-lg btn-primary">Submit</button>
-
       </form>
     </section>
   </div>
-
-  <script>
-    console.log("hola")
-    const target = document.querySelectorAll('[data="money"]');
-
-    target.forEach(e => {
-      const id = `#${e.id}`;
-
-      $(id).on('change', (e) => {
-        const formated = currency(e.target.value, {
-          symbol: 'Rp. ',
-          decimal: ',',
-          separator: '.',
-          precision: 0,
-        }).format();
-
-        $(id).val(formated);
-      })
-    });
-  </script>
 @endsection
 
 @section('footJS')
