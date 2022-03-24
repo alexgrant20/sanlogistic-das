@@ -32,7 +32,7 @@
       @endif
 
       <div class="d-flex mb-4">
-        <form class="me-2" action="/vehicles/export_excel">
+        <form class="me-2" action="/vehicles/export/excel">
           @csrf
           <button class="btn btn-success">Export Excel</button>
         </form>
@@ -43,7 +43,7 @@
 
         <!-- Modal -->
         <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
-          <form method="post" action="/vehicles/import_excel" enctype="multipart/form-data">
+          <form method="post" action="/vehicles/import/excel" enctype="multipart/form-data">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">

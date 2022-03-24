@@ -366,7 +366,8 @@ class VehicleController extends Controller
 
   public function exportExcel()
   {
-    return Excel::download(new VehicleExport, 'vehicle.xlsx');
+    $timestamp = now()->timestamp;
+    return Excel::download(new VehicleExport, "vehicles_export_{$timestamp}.xlsx");
   }
 
   public function importExcel(Request $request)

@@ -5,21 +5,22 @@ namespace App\Exports;
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\Schema;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class VehicleExport implements FromCollection, WithHeadings
+class VehicleExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
-	/**
-	 * @return \Illuminate\Support\Collection
-	 */
+  /**
+   * @return \Illuminate\Support\Collection
+   */
 
-	public function collection()
-	{
-		return Vehicle::all();
-	}
+  public function collection()
+  {
+    return Vehicle::all();
+  }
 
-	public function headings(): array
-	{
-		return Schema::getColumnListing('vehicles');
-	}
+  public function headings(): array
+  {
+    return Schema::getColumnListing('vehicles');
+  }
 }
