@@ -59,8 +59,8 @@
             </div>
 
             <div class="col-xl-4">
-              <label for="vehicle_id" class="form-label">User</label>
-              <select class='form-select form-select-lg @error('vehicle_id') is-invalid @enderror' name='vehicle_id'>
+              <label for="user_id" class="form-label">User</label>
+              <select class='form-select form-select-lg @error('user_id') is-invalid @enderror' name='user_id'>
                 <option value='' hidden></option>
                 @foreach ($users as $user)
                   @if ($user->id == old('user_id'))
@@ -70,7 +70,7 @@
                   @endif
                 @endforeach
               </select>
-              @error('vehicle_id')
+              @error('user_id')
                 <div class="invalid-feedback">
                   {{ $message }}
                 </div>
@@ -131,19 +131,18 @@
             </div>
 
             <div class="col-xl-4">
-              <label for="arrival_location_id" class="form-label">Project</label>
-              <select class='form-select form-select-lg @error('arrival_location_id') is-invalid @enderror'
-                name='arrival_location_id'>
+              <label for="project_id" class="form-label">Project</label>
+              <select class='form-select form-select-lg @error('project_id') is-invalid @enderror' name='project_id'>
                 <option value='' hidden></option>
                 @foreach ($projects as $project)
-                  @if ($project->id == old('arrival_location_id'))
+                  @if ($project->id == old('project_id'))
                     <option value="{{ $project->id }}" selected>{{ $project->name }}</option>
                   @else
                     <option value="{{ $project->id }}">{{ $project->name }}</option>
                   @endif
                 @endforeach
               </select>
-              @error('arrival_location_id')
+              @error('project_id')
                 <div class="invalid-feedback">
                   {{ $message }}
                 </div>
@@ -179,6 +178,18 @@
             </div>
 
             <div class="col-xl-4">
+              <label for="do_date" class="form-label">Waktu DO</label>
+              <input type="date" class="form-control form-control-lg @error('do_date') is-invalid @enderror" id="do_date"
+                name="do_date" value="{{ old('do_date') }}">
+
+              @error('do_date')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
+            </div>
+
+            <div class="col-xl-4">
               <label for="arrival_odo" class="form-label">ODO Kedatangan</label>
               <input type="number" class="form-control form-control-lg @error('arrival_odo') is-invalid @enderror"
                 id="arrival_odo" name="arrival_odo" value="{{ old('arrival_odo') }}">
@@ -192,8 +203,8 @@
 
             <div class="col-xl-4">
               <label for="status" class="form-label">Status</label>
-              <input class="form-control form-control-lg" list="statusListOptions" value="{{ old('status') }}"
-                id="status">
+              <input class="form-control form-control-lg" name="status" list="statusListOptions"
+                value="{{ old('status') }}" id="status">
               <datalist id="statusListOptions">
                 <option value="SDP">
                 <option value="MDP-1">
@@ -217,7 +228,8 @@
 
             <div class="col-xl-4">
               <label for="type" class="form-label">Tipe</label>
-              <input class="form-control form-control-lg" list="datalistOptions" value="{{ old('type') }}" id="type">
+              <input class="form-control form-control-lg" name="type" list="datalistOptions" value="{{ old('type') }}"
+                id="type">
               <datalist id="datalistOptions">
                 <option value="draft">
                 <option value="pending">
@@ -360,8 +372,8 @@
             <div class="col-xl-4">
               <label for="parking_image" class="form-label">Parkir</label>
               <input type="file" accept="image/*"
-                class="form-control form-control-lg mb-3 @error('parking_image') is-invalid @enderror" id="parking_image"
-                name="parking_image" onchange="previewImage('parking_image')">
+                class="form-control form-control-lg mb-3 @error('parking_image') is-invalid @enderror"
+                id="parking_image" name="parking_image" onchange="previewImage('parking_image')">
               @error('parking_image')
                 <div class="invalid-feedback">
                   {{ $message }}
