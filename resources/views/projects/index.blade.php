@@ -24,6 +24,49 @@
         </div>
       @endif
 
+      <!-- Import Modal -->
+      <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
+        <form method="post" action="/projects/import/excel" enctype="multipart/form-data">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="importExcelLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                @csrf
+
+                <label class="form-label">Pilih file excel</label>
+                <div class="form-group">
+                  <input class="form-control" type="file" name="file" required="required">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Import</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <h4 class="text-primary fw-bold">Action</h4>
+      <hr>
+      <div class="d-flex mb-5">
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+          <form action="/projects/export/excel">
+            @csrf
+            <button class="btn btn-success">Export Excel</button>
+          </form>
+
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importExcel">
+            Import Excel
+          </button>
+
+        </div>
+      </div>
+
+      <h4 class="text-primary fw-bold">Table</h4>
+      <hr>
       <table class="table table-hover text-center table-dark table-striped" id="myTable">
         <thead>
           <tr class="header">
@@ -46,7 +89,8 @@
               <td>{{ $project->date_start }}</td>
               <td>{{ $project->date_end }}</td>
               <td>
-                <a href="/projects/{{ $project->name }}/edit" class="badge bg-primary"><i class="bi bi-pencil"></i></a>
+                <a href="/projects/{{ $project->name }}/edit" class="badge bg-primary"><i
+                    class="bi bi-pencil"></i></a>
               </td>
             </tr>
           @endforeach

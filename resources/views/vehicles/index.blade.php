@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('headCSS')
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.5/datatables.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.5/r-2.2.9/datatables.min.css" />
 @endsection
 
 @section('headJS')
@@ -31,51 +31,56 @@
         </div>
       @endif
 
-      <div class="d-flex mb-4">
-        <form class="me-2" action="/vehicles/export/excel">
-          @csrf
-          <button class="btn btn-success">Export Excel</button>
-        </form>
+      <!-- Import Modal -->
+      <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
+        <form method="post" action="/vehicles/import/excel" enctype="multipart/form-data">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="importExcelLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                @csrf
 
-        <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#importExcel">
-          Import Excel
-        </button>
-
-        <!-- Modal -->
-        <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
-          <form method="post" action="/vehicles/import/excel" enctype="multipart/form-data">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="importExcelLabel">Modal title</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  @csrf
-
-                  <label>Pilih file excel</label>
-                  <div class="form-group">
-                    <input type="file" name="file" required="required">
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Import</button>
+                <label class="form-label">Pilih file excel</label>
+                <div class="form-group">
+                  <input class="form-control" type="file" name="file" required="required">
                 </div>
               </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Import</button>
+              </div>
             </div>
-          </form>
-        </div>
-
-        @if (!$imagesMigrated)
-          <form action="/vehicles/migrate/image">
-            @csrf
-            <button class="btn btn-primary">Migrate</button>
-          </form>
-        @endif
+          </div>
+        </form>
       </div>
 
-      <table class="table table-hover text-center  table-dark table-striped" id="myTable">
+      <h4 class="text-primary fw-bold">Action</h4>
+      <hr>
+      <div class="d-flex mb-5">
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+          <form action="/vehicles/export/excel">
+            @csrf
+            <button class="btn btn-success">Export Excel</button>
+          </form>
+
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importExcel">
+            Import Excel
+          </button>
+
+          @if (!$imagesMigrated)
+            <form action="/vehicles/migrate/image">
+              @csrf
+              <button class="btn btn-primary">Migrate</button>
+            </form>
+          @endif
+        </div>
+      </div>
+
+      <h4 class="text-primary fw-bold">Table</h4>
+      <hr>
+      <table class="table table-hover text-center  table-dark table-striped nowrap" style="width: 100%" id="myTable">
         <thead>
           <tr class="header">
             <th>No</th>
@@ -120,11 +125,25 @@
             </tr>
           @endforeach
         </tbody>
+        <tfoot>
+          <tr>
+            <th>No</th>
+            <th>Owner</th>
+            <th>User</th>
+            <th>Status</th>
+            <th>Brand</th>
+            <th>Model</th>
+            <th>Odometer</th>
+            <th>KIR Expired</th>
+            <th>STNK Expired</th>
+            <th>Action</th>
+          </tr>
+        </tfoot>
       </table>
     </section>
   </div>
 @endsection
 
 @section('footJS')
-  <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.11.5/datatables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.11.5/r-2.2.9/datatables.min.js"></script>
 @endsection
