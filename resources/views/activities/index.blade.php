@@ -32,19 +32,21 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-              <a href="#" class="badge bg-primary"><i class="bi bi-pencil"></i></a>
-            </td>
-          </tr>
+          @foreach ($activities as $activity)
+            <tr>
+              <td>{{ $activity->departure_date }}</td>
+              <td>{{ $activity->driver->person->name }}</td>
+              <td>{{ $activity->vehicle->license_plate }}</td>
+              <td>{{ $activity->do_number }}</td>
+              <td>{{ $activity->departureLocation->name }}</td>
+              <td>{{ $activity->arrivalLocation->name }}</td>
+              <td>{{ $activity->type }}</td>
+              <td>{{ $activity->status }}</td>
+              <td>
+                <a href="/activities/{{ $activity->id }}/edit" class="badge bg-primary"><i class="bi bi-pencil"></i></a>
+              </td>
+            </tr>
+          @endforeach
         </tbody>
       </table>
     </section>
