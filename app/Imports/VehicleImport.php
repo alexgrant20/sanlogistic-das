@@ -4,8 +4,9 @@ namespace App\Imports;
 
 use App\Models\Vehicle;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class VehicleImport implements ToModel
+class VehicleImport implements ToModel, WithHeadingRow
 {
 	/**
 	 * @param array $row
@@ -15,30 +16,30 @@ class VehicleImport implements ToModel
 	public function model(array $row)
 	{
 		return new Vehicle([
-			'project_id' => $row['1'],
-			'area_id' => $row['2'],
-			'vehicle_variety_id' => $row['3'],
-			'address_id' => $row['4'],
-			'owner_id' => $row['5'],
-			'vehicle_towing_id' => $row['6'],
-			'vehicle_license_plate_color_id' => $row['7'],
-			'last_do_number' => $row['8'],
-			'last_do_date' => $row['9'],
-			'license_plate' => $row['10'],
-			'frame_number' => $row['11'],
-			'registration_number' => $row['12'],
-			'engine_number' => $row['13'],
-			'modification' => $row['14'],
-			'internal_code' => $row['15'],
-			'status' => $row['16'],
-			'capacity' => $row['17'],
-			'wheel' => $row['18'],
-			'odo' => $row['19'],
-			'registration_year' => $row['20'],
-			'is_maintenance' => $row['21'],
-			'note' => $row['22'],
-			'created_at' => $row['23'],
-			'updated_at' => $row['24'],
+			'project_id' => $row['project_id'],
+			'area_id' => $row['area_id'],
+			'vehicle_variety_id' => $row['vehicle_variety_id'],
+			'address_id' => $row['address_id'],
+			'owner_id' => $row['owner_id'],
+			'vehicle_towing_id' => $row['vehicle_towing_id'],
+			'vehicle_license_plate_color_id' => $row['vehicle_license_plate_color_id'],
+			'last_do_number' => $row['last_do_number'],
+			'last_do_date' => $row['last_do_date'],
+			'license_plate' => $row['license_plate'],
+			'frame_number' => $row['frame_number'],
+			'registration_number' => $row['registration_number'],
+			'engine_number' => $row['engine_number'],
+			'modification' => $row['modification'],
+			'internal_code' => $row['internal_code'],
+			'status' => $row['status'],
+			'capacity' => $row['capacity'],
+			'wheel' => $row['wheel'],
+			'odo' => $row['odo'],
+			'registration_year' => $row['registration_year'],
+			'is_maintenance' => $row['is_maintenance'],
+			'note' => $row['note'],
+			'created_at' => $row['created_at'],
+			'updated_at' => $row['updated_at'],
 		]);
 	}
 }
