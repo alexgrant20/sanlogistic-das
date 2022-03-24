@@ -152,9 +152,9 @@
 
             <div class="col-xl-4">
               <label for="departure_date" class="form-label">Waktu Keberangkatan</label>
-              <input type="datetime"
+              <input type="datetime-local"
                 class="form-control form-control-lg @error('departure_date') is-invalid @enderror" id="departure_date"
-                name="departure_date" value="{{ old('departure_date') }}">
+                name="departure_date" value="{{ old('departure_date') }}" step="1">
 
               @error('departure_date')
                 <div class="invalid-feedback">
@@ -166,9 +166,9 @@
 
             <div class="col-xl-4">
               <label for="arrival_date" class="form-label">Waktu Kedatangan</label>
-              <input type="datetime"
+              <input type="datetime-local"
                 class="form-control form-control-lg @error('arrival_date') is-invalid @enderror" id="arrival_date"
-                name="arrival_date" value="{{ old('arrival_date') }}">
+                name="arrival_date" value="{{ old('arrival_date') }}" step="1">
 
               @error('arrival_date')
                 <div class="invalid-feedback">
