@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
 		VehicleBrand::factory(10)->create();
 		VehicleType::factory(30)->create();
 		VehicleVariety::factory(200)->create();
-		Project::factory(100)->create();
+		Project::factory(20)->create();
 		Area::factory(30)->create();
 		Regional::factory(20)->create();
 		VehicleTowing::factory(10)->create();
