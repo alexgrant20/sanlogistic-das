@@ -43,9 +43,9 @@ return new class extends Migration
 			$table->integer('retribution_amount_approved')->nullable();
 			$table->string('status');
 			$table->string('type')->default('TBD');
-			$table->string('start_lat');
-			$table->string('start_lon');
-			$table->string('start_loc');
+			$table->string('start_lat')->nullable();
+			$table->string('start_lon')->nullable();
+			$table->string('start_loc')->nullable();
 			$table->string('end_lat')->nullable();
 			$table->string('end_lon')->nullable();
 			$table->string('end_loc')->nullable();
