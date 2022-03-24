@@ -282,4 +282,34 @@ document.addEventListener("DOMContentLoaded", function () {
 			msnry.layout();
 		});
 	}
+
+	// ------------------------------------------------------- //
+	//  Currency JS
+	// ------------------------------------------------------ //
+	const target = document.querySelectorAll('[data="money"]');
+
+	if (target.length > 0) {
+		const moneyFormat = {
+			symbol: "Rp. ",
+			decimal: ",",
+			separator: ".",
+			precision: 0,
+		};
+
+		target.forEach((e) => {
+			const id = `#${e.id}`;
+
+			const value = $(id).val();
+
+			if (value) {
+				const formated = currency(value, moneyFormat).format();
+				$(id).val(formated);
+			}
+
+			$(id).on("change", (e) => {
+				const formated = currency(e.target.value, moneyFormat).format();
+				$(id).val(formated);
+			});
+		});
+	}
 });
