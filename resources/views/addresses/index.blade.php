@@ -1,18 +1,22 @@
 @extends('layouts.index')
 
 @section('add_headJS')
-  <script type='text/javascript' src="/vendor/leaflet/js/leaflet/leaflet.js"></script>
-  <script type='text/javascript' src="/vendor/leaflet/js/gestureHandling/leaflet-gesture-handling.min.js"></script>
-  <script type='text/javascript' src="/vendor/leaflet/js/spin/spin.js"></script>
-  <script type='text/javascript' src="/vendor/leaflet/js/spin/leaflet.spin.js"></script>
-  <script type='text/javascript' src="/vendor/leaflet/js/esriLeaflet/esri-leaflet-old.js"></script>
-  <script type='text/javascript' src="/vendor/leaflet/js/esriLeaflet/esri-leaflet-geocoder-old.js"></script>
+  <script type='text/javascript' src="{{ asset('/vendor/leaflet/js/leaflet/leaflet.js') }}"></script>
+  <script type='text/javascript'
+    src="{{ asset('/vendor/leaflet/js/gestureHandling/leaflet-gesture-handling.min.js') }}"></script>
+  <script type='text/javascript' src="{{ asset('/vendor/leaflet/js/spin/spin.js') }}"></script>
+  <script type='text/javascript' src="{{ asset('/vendor/leaflet/js/spin/leaflet.spin.js') }}"></script>
+  <script type='text/javascript' src="{{ asset('/vendor/leaflet/js/esriLeaflet/esri-leaflet-old.js') }}"></script>
+  <script type='text/javascript' src="{{ asset('/vendor/leaflet/js/esriLeaflet/esri-leaflet-geocoder-old.js') }}">
+  </script>
 @endsection
 
 @section('add_headCSS')
-  <link rel="stylesheet" type="text/css" href="/vendor/leaflet/css/esriLeaflet/esri-leaflet-geocoder-old.css">
-  <link rel="stylesheet" href="/vendor/leaflet/css/gestureHandling/leaflet-gesture-handling.min.css" type="text/css">
-  <link rel="stylesheet" href="/vendor/leaflet/css/leaflet.css" />
+  <link rel="stylesheet" type="text/css"
+    href="{{ asset('/vendor/leaflet/css/esriLeaflet/esri-leaflet-geocoder-old.css') }}">
+  <link rel="stylesheet" href="{{ asset('/vendor/leaflet/css/gestureHandling/leaflet-gesture-handling.min.css') }}"
+    type="text/css">
+  <link rel="stylesheet" href="{{ asset('/vendor/leaflet/css/leaflet.css') }}" />
 @endsection
 
 @section('container')

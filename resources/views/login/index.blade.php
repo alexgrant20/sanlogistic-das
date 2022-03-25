@@ -9,7 +9,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
   <script type='text/javascript' src="{{ asset('/vendor/jquery/jquery-3.6.0.min.js') }}"></script>
-  <link rel="stylesheet" type="text/css" href="css/login.css" />
+  <link rel="stylesheet" type="text/css" href="{{ asset('/css/login.css') }}" />
 </head>
 
 <body>
@@ -30,7 +30,7 @@
             {{ session('error') }}
           </div>
         @endif
-        <form action="login" method="post" class="loginForm needs-validation" id="loginForm">
+        <form action="{{ url('/login') }}" method="post" class="loginForm needs-validation" id="loginForm">
           @csrf
           <div class="inputControl mb-2">
             <label for="username"><i class="fas fa-user-alt"></i></label>

@@ -1,7 +1,7 @@
 <nav id="sidebar">
   <!-- Sidebar Header-->
   <div class="sidebar-header d-flex align-items-center p-4">
-    <img class="avatar shadow-0 img-fluid rounded-circle" src="/img/avatar-6.jpg" alt="...">
+    <img class="avatar shadow-0 img-fluid rounded-circle" src="{{ asset('/img/avatar-6.jpg') }}" alt="">
     <div class="ms-3 title">
       <h1 class="h5 mb-1">{{ auth()->user()->username }}</h1>
       <p class="text-sm text-gray-700 mb-0 lh-1">Web Designer</p>
@@ -12,7 +12,7 @@
   <ul class="list-unstyled">
 
     <li class="sidebar-item {{ Request::is('/') ? 'active' : '' }}">
-      <a class="sidebar-link" href="/">
+      <a class="sidebar-link" href="{{ url('/') }}">
         <i class="bi bi-house-door svg-icon svg-icon-sm svg-icon-heavy"></i>
         <span>Home</span>
       </a>
@@ -30,12 +30,13 @@
       <ul class="collapse list-unstyled {{ Request::is('addresses*') ? 'show' : '' }}" id="addressesDropDown">
         <li>
           <a class="sidebar-link {{ Request::is('addresses/create') ? 'text-primary' : '' }}"
-            href="/addresses/create">
+            href="{{ url('/addresses/create') }}">
             Add
           </a>
         </li>
         <li>
-          <a class="sidebar-link {{ Request::is('addresses') ? 'text-primary' : '' }}" href="/addresses">
+          <a class="sidebar-link {{ Request::is('addresses') ? 'text-primary' : '' }}"
+            href="{{ url('/addresses') }}">
             View
           </a>
         </li>
@@ -50,12 +51,13 @@
       <ul class="collapse list-unstyled {{ Request::is('activities*') ? 'show' : '' }}" id="activitiesDropDown">
         <li>
           <a class="sidebar-link {{ Request::is('activities/create') ? 'text-primary' : '' }}"
-            href="/activities/create">
+            href="{{ url('/activities/create') }}">
             Add
           </a>
         </li>
         <li>
-          <a class="sidebar-link {{ Request::is('activities') ? 'text-primary' : '' }}" href="/activities">
+          <a class="sidebar-link {{ Request::is('activities') ? 'text-primary' : '' }}"
+            href="{{ url('/activities') }}">
             View
           </a>
         </li>
@@ -69,12 +71,13 @@
       </a>
       <ul class="collapse list-unstyled {{ Request::is('people*') ? 'show' : '' }}" id="peopleDropDown">
         <li>
-          <a class="sidebar-link {{ Request::is('people/create') ? 'text-primary' : '' }}" href="/people/create">
+          <a class="sidebar-link {{ Request::is('people/create') ? 'text-primary' : '' }}"
+            href="{{ url('/people/create') }}">
             Add
           </a>
         </li>
         <li>
-          <a class="sidebar-link {{ Request::is('people') ? 'text-primary' : '' }}" href="/people">
+          <a class="sidebar-link {{ Request::is('people') ? 'text-primary' : '' }}" href="{{ url('/people') }}">
             View
           </a>
         </li>
@@ -88,12 +91,14 @@
       </a>
       <ul class="collapse list-unstyled {{ Request::is('vehicles*') ? 'show' : '' }}" id="vehiclesDropDown">
         <li>
-          <a class="sidebar-link {{ Request::is('vehicles/create') ? 'text-primary' : '' }}" href="/vehicles/create">
+          <a class="sidebar-link {{ Request::is('vehicles/create') ? 'text-primary' : '' }}"
+            href="{{ url('/vehicles/create') }}">
             Add
           </a>
         </li>
         <li>
-          <a class="sidebar-link {{ Request::is('vehicles') ? 'text-primary' : '' }}" href="/vehicles">
+          <a class="sidebar-link {{ Request::is('vehicles') ? 'text-primary' : '' }}"
+            href="{{ url('/vehicles') }}">
             View
           </a>
         </li>
@@ -108,12 +113,13 @@
       <ul class="collapse list-unstyled {{ Request::is('companies*') ? 'show' : '' }}" id="companiesDropDown">
         <li>
           <a class="sidebar-link {{ Request::is('companies/create') ? 'text-primary' : '' }}"
-            href="/companies/create">
+            href="{{ url('/companies/create') }}">
             Add
           </a>
         </li>
         <li>
-          <a class="sidebar-link {{ Request::is('companies') ? 'text-primary' : '' }}" href="/companies">
+          <a class="sidebar-link {{ Request::is('companies') ? 'text-primary' : '' }}"
+            href="{{ url('/companies') }}">
             View
           </a>
         </li>
@@ -127,12 +133,14 @@
       </a>
       <ul class="collapse list-unstyled {{ Request::is('projects*') ? 'show' : '' }}" id="projectsDropDown">
         <li>
-          <a class="sidebar-link {{ Request::is('projects/create') ? 'text-primary' : '' }}" href="/projects/create">
+          <a class="sidebar-link {{ Request::is('projects/create') ? 'text-primary' : '' }}"
+            href="{{ url('/projects/create') }}">
             Add
           </a>
         </li>
         <li>
-          <a class="sidebar-link {{ Request::is('projects') ? 'text-primary' : '' }}" href="/projects">
+          <a class="sidebar-link {{ Request::is('projects') ? 'text-primary' : '' }}"
+            href="{{ url('/projects') }}">
             View
           </a>
         </li>
