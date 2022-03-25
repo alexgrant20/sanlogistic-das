@@ -88,16 +88,8 @@ document.addEventListener("DOMContentLoaded", function () {
 					},
 				],
 			},
-			{
-				extend: "searchBuilder",
-				config: {
-					depthLimit: 2,
-				},
-				className: "btn-primary",
-			},
-			{
-				extend: "colvis",
-			},
+			"searchBuilder",
+			"colvis",
 		],
 	});
 
