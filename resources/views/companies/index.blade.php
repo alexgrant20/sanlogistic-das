@@ -56,18 +56,7 @@
 
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
-      <div class="d-flex mb-5">
-        <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#importExcel">
-          Import Excel
-        </button>
-
-        @if (!$imagesMigrated)
-          <form action="/companies/migrate/image">
-            @csrf
-            <button class="btn btn-primary">Migrate</button>
-          </form>
-        @endif
-      </div>
+      <div class="d-flex mb-5" id="actionContainer"></div>
 
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>

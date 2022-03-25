@@ -57,13 +57,7 @@
 
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
-      <div class="d-flex mb-5">
-        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importExcel">
-            Import Excel
-          </button>
-        </div>
-      </div>
+      <div class="d-flex mb-5" id="actionContainer"></div>
 
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>
