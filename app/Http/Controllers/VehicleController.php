@@ -42,15 +42,14 @@ class VehicleController extends Controller
     $totalVehicleDocument = VehicleDocument::all()->count();
     $totalVehicle = $vehicles->count();
 
-    $imagesMigrated = false;
+    if (
+      $totalVehicle * count($vehiclesDocuments) !== $totalVehicleDocument ||
+      $totalVehicle * count($vehiclesImages) !== $totalVehicleImage
+    ) return redirect('/vehicles/migrate/image');
 
-    if ($totalVehicle * count($vehiclesDocuments) === $totalVehicleDocument && $totalVehicle * count($vehiclesImages) === $totalVehicleImage) {
-      $imagesMigrated = true;
-    }
 
     return view('vehicles.index', [
       'vehicles' => $vehicles,
-      'imagesMigrated' => $imagesMigrated,
       'title' => 'Vehicles'
     ]);
   }

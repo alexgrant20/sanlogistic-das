@@ -29,9 +29,10 @@ class CompanyController extends Controller
     $totalCompany = $companies->count();
     $totalCompanyDocument = CompanyDocument::all()->count();
 
+    if ($totalCompany * count($companiesDocuments) !== $totalCompanyDocument) return redirect('/companies/migrate/image');
+
     return view('companies.index', [
       'companies' => $companies,
-      'imagesMigrated' => $totalCompany * count($companiesDocuments) === $totalCompanyDocument,
       'title' => 'Companies'
     ]);
   }
