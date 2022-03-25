@@ -12,14 +12,14 @@
   {{-- Google Font --}}
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:300,400,700">
   {{-- theme stylesheet --}}
-  <link rel="stylesheet" href="/css/style.default.css" id="theme-stylesheet">
+  <link rel="stylesheet" href="{{ asset('/css/style.default.css') }}" id="theme-stylesheet">
   {{-- Custom Stylesheet --}}
-  <link rel="stylesheet" href="/css/custom.css">
+  <link rel="stylesheet" href="{{ asset('/css/custom.css') }}">
   {{-- Favicon --}}
-  <link rel="shortcut icon" href="/img/favicon.ico">
+  <link rel="shortcut icon" href="{{ asset('/img/favicon.ico') }}">
 
   {{-- Jquery --}}
-  <script type='text/javascript' src="/vendor/jquery/jquery-3.6.0.min.js"></script>
+  <script type='text/javascript' src="{{ asset('/vendor/jquery/jquery-3.6.0.min.js') }}"></script>
 
   @yield('headCSS')
 
@@ -38,10 +38,10 @@
   </div>
 
   <!-- JavaScript files-->
-  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ asset('/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <!-- Main File-->
-  <script src="/js/front.js"></script>
-  <script src="/js/function.js"></script>
+  <script src="{{ asset('/js/front.js') }}"></script>
+  <script src="{{ asset('/js/function.js') }}"></script>
   <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 
