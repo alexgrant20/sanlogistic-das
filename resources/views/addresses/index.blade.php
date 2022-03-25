@@ -11,7 +11,7 @@
 @endsection
 
 @section('headCSS')
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.5/datatables.min.css" />
+  <link rel="stylesheet" type="text/css" href="/vendor/datatable/datatables.min.css" />
   <link rel="stylesheet" type="text/css" href="/vendor/leaflet/css/esriLeaflet/esri-leaflet-geocoder-old.css">
   <link rel="stylesheet" href="/vendor/leaflet/css/gestureHandling/leaflet-gesture-handling.min.css" type="text/css">
   <link rel="stylesheet" href="/vendor/leaflet/css/leaflet.css" integrity="" crossorigin="" />
@@ -39,33 +39,71 @@
         </div>
       @endif
 
+
+      <h4 class="text-primary fw-bold">Address Location</h4>
+      <hr>
       <div id='map' class="w-100 mb-5" style="height: 600px"></div>
 
-      <table class="table table-hover text-center  table-dark table-striped" id="myTable">
+      <!-- Import Modal -->
+      <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
+        <form method="post" action="/addresses/import/excel" enctype="multipart/form-data">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="importExcelLabel">Import</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                @csrf
+
+                <label class="form-label">Pilih file excel</label>
+                <div class="form-group">
+                  <input class="form-control" type="file" name="file" required="required">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Import</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <h4 class="text-primary fw-bold">Action</h4>
+      <hr>
+      <div class="d-flex mb-5">
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importExcel">
+            Import Excel
+          </button>
+        </div>
+      </div>
+
+      <h4 class="text-primary fw-bold">Table</h4>
+      <hr>
+      <table class="table table-hover text-center  table-dark nowrap" style="width: 100%">
         <thead>
           <tr class="header">
-            <th>No</th>
+            <th>Action</th>
             <th>Name</th>
             <th>Type</th>
             <th>Address</th>
             <th>City</th>
             <th>Province</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           @foreach ($addresses as $address)
             <tr>
-              <td>{{ $loop->iteration }}</td>
+              <td>
+                <a href="/addresses/{{ $address->name }}/edit" class="badge bg-primary"><i
+                    class="bi bi-pencil"></i></a>
+              </td>
               <td>{{ $address->name }}</td>
               <td>{{ $address->addressType->name }}</td>
               <td class="text-truncate" style="max-width: 120px">{{ $address->full_address }}</td>
               <td>{{ $address->subdistrict->district->city->name ?? null }}</td>
               <td>{{ $address->subdistrict->district->city->province->name ?? null }}</td>
-              <td>
-                <a href="/addresses/{{ $address->name }}/edit" class="badge bg-primary"><i
-                    class="bi bi-pencil"></i></a>
-              </td>
             </tr>
           @endforeach
         </tbody>
@@ -111,5 +149,5 @@
 @endsection
 
 @section('footJS')
-  <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.11.5/datatables.min.js"></script>
+  <script type="text/javascript" src="/vendor/datatable/datatables.min.js"></script>
 @endsection

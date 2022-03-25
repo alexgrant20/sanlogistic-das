@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('headCSS')
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.5/datatables.min.css" />
+  <link rel="stylesheet" type="text/css" href="/vendor/datatable/datatables.min.css" />
 @endsection
 
 @section('headJS')
@@ -29,32 +29,67 @@
           {{ session('error') }}
         </div>
       @endif
+      <!-- Import Modal -->
+      <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
+        <form method="post" action="/companies/import/excel" enctype="multipart/form-data">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="importExcelLabel">Import</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                @csrf
 
-      @if (!$imagesMigrated)
-        <form action="/companies/migrate/image" class="mb-3">
-          @csrf
-          <button class="btn btn-primary">Migrate</button>
+                <label class="form-label">Pilih file excel</label>
+                <div class="form-group">
+                  <input class="form-control" type="file" name="file" required="required">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Import</button>
+              </div>
+            </div>
+          </div>
         </form>
-      @endif
+      </div>
 
+      <h4 class="text-primary fw-bold">Action</h4>
+      <hr>
+      <div class="d-flex mb-5">
+        <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#importExcel">
+          Import Excel
+        </button>
 
-      <table class="table table-hover text-center  table-dark table-striped" id="myTable">
+        @if (!$imagesMigrated)
+          <form action="/companies/migrate/image">
+            @csrf
+            <button class="btn btn-primary">Migrate</button>
+          </form>
+        @endif
+      </div>
+
+      <h4 class="text-primary fw-bold">Table</h4>
+      <hr>
+      <table class="table table-hover text-center  table-dark nowrap" style="width: 100%">
         <thead>
           <tr class="header">
-            <th>No</th>
+            <th>Action</th>
             <th>Company Name</th>
             <th>Status</th>
             <th>Director</th>
             <th>Nama Alamat</th>
             <th>SIUP</th>
             <th>SIPA</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           @foreach ($companies as $company)
             <tr>
-              <td>{{ $loop->iteration }}</td>
+              <td>
+                <a href="/companies/{{ $company->name }}/edit" class="badge bg-primary"><i
+                    class="bi bi-pencil"></i></a>
+              </td>
               <td>{{ $company->name }}</td>
               <td>Active</td>
               <td>{{ $company->director }}</td>
@@ -72,10 +107,6 @@
                 <td></td>
               @endif
 
-              <td>
-                <a href="/companies/{{ $company->name }}/edit" class="badge bg-primary"><i
-                    class="bi bi-pencil"></i></a>
-              </td>
             </tr>
           @endforeach
         </tbody>
@@ -85,5 +116,5 @@
 @endsection
 
 @section('footJS')
-  <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.11.5/datatables.min.js"></script>
+  <script type="text/javascript" src="/vendor/datatable/datatables.min.js"></script>
 @endsection

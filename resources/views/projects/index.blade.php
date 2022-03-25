@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('headCSS')
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.5/datatables.min.css" />
+  <link rel="stylesheet" type="text/css" href="/vendor/datatable/datatables.min.css" />
 @endsection
 
 @section('headJS')
@@ -30,7 +30,7 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="importExcelLabel">Modal title</h5>
+                <h5 class="modal-title" id="importExcelLabel">Import</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
@@ -52,46 +52,36 @@
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
       <div class="d-flex mb-5">
-        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-          <form action="/projects/export/excel">
-            @csrf
-            <button class="btn btn-success">Export Excel</button>
-          </form>
-
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importExcel">
-            Import Excel
-          </button>
-
-        </div>
+        <button type="button me-2" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importExcel">
+          Import Excel
+        </button>
       </div>
 
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>
-      <table class="table table-hover text-center table-dark table-striped" id="myTable">
+      <table class="table table-hover text-center  table-dark nowrap" style="width: 100%">
         <thead>
           <tr class="header">
-            <th>No</th>
+            <th>Action</th>
             <th>Customer</th>
             <th>Project Name</th>
             <th>Location</th>
             <th>Start Date</th>
             <th>End Date</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           @foreach ($projects as $project)
             <tr>
-              <td>{{ $loop->iteration }}</td>
+              <td>
+                <a href="/projects/{{ $project->name }}/edit" class="badge bg-primary"><i
+                    class="bi bi-pencil"></i></a>
+              </td>
               <td>{{ $project->company->name }}</td>
               <td>{{ $project->name }}</td>
               <td>Unkown</td>
               <td>{{ $project->date_start }}</td>
               <td>{{ $project->date_end }}</td>
-              <td>
-                <a href="/projects/{{ $project->name }}/edit" class="badge bg-primary"><i
-                    class="bi bi-pencil"></i></a>
-              </td>
             </tr>
           @endforeach
         </tbody>
@@ -101,5 +91,5 @@
 @endsection
 
 @section('footJS')
-  <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.11.5/datatables.min.js"></script>
+  <script type="text/javascript" src="/vendor/datatable/datatables.min.js"></script>
 @endsection

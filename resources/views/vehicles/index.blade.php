@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('headCSS')
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.5/r-2.2.9/datatables.min.css" />
+  <link rel="stylesheet" type="text/css" href="/vendor/datatable/datatables.min.css" />
 @endsection
 
 @section('headJS')
@@ -37,7 +37,7 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="importExcelLabel">Modal title</h5>
+                <h5 class="modal-title" id="importExcelLabel">Import</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
@@ -59,31 +59,24 @@
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
       <div class="d-flex mb-5">
-        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-          <form action="/vehicles/export/excel">
+        <button type="button me-2" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importExcel">
+          Import Excel
+        </button>
+
+        @if (!$imagesMigrated)
+          <form action="/vehicles/migrate/image">
             @csrf
-            <button class="btn btn-success">Export Excel</button>
+            <button class="btn btn-primary">Migrate</button>
           </form>
-
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importExcel">
-            Import Excel
-          </button>
-
-          @if (!$imagesMigrated)
-            <form action="/vehicles/migrate/image">
-              @csrf
-              <button class="btn btn-primary">Migrate</button>
-            </form>
-          @endif
-        </div>
+        @endif
       </div>
 
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>
-      <table class="table table-hover text-center  table-dark table-striped nowrap" style="width: 100%" id="myTable">
+      <table class="table table-hover text-center  table-dark nowrap" style="width: 100%">
         <thead>
           <tr class="header">
-            <th>No</th>
+            <th>Action</th>
             <th>Owner</th>
             <th>User</th>
             <th>Status</th>
@@ -92,13 +85,15 @@
             <th>Odometer</th>
             <th>KIR Expired</th>
             <th>STNK Expired</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           @foreach ($vehicles as $vehicle)
             <tr>
-              <td>{{ $loop->iteration }}</td>
+              <td>
+                <a href="/vehicles/{{ $vehicle->license_plate }}/edit" class="badge bg-primary"><i
+                    class="bi bi-pencil"></i></a>
+              </td>
               <td>{{ $vehicle->owner->name }}</td>
               <td>{{ $vehicle->project->name }}</td>
               <td>{{ $vehicle->status }}</td>
@@ -117,33 +112,14 @@
               @else
                 <td></td>
               @endif
-
-              <td>
-                <a href="/vehicles/{{ $vehicle->license_plate }}/edit" class="badge bg-primary"><i
-                    class="bi bi-pencil"></i></a>
-              </td>
             </tr>
           @endforeach
         </tbody>
-        <tfoot>
-          <tr>
-            <th>No</th>
-            <th>Owner</th>
-            <th>User</th>
-            <th>Status</th>
-            <th>Brand</th>
-            <th>Model</th>
-            <th>Odometer</th>
-            <th>KIR Expired</th>
-            <th>STNK Expired</th>
-            <th>Action</th>
-          </tr>
-        </tfoot>
       </table>
     </section>
   </div>
 @endsection
 
 @section('footJS')
-  <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.11.5/r-2.2.9/datatables.min.js"></script>
+  <script type="text/javascript" src="/vendor/datatable/datatables.min.js"></script>
 @endsection

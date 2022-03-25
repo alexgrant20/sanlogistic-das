@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('headCSS')
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.5/datatables.min.css" />
+  <link rel="stylesheet" type="text/css" href="/vendor/datatable/datatables.min.css" />
 @endsection
 
 @section('headJS')
@@ -30,20 +30,58 @@
         </div>
       @endif
 
-      <table class="table table-hover text-center  table-dark table-striped" id="myTable">
+      <!-- Import Modal -->
+      <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
+        <form method="post" action="/people/import/excel" enctype="multipart/form-data">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="importExcelLabel">Import</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                @csrf
+
+                <label class="form-label">Pilih file excel</label>
+                <div class="form-group">
+                  <input class="form-control" type="file" name="file" required="required">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Import</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <h4 class="text-primary fw-bold">Action</h4>
+      <hr>
+      <div class="d-flex mb-5">
+        <button type="button me-2" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importExcel">
+          Import Excel
+        </button>
+      </div>
+
+      <h4 class="text-primary fw-bold">Table</h4>
+      <hr>
+      <table class="table table-hover text-center  table-dark nowrap" style="width: 100%">
         <thead>
           <tr class="header">
+            <th>Action</th>
             <th>Nama Orang</th>
             <th>Nama Perusahaan</th>
             <th>Nomor HP</th>
             <th>Pekerjaan</th>
             <th>User</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           @foreach ($people as $person)
             <tr>
+              <td>
+                <a href="/people/{{ $person->id }}/edit" class="badge bg-primary"><i class="bi bi-pencil"></i></a>
+              </td>
               <td>{{ $person->name }}</td>
               <td>{{ $person->project->name }}</td>
               <td>{{ $person->phone_number }}</td>
@@ -53,9 +91,6 @@
               @else
                 <td>None</td>
               @endif
-              <td>
-                <a href="/people/{{ $person->id }}/edit" class="badge bg-primary"><i class="bi bi-pencil"></i></a>
-              </td>
             </tr>
           @endforeach
         </tbody>
@@ -65,5 +100,5 @@
 @endsection
 
 @section('footJS')
-  <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.11.5/datatables.min.js"></script>
+  <script type="text/javascript" src="/vendor/datatable/datatables.min.js"></script>
 @endsection

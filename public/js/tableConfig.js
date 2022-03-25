@@ -1,29 +1,7 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", function () {
-	$("#myTable tfoot th").each(function () {
-		const title = $(this).text();
-		$(this).html(
-			`<input type="text" class="form-control" placeholder="${title}" />`
-		);
-	});
-
-	$("#myTable").DataTable({
-		initComplete: function () {
-			// Apply the search
-			this.api()
-				.columns()
-				.every(function () {
-					const that = this;
-
-					$("input", this.footer()).on("keyup change clear", function () {
-						if (that.search() !== this.value) {
-							that.search(this.value).draw();
-						}
-					});
-				});
-		},
-
+	const table = $("table").DataTable({
 		responsive: {
 			details: {
 				display: $.fn.dataTable.Responsive.display.modal({
@@ -37,5 +15,28 @@ document.addEventListener("DOMContentLoaded", function () {
 				}),
 			},
 		},
+
+		buttons: [
+			{
+				extend: "excelHtml5",
+				exportOptions: {
+					columns: [":visible"],
+				},
+			},
+			{
+				extend: "pdfHtml5",
+				exportOptions: {
+					columns: [":visible"],
+				},
+			},
+			{
+				extend: "searchBuilder",
+				config: {
+					depthLimit: 2,
+				},
+			},
+			"colvis",
+		],
+		dom: "Bfrtip",
 	});
 });
