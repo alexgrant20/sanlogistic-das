@@ -106,7 +106,7 @@ input:focus {
 
 .imageBackground {
   flex: 2;
-  background: url('/img/login_img.svg') no-repeat center / cover;
+  background: url('../img/login_img.svg') no-repeat center / cover;
 }
 
 .logo {

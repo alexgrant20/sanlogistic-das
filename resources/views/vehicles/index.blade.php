@@ -1,12 +1,4 @@
-@extends('layouts.main')
-
-@section('headCSS')
-  <link rel="stylesheet" type="text/css" href="/vendor/datatable/datatables.min.css" />
-@endsection
-
-@section('headJS')
-  <script type="text/javascript" src="/js/tableConfig.js"></script>
-@endsection
+@extends('layouts.index')
 
 @section('container')
   <div class="page-content">
@@ -33,7 +25,7 @@
 
       <!-- Import Modal -->
       <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
-        <form method="post" action="/vehicles/import/excel" enctype="multipart/form-data">
+        <form method="post" action="{{ url('/vehicles/import/excel') }}" enctype="multipart/form-data">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
@@ -80,8 +72,9 @@
           @foreach ($vehicles as $vehicle)
             <tr>
               <td>
-                <a href="/vehicles/{{ $vehicle->license_plate }}/edit" class="badge bg-primary"><i
-                    class="bi bi-pencil"></i></a>
+                <a href="{{ url("/vehicles/$vehicle->license_plate/edit") }}" class="badge bg-primary">
+                  <i class="bi bi-pencil"></i>
+                </a>
               </td>
               <td>{{ $vehicle->owner->name }}</td>
               <td>{{ $vehicle->project->name }}</td>
@@ -107,8 +100,4 @@
       </table>
     </section>
   </div>
-@endsection
-
-@section('footJS')
-  <script type="text/javascript" src="/vendor/datatable/datatables.min.js"></script>
 @endsection

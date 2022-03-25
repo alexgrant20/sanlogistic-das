@@ -1,7 +1,6 @@
-@extends('layouts.main')
+@extends('layouts.index')
 
-@section('headJS')
-  <script type="text/javascript" src="/js/tableConfig.js"></script>
+@section('add_headJS')
   <script type='text/javascript' src="/vendor/leaflet/js/leaflet/leaflet.js"></script>
   <script type='text/javascript' src="/vendor/leaflet/js/gestureHandling/leaflet-gesture-handling.min.js"></script>
   <script type='text/javascript' src="/vendor/leaflet/js/spin/spin.js"></script>
@@ -10,11 +9,10 @@
   <script type='text/javascript' src="/vendor/leaflet/js/esriLeaflet/esri-leaflet-geocoder-old.js"></script>
 @endsection
 
-@section('headCSS')
-  <link rel="stylesheet" type="text/css" href="/vendor/datatable/datatables.min.css" />
+@section('add_headCSS')
   <link rel="stylesheet" type="text/css" href="/vendor/leaflet/css/esriLeaflet/esri-leaflet-geocoder-old.css">
   <link rel="stylesheet" href="/vendor/leaflet/css/gestureHandling/leaflet-gesture-handling.min.css" type="text/css">
-  <link rel="stylesheet" href="/vendor/leaflet/css/leaflet.css" integrity="" crossorigin="" />
+  <link rel="stylesheet" href="/vendor/leaflet/css/leaflet.css" />
 @endsection
 
 @section('container')
@@ -46,7 +44,7 @@
 
       <!-- Import Modal -->
       <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
-        <form method="post" action="/addresses/import/excel" enctype="multipart/form-data">
+        <form method="post" action="{{ url('/addresses/import/excel') }}" enctype="multipart/form-data">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
@@ -90,7 +88,7 @@
           @foreach ($addresses as $address)
             <tr>
               <td>
-                <a href="/addresses/{{ $address->name }}/edit" class="badge bg-primary"><i
+                <a href="{{ url("/addresses/$address->name/edit") }}" class="badge bg-primary"><i
                     class="bi bi-pencil"></i></a>
               </td>
               <td>{{ $address->name }}</td>
@@ -140,8 +138,4 @@
     }
     getLocation();
   </script>
-@endsection
-
-@section('footJS')
-  <script type="text/javascript" src="/vendor/datatable/datatables.min.js"></script>
 @endsection

@@ -1,12 +1,4 @@
-@extends('layouts.main')
-
-@section('headCSS')
-  <link rel="stylesheet" type="text/css" href="/vendor/datatable/datatables.min.css" />
-@endsection
-
-@section('headJS')
-  <script type="text/javascript" src="/js/tableConfig.js"></script>
-@endsection
+@extends('layouts.index')
 
 @section('container')
   <div class="page-content">
@@ -32,7 +24,7 @@
 
       <!-- Import Modal -->
       <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
-        <form method="post" action="/people/import/excel" enctype="multipart/form-data">
+        <form method="post" action="{{ url('/people/import/excel') }}" enctype="multipart/form-data">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
@@ -76,7 +68,8 @@
           @foreach ($people as $person)
             <tr>
               <td>
-                <a href="/people/{{ $person->id }}/edit" class="badge bg-primary"><i class="bi bi-pencil"></i></a>
+                <a href="{{ url("/people/$person->id/edit") }}" class="badge bg-primary"><i
+                    class="bi bi-pencil"></i></a>
               </td>
               <td>{{ $person->name }}</td>
               <td>{{ $person->project->name }}</td>
@@ -93,8 +86,4 @@
       </table>
     </section>
   </div>
-@endsection
-
-@section('footJS')
-  <script type="text/javascript" src="/vendor/datatable/datatables.min.js"></script>
 @endsection
