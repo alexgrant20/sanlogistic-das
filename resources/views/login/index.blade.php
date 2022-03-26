@@ -59,5 +59,10 @@
   </div>
 </body>
 
+<script>
+  $('#loginForm').on('submit', () => {
+    $('.submitBtn').attr('disabled', true);
+  })
+</script>
 
 </html>
