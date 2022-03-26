@@ -1,9 +1,5 @@
 @extends('layouts.main')
 
-@section('headCSS')
-  <link href="/vendor/zoom/zoom.css" rel="stylesheet">
-@endsection
-
 @section('container')
   <div class="page-content">
     <!-- Page Header-->
@@ -20,7 +16,7 @@
         </div>
       @endif
 
-      <form action="/activities/{{ $activity->id }}" method="post" enctype="multipart/form-data">
+      <form action="{{ url("/activities/$activity->id") }}" method="post" enctype="multipart/form-data">
         @method('PUT')
         @csrf
         <div class="mb-5">
@@ -298,7 +294,6 @@
               @enderror
             </div>
 
-
           </div>
         </div>
         <div class="mb-5">
@@ -420,6 +415,5 @@
 @endsection
 
 @section('footJS')
-  <script src="/vendor/zoom/zoom.js"></script>
-  <script src="/vendor/currency/currency.js"></script>
+  <script src="{{ asset('/vendor/currency/currency.js') }}"></script>
 @endsection

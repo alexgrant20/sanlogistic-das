@@ -1,9 +1,5 @@
 @extends('layouts.main')
 
-@section('headCSS')
-  <link href="/vendor/zoom/zoom.css" rel="stylesheet">
-@endsection
-
 @section('container')
   <div class="page-content">
     <!-- Page Header-->
@@ -20,7 +16,7 @@
         </div>
       @endif
 
-      <form action="/people" method="POST" enctype="multipart/form-data">
+      <form action="{{ url('/people') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-5">
           <h4 class="text-primary fw-bold">Data Pribadi</h4>
@@ -509,9 +505,4 @@
       </form>
     </section>
   </div>
-@endsection
-
-
-@section('footJS')
-  <script src="/vendor/zoom/zoom.js"></script>
 @endsection

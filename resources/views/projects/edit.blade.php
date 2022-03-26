@@ -14,7 +14,7 @@
           {{ session('error') }}
         </div>
       @endif
-      <form action="/projects/{{ $project->name }}" method="POST">
+      <form action="{{ url("/projects/$project->name") }}" method="POST">
         @csrf
         @method('PUT')
 

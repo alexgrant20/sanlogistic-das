@@ -14,7 +14,7 @@
           {{ session('error') }}
         </div>
       @endif
-      <form action="/projects" method="post">
+      <form action="{{ url('/projects') }}" method="post">
         @csrf
 
         <h4 class="text-primary fw-bold">Project Detail</h4>

@@ -1,9 +1,5 @@
 @extends('layouts.main')
 
-@section('headCSS')
-  <link href="/vendor/zoom/zoom.css" rel="stylesheet">
-@endsection
-
 @section('container')
   <div class="page-content">
     <!-- Page Header-->
@@ -20,7 +16,7 @@
         </div>
       @endif
 
-      <form action="/vehicles/{{ $vehicle->license_plate }}" method="POST" enctype="multipart/form-data">
+      <form action="{{ url("/vehicles/$vehicle->license_plate") }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -529,6 +525,5 @@
 @endsection
 
 @section('footJS')
-  <script src="/js/vehicle.js"></script>
-  <script src="/vendor/zoom/zoom.js"></script>
+  <script src="{{ asset('/js/vehicle.js') }}"></script>
 @endsection

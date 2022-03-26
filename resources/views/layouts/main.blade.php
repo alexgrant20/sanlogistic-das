@@ -21,6 +21,9 @@
   {{-- Jquery --}}
   <script type='text/javascript' src="{{ asset('/vendor/jquery/jquery-3.6.0.min.js') }}"></script>
 
+  {{-- Zoom CSS --}}
+  <link href="{{ asset('/vendor/zoom/zoom.css') }}" rel="stylesheet">
+
   @yield('headCSS')
 
   @yield('headJS')
@@ -42,10 +45,10 @@
   <!-- Main File-->
   <script src="{{ asset('/js/front.js') }}"></script>
   <script src="{{ asset('/js/function.js') }}"></script>
+  {{-- Zoom JS --}}
+  <script src="{{ asset('/vendor/zoom/zoom.js') }}"></script>
   <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-
-
 
   @yield('footJS')
 

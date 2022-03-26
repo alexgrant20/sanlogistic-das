@@ -31,7 +31,7 @@
         </div>
       @endif
 
-      <form action="/addresses/{{ $address->name }}" method="POST">
+      <form action="{{ url("/addresses/$address->name") }}" method="POST">
         @csrf
         @method('PUT')
         <div class="mb-5">
@@ -247,5 +247,5 @@
 @endsection
 
 @section('footJS')
-  <script src="/js/address.js"></script>
+  <script src="{{ asset('/js/address.js') }}"></script>
 @endsection
