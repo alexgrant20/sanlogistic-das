@@ -15,6 +15,13 @@ document.addEventListener("DOMContentLoaded", function () {
 				}),
 			},
 		},
+		columnDefs: [
+			{
+				targets: [0],
+				visible: false,
+				searchable: false,
+			},
+		],
 	});
 
 	$.fn.dataTable.Buttons.defaults.dom.button.className =
@@ -28,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				buttons: [
 					{
 						text: "Excel",
-						action: function (e, dt, node, config) {
+						action: function () {
 							$("#importExcel").modal("show");
 						},
 					},
@@ -39,9 +46,21 @@ document.addEventListener("DOMContentLoaded", function () {
 				text: "Export",
 				buttons: [
 					{
-						extend: "excelHtml5",
-						exportOptions: {
-							columns: [":visible"],
+						text: "Excel",
+						action: function (param) {
+							let ids = "";
+							const data = table.rows({ filter: "applied" }).data();
+							const totalData = table
+								.rows({ filter: "applied" })
+								.nodes().length;
+
+							for (let i = 0; i < totalData; i++) {
+								ids += data[i][0] + ",";
+							}
+
+							const tableName = $("#tableName").val();
+
+							window.location.replace(tableName + "/export/excel?ids=" + ids);
 						},
 					},
 					{
