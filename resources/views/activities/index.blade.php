@@ -54,7 +54,7 @@
 
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>
-      <table class="table table-hover text-center  table-dark nowrap" style="width: 100%">
+      <table class="table table-hover text-center  table-dark nowrap" style="width: 100%" data-display="datatables">
         <thead>
           <tr class="header">
             <th>ID</th>

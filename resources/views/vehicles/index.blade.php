@@ -23,6 +23,49 @@
         </div>
       @endif
 
+      @if (session()->has('importErrorList'))
+        <div class="modal openModal" tabindex="-1">
+          <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3 class="modal-title text-primary fw-bold">Erorr List</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <table class="table table-danger">
+                  <tr>
+                    <th>Row</th>
+                    <th>Attribute</th>
+                    <th>Errors</th>
+                    <th>Value</th>
+                  </tr>
+                  @foreach (session()->get('importErrorList') as $validation)
+                    <tr>
+                      <td>{{ $validation->row() }}</td>
+                      <td>{{ $validation->attribute() }}</td>
+                      <td>
+                        <ul>
+                          @foreach ($validation->errors() as $e)
+                            <li>{{ $e }}</li>
+                          @endforeach
+                        </ul>
+                      </td>
+                      <td>
+                        {{ $validation->values()[$validation->attribute()] }}
+                      </td>
+                    </tr>
+                  @endforeach
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      @endif
+
+
       <!-- Import Modal -->
       <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
         <form method="post" action="{{ url('/vehicles/import/excel') }}" enctype="multipart/form-data">
@@ -55,7 +98,7 @@
 
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>
-      <table class="table table-hover text-center  table-dark nowrap" style="width: 100%">
+      <table class="table table-hover text-center table-dark nowrap" style="width: 100%" data-display="datatables">
         <thead>
           <tr class="header">
             <th>ID</th>
@@ -79,12 +122,12 @@
                   <i class="bi bi-pencil"></i>
                 </a>
               </td>
-              <td>{{ $vehicle->owner->name }}</td>
-              <td>{{ $vehicle->project->name }}</td>
-              <td>{{ $vehicle->status }}</td>
-              <td>{{ $vehicle->vehicleVariety->vehicleType->vehicleBrand->name }}</td>
-              <td>{{ $vehicle->vehicleVariety->vehicleType->name }}</td>
-              <td>{{ $vehicle->odo }}</td>
+              <td>{{ $vehicle->owner->name ?? null }}</td>
+              <td>{{ $vehicle->project->name ?? null }}</td>
+              <td>{{ $vehicle->status ?? null }}</td>
+              <td>{{ $vehicle->vehicleVariety->vehicleType->vehicleBrand->name ?? null }}</td>
+              <td>{{ $vehicle->vehicleVariety->vehicleType->name ?? null }}</td>
+              <td>{{ $vehicle->odo ?? null }}</td>
 
               @if ($vehicle->vehiclesDocuments->contains('type', 'kir'))
                 <td>{{ $vehicle->vehiclesDocuments->where('type', 'kir')->first()->expire }}</td>
