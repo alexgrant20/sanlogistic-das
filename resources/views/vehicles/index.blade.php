@@ -50,6 +50,7 @@
 
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
+      <input type="hidden" id="tableName" value="vehicles">
       <div class="d-flex mb-5" id="actionContainer"></div>
 
       <h4 class="text-primary fw-bold">Table</h4>
@@ -57,6 +58,7 @@
       <table class="table table-hover text-center  table-dark nowrap" style="width: 100%">
         <thead>
           <tr class="header">
+            <th>ID</th>
             <th>Action</th>
             <th>Owner</th>
             <th>User</th>
@@ -71,6 +73,7 @@
         <tbody>
           @foreach ($vehicles as $vehicle)
             <tr>
+              <td>{{ $vehicle->id }}</td>
               <td>
                 <a href="{{ url("/vehicles/$vehicle->license_plate/edit") }}" class="badge bg-primary">
                   <i class="bi bi-pencil"></i>

@@ -26,377 +26,381 @@ use App\Imports\VehicleImport;
 
 class VehicleController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function index()
-  {
-    $vehicles =  Vehicle::with('owner', 'project', 'vehiclesDocuments', 'area', 'vehicleVariety', 'address', 'vehicleTowing')->latest()->get();
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function index()
+	{
+		$vehicles =  Vehicle::with('owner', 'project', 'vehiclesDocuments', 'area', 'vehicleVariety', 'address', 'vehicleTowing')->latest()->get();
 
-    $vehiclesDocuments = ['stnk', 'kir'];
-    $vehiclesImages = ['front', 'left', 'right', 'back'];
+		$vehiclesDocuments = ['stnk', 'kir'];
+		$vehiclesImages = ['front', 'left', 'right', 'back'];
 
-    $totalVehicleImage = VehicleImage::all()->count();
-    $totalVehicleDocument = VehicleDocument::all()->count();
-    $totalVehicle = $vehicles->count();
+		$totalVehicleImage = VehicleImage::all()->count();
+		$totalVehicleDocument = VehicleDocument::all()->count();
+		$totalVehicle = $vehicles->count();
 
-    if (
-      $totalVehicle * count($vehiclesDocuments) !== $totalVehicleDocument ||
-      $totalVehicle * count($vehiclesImages) !== $totalVehicleImage
-    ) return redirect('/vehicles/migrate/image');
-
-
-    return view('vehicles.index', [
-      'vehicles' => $vehicles,
-      'title' => 'Vehicles'
-    ]);
-  }
-
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function create()
-  {
-    return view('vehicles.create', [
-      'vehiclesBrands' => VehicleBrand::all(),
-      'areas' => Area::all(),
-      'projects' => Project::all(),
-      'companies' => Company::all(),
-      'addresses' => Address::all(),
-      'vehiclesTowings' => VehicleTowing::all(),
-      'vehiclesLPColors' => VehicleLicensePlateColor::all(),
-      'title' => 'Create Vehicle',
-    ]);
-  }
-
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @param  \App\Http\Requests\StoreVehicleRequest  $request
-   * @return \Illuminate\Http\Response
-   */
-  public function store(StoreVehicleRequest $request)
-  {
-
-    try {
-      // Init Configuration
-      $otherTable = [
-        'kir_number',
-        'kir_expire',
-        'kir_image',
-        'stnk_number',
-        'stnk_expire',
-        'stnk_image',
-        'front_image',
-        'left_image',
-        'right_image',
-        'back_image',
-      ];
-      $timestamp = now()->timestamp;
-      $documents = ['kir', 'stnk'];
-      $images = ['front', 'left', 'right', 'back'];
-      $imagesQuery = [];
-      $documentsQuery = [];
-
-      DB::beginTransaction();
-
-      $newVehicle = Vehicle::create($request->safe()->except($otherTable));
-      $vehicleID = $newVehicle['id'];
-      $vehicleLP = str_replace(' ', '', $newVehicle['license_plate']);
-
-      foreach ($documents as $doc) {
-
-        if ($request->file("{$doc}_image")) {
-          $fileName = "{$doc}-{$vehicleLP}-{$timestamp}.{$request->file("{$doc}_image")->extension()}";
-          $imagePath = $request->file("{$doc}_image")->storeAs("{$doc}-images", $fileName, 'public');
-        }
-
-        array_push($documentsQuery, [
-          'vehicle_id' => $vehicleID,
-          'type' => $doc,
-          'number' => $request["${doc}_number"],
-          'image' => $imagePath,
-          'expire' => $request["${doc}_expire"],
-          'active' => $request["{$doc}_expire"] > now() ? 1 : 0,
-        ]);
-      }
-
-      foreach ($images as $img) {
-
-        if ($request->file("{$img}_image")) {
-          $fileName = "{$img}-{$vehicleLP}-{$timestamp}.{$request->file("{$img}_image")->extension()}";
-          $imagePath = $request->file("{$img}_image")->storeAs("{$img}-images", $fileName, 'public');
-        }
-
-        array_push($imagesQuery, [
-          'vehicle_id' => $vehicleID,
-          'type' => $img,
-          'image' => $imagePath,
-        ]);
-      }
-
-      VehicleDocument::insert($documentsQuery);
-      VehicleImage::insert($imagesQuery);
-
-      DB::commit();
-      return redirect('/vehicles')->with('success', 'New vehicle has been added!');
-    } catch (Exception $e) {
-      DB::rollback();
-      return redirect('/vehicles/create')->withInput()->with('error', $e->getMessage());
-    }
-  }
-
-  /**
-   * Display the specified resource.
-   *
-   * @param  \App\Models\Vehicle  $vehicle
-   * @return \Illuminate\Http\Response
-   */
-  public function show(Vehicle $vehicle)
-  {
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  \App\Models\Vehicle  $vehicle
-   * @return \Illuminate\Http\Response
-   */
-  public function edit(Vehicle $vehicle)
-  {
-    $kir = $vehicle->vehiclesDocuments->where('type', 'kir')->first();
-    $stnk = $vehicle->vehiclesDocuments->where('type', 'stnk')->first();
-    $front = $vehicle->vehicleImages->where('type', 'front')->first();
-    $back = $vehicle->vehicleImages->where('type', 'back')->first();
-    $left = $vehicle->vehicleImages->where('type', 'left')->first();
-    $right = $vehicle->vehicleImages->where('type', 'right')->first();
-
-    return view('vehicles.edit', [
-      'vehiclesBrands' => VehicleBrand::all(),
-      'areas' => Area::all(),
-      'projects' => Project::all(),
-      'companies' => Company::all(),
-      'addresses' => Address::all(),
-      'vehiclesTowings' => VehicleTowing::all(),
-      'vehiclesLPColors' => VehicleLicensePlateColor::all(),
-      'vehicle' => $vehicle,
-      'stnk' => is_null($stnk) ? [] : $stnk,
-      'kir' => is_null($kir) ? [] : $kir,
-      'front' => $front,
-      'back' => $back,
-      'left' => $left,
-      'right' => $right,
-      'title' => "Update Vehicle {$vehicle->license_plate}"
-    ]);
-  }
-
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \App\Http\Requests\UpdateVehicleRequest  $request
-   * @param  \App\Models\Vehicle  $vehicle
-   * @return \Illuminate\Http\Response
-   */
-  public function update(UpdateVehicleRequest $request, Vehicle $vehicle)
-  {
-    try {
-      // Init Configuration
-      $otherTable = [
-        'kir_number',
-        'kir_expire',
-        'kir_image',
-        'stnk_number',
-        'stnk_expire',
-        'stnk_image',
-        'front_image',
-        'left_image',
-        'right_image',
-        'back_image',
-        'vehicle_type_id',
-        'vehicle_brand_id'
-      ];
-      $timestamp = now()->timestamp;
-      $documents = ['kir', 'stnk'];
-      $images = ['front', 'left', 'right', 'back'];
+		if (
+			$totalVehicle * count($vehiclesDocuments) !== $totalVehicleDocument ||
+			$totalVehicle * count($vehiclesImages) !== $totalVehicleImage
+		) return redirect('/vehicles/migrate/image');
 
 
-      $vehicleLP = str_replace(' ', '', $request->license_plate);
+		return view('vehicles.index', [
+			'vehicles' => $vehicles,
+			'title' => 'Vehicles'
+		]);
+	}
 
-      DB::beginTransaction();
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function create()
+	{
+		return view('vehicles.create', [
+			'vehiclesBrands' => VehicleBrand::all(),
+			'areas' => Area::all(),
+			'projects' => Project::all(),
+			'companies' => Company::all(),
+			'addresses' => Address::all(),
+			'vehiclesTowings' => VehicleTowing::all(),
+			'vehiclesLPColors' => VehicleLicensePlateColor::all(),
+			'title' => 'Create Vehicle',
+		]);
+	}
 
-      $vehicle->update($request->safe()->except($otherTable));
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param  \App\Http\Requests\StoreVehicleRequest  $request
+	 * @return \Illuminate\Http\Response
+	 */
+	public function store(StoreVehicleRequest $request)
+	{
 
-      foreach ($documents as $doc) {
+		try {
+			// Init Configuration
+			$otherTable = [
+				'kir_number',
+				'kir_expire',
+				'kir_image',
+				'stnk_number',
+				'stnk_expire',
+				'stnk_image',
+				'front_image',
+				'left_image',
+				'right_image',
+				'back_image',
+			];
+			$timestamp = now()->timestamp;
+			$documents = ['kir', 'stnk'];
+			$images = ['front', 'left', 'right', 'back'];
+			$imagesQuery = [];
+			$documentsQuery = [];
 
-        $document = $vehicle->vehiclesDocuments->where('type', $doc)->first();
-        $imagePath = $document->image;
+			DB::beginTransaction();
 
-        if ($request->file("{$doc}_image")) {
-          $fileName = "{$doc}-{$vehicleLP}-{$timestamp}.{$request->file("{$doc}_image")->extension()}";
-          $imagePath = $request->file("{$doc}_image")->storeAs("{$doc}-images", $fileName, 'public');
-        }
+			$newVehicle = Vehicle::create($request->safe()->except($otherTable));
+			$vehicleID = $newVehicle['id'];
+			$vehicleLP = str_replace(' ', '', $newVehicle['license_plate']);
 
-        $document->update([
-          'number' => $request["${doc}_number"],
-          'image' => $imagePath,
-          'expire' => $request["${doc}_expire"],
-          'active' => $request["{$doc}_expire"] > now() ? 1 : 0,
-        ]);
-      }
+			foreach ($documents as $doc) {
 
-      foreach ($images as $imgType) {
+				if ($request->file("{$doc}_image")) {
+					$fileName = "{$doc}-{$vehicleLP}-{$timestamp}.{$request->file("{$doc}_image")->extension()}";
+					$imagePath = $request->file("{$doc}_image")->storeAs("{$doc}-images", $fileName, 'public');
+				}
 
-        $vehicleImage = $vehicle->vehicleImages->where('type', $imgType)->first();
-        $imagePath = $vehicleImage->image;
+				array_push($documentsQuery, [
+					'vehicle_id' => $vehicleID,
+					'type' => $doc,
+					'number' => $request["${doc}_number"],
+					'image' => $imagePath,
+					'expire' => $request["${doc}_expire"],
+					'active' => $request["{$doc}_expire"] > now() ? 1 : 0,
+				]);
+			}
 
-        if ($request->file("{$imgType}_image")) {
-          $fileName = "{$imgType}-{$vehicleLP}-{$timestamp}.{$request->file("{$imgType}_image")->extension()}";
-          $imagePath = $request->file("{$imgType}_image")->storeAs("{$imgType}-images", $fileName, 'public');
-        }
+			foreach ($images as $img) {
 
-        $vehicleImage->update([
-          'image' => $imagePath,
-        ]);
-      }
+				if ($request->file("{$img}_image")) {
+					$fileName = "{$img}-{$vehicleLP}-{$timestamp}.{$request->file("{$img}_image")->extension()}";
+					$imagePath = $request->file("{$img}_image")->storeAs("{$img}-images", $fileName, 'public');
+				}
 
-      DB::commit();
-      return redirect("/vehicles")->with('success', 'Vehicle has been updated!');
-    } catch (Exception $e) {
+				array_push($imagesQuery, [
+					'vehicle_id' => $vehicleID,
+					'type' => $img,
+					'image' => $imagePath,
+				]);
+			}
 
-      DB::rollback();
-      return redirect("/vehicles/{$vehicle->license_plate}/edit")->withInput()->with('error', $e->getMessage());
-    }
-  }
+			VehicleDocument::insert($documentsQuery);
+			VehicleImage::insert($imagesQuery);
 
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  \App\Models\Vehicle  $vehicle
-   * @return \Illuminate\Http\Response
-   */
-  public function destroy(Vehicle $vehicle)
-  {
-    //
-  }
+			DB::commit();
+			return redirect('/vehicles')->with('success', 'New vehicle has been added!');
+		} catch (Exception $e) {
+			DB::rollback();
+			return redirect('/vehicles/create')->withInput()->with('error', $e->getMessage());
+		}
+	}
 
-  public function migrateImage()
-  {
-    try {
-      $vehicles = Vehicle::with('vehicleImages', 'vehiclesDocuments')->get();
-      $totalVehicles = $vehicles->count();
-      $vehiclesDocuments = VehicleDocument::all();
-      $vehiclesImages = VehicleImage::all();
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  \App\Models\Vehicle  $vehicle
+	 * @return \Illuminate\Http\Response
+	 */
+	public function show(Vehicle $vehicle)
+	{
+	}
 
-      $documentsTypes = ['kir', 'stnk'];
-      $imgTypes = ['front', 'left', 'right', 'back'];
-      $totalDocType = count($documentsTypes);
-      $totalImgType = count($imgTypes);
-      $docNeedMigrate = true;
-      $imgNeedMigrate = true;
-      $queryImages = [];
-      $queryDocuments = [];
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  \App\Models\Vehicle  $vehicle
+	 * @return \Illuminate\Http\Response
+	 */
+	public function edit(Vehicle $vehicle)
+	{
+		$kir = $vehicle->vehiclesDocuments->where('type', 'kir')->first();
+		$stnk = $vehicle->vehiclesDocuments->where('type', 'stnk')->first();
+		$front = $vehicle->vehicleImages->where('type', 'front')->first();
+		$back = $vehicle->vehicleImages->where('type', 'back')->first();
+		$left = $vehicle->vehicleImages->where('type', 'left')->first();
+		$right = $vehicle->vehicleImages->where('type', 'right')->first();
 
-      // Vehicles Document Full
-      if ($totalVehicles * $totalDocType === $vehiclesDocuments->count()) {
-        $docNeedMigrate = false;
-      }
+		return view('vehicles.edit', [
+			'vehiclesBrands' => VehicleBrand::all(),
+			'areas' => Area::all(),
+			'projects' => Project::all(),
+			'companies' => Company::all(),
+			'addresses' => Address::all(),
+			'vehiclesTowings' => VehicleTowing::all(),
+			'vehiclesLPColors' => VehicleLicensePlateColor::all(),
+			'vehicle' => $vehicle,
+			'stnk' => is_null($stnk) ? [] : $stnk,
+			'kir' => is_null($kir) ? [] : $kir,
+			'front' => $front,
+			'back' => $back,
+			'left' => $left,
+			'right' => $right,
+			'title' => "Update Vehicle {$vehicle->license_plate}"
+		]);
+	}
 
-      // Vehicles Images Full
-      if ($totalVehicles * $totalImgType === $vehiclesImages->count()) {
-        $imgNeedMigrate = false;
-      }
-
-      if (!$imgNeedMigrate && !$docNeedMigrate) {
-        return redirect('/vehicles')->with('error', 'Migration is not needed!');
-      }
-
-      foreach ($vehicles as $vehicle) {
-
-        if ($docNeedMigrate) {
-          foreach ($documentsTypes as $docType) {
-            if (!$vehicle->vehiclesDocuments->contains('type', $docType)) {
-              array_push($queryDocuments, [
-                'vehicle_id' => $vehicle->id,
-                'type' => $docType,
-                'number' => 0,
-                'image' => env('DEFAULT_IMAGE'),
-                'expire' => now(),
-                'active' => 0,
-              ]);
-            }
-          }
-        }
-
-        if ($imgNeedMigrate) {
-          foreach ($imgTypes as $imgType) {
-            if (!$vehicle->vehicleImages->contains('type', $imgType)) {
-              array_push($queryImages, [
-                'vehicle_id' => $vehicle->id,
-                'type' => $imgType,
-                'image' => env('DEFAULT_IMAGE'),
-              ]);
-            }
-          }
-        }
-      }
-
-      DB::beginTransaction();
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  \App\Http\Requests\UpdateVehicleRequest  $request
+	 * @param  \App\Models\Vehicle  $vehicle
+	 * @return \Illuminate\Http\Response
+	 */
+	public function update(UpdateVehicleRequest $request, Vehicle $vehicle)
+	{
+		try {
+			// Init Configuration
+			$otherTable = [
+				'kir_number',
+				'kir_expire',
+				'kir_image',
+				'stnk_number',
+				'stnk_expire',
+				'stnk_image',
+				'front_image',
+				'left_image',
+				'right_image',
+				'back_image',
+				'vehicle_type_id',
+				'vehicle_brand_id'
+			];
+			$timestamp = now()->timestamp;
+			$documents = ['kir', 'stnk'];
+			$images = ['front', 'left', 'right', 'back'];
 
 
-      if ($docNeedMigrate) {
-        VehicleDocument::insert($queryDocuments);
-      }
+			$vehicleLP = str_replace(' ', '', $request->license_plate);
 
-      if ($imgNeedMigrate) {
-        VehicleImage::insert($queryImages);
-      }
+			DB::beginTransaction();
 
-      DB::commit();
-      return redirect('/vehicles')->with('success', 'Migrate image completed!');
-    } catch (Exception $e) {
-      DB::rollBack();
-      return redirect('/vehicles')->with('error', $e->getMessage());
-    }
-  }
+			$vehicle->update($request->safe()->except($otherTable));
 
-  public function exportExcel()
-  {
-    $timestamp = now()->timestamp;
-    return Excel::download(new VehicleExport, "vehicles_export_{$timestamp}.xlsx");
-  }
+			foreach ($documents as $doc) {
 
-  public function importExcel(Request $request)
-  {
-    try {
-      $request->validate([
-        'file' => 'required|mimes:csv,xls,xlsx'
-      ]);
-      $file = $request->file('file');
-      $fileName = rand() . $file->getClientOriginalName();
-      $file->move('file-import/vehicle', $fileName);
+				$document = $vehicle->vehiclesDocuments->where('type', $doc)->first();
+				$imagePath = $document->image;
 
-      Excel::import(new VehicleImport, public_path("/file-import/vehicle/{$fileName}"));
+				if ($request->file("{$doc}_image")) {
+					$fileName = "{$doc}-{$vehicleLP}-{$timestamp}.{$request->file("{$doc}_image")->extension()}";
+					$imagePath = $request->file("{$doc}_image")->storeAs("{$doc}-images", $fileName, 'public');
+				}
 
-      return redirect('/vehicles')->with('success', 'Import completed!');
-    } catch (Exception $e) {
-      return redirect('/vehicles')->with('error', 'Import Failed! ' . $e->getMessage());
-    }
-  }
+				$document->update([
+					'number' => $request["${doc}_number"],
+					'image' => $imagePath,
+					'expire' => $request["${doc}_expire"],
+					'active' => $request["{$doc}_expire"] > now() ? 1 : 0,
+				]);
+			}
 
-  // Api Route
-  public function vehicleType($id)
-  {
-    $data = VehicleType::where('vehicle_brand_id', $id)->get();
-    return response()->json($data);
-  }
+			foreach ($images as $imgType) {
 
-  public function vehicleVariety($id)
-  {
-    $data = VehicleVariety::where('vehicle_type_id', $id)->get();
-    return response()->json($data);
-  }
+				$vehicleImage = $vehicle->vehicleImages->where('type', $imgType)->first();
+				$imagePath = $vehicleImage->image;
+
+				if ($request->file("{$imgType}_image")) {
+					$fileName = "{$imgType}-{$vehicleLP}-{$timestamp}.{$request->file("{$imgType}_image")->extension()}";
+					$imagePath = $request->file("{$imgType}_image")->storeAs("{$imgType}-images", $fileName, 'public');
+				}
+
+				$vehicleImage->update([
+					'image' => $imagePath,
+				]);
+			}
+
+			DB::commit();
+			return redirect("/vehicles")->with('success', 'Vehicle has been updated!');
+		} catch (Exception $e) {
+
+			DB::rollback();
+			return redirect("/vehicles/{$vehicle->license_plate}/edit")->withInput()->with('error', $e->getMessage());
+		}
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  \App\Models\Vehicle  $vehicle
+	 * @return \Illuminate\Http\Response
+	 */
+	public function destroy(Vehicle $vehicle)
+	{
+		//
+	}
+
+	public function migrateImage()
+	{
+		try {
+			$vehicles = Vehicle::with('vehicleImages', 'vehiclesDocuments')->get();
+			$totalVehicles = $vehicles->count();
+			$vehiclesDocuments = VehicleDocument::all();
+			$vehiclesImages = VehicleImage::all();
+
+			$documentsTypes = ['kir', 'stnk'];
+			$imgTypes = ['front', 'left', 'right', 'back'];
+			$totalDocType = count($documentsTypes);
+			$totalImgType = count($imgTypes);
+			$docNeedMigrate = true;
+			$imgNeedMigrate = true;
+			$queryImages = [];
+			$queryDocuments = [];
+
+			// Vehicles Document Full
+			if ($totalVehicles * $totalDocType === $vehiclesDocuments->count()) {
+				$docNeedMigrate = false;
+			}
+
+			// Vehicles Images Full
+			if ($totalVehicles * $totalImgType === $vehiclesImages->count()) {
+				$imgNeedMigrate = false;
+			}
+
+			if (!$imgNeedMigrate && !$docNeedMigrate) {
+				return redirect('/vehicles')->with('error', 'Migration is not needed!');
+			}
+
+			foreach ($vehicles as $vehicle) {
+
+				if ($docNeedMigrate) {
+					foreach ($documentsTypes as $docType) {
+						if (!$vehicle->vehiclesDocuments->contains('type', $docType)) {
+							array_push($queryDocuments, [
+								'vehicle_id' => $vehicle->id,
+								'type' => $docType,
+								'number' => 0,
+								'image' => env('DEFAULT_IMAGE'),
+								'expire' => now(),
+								'active' => 0,
+							]);
+						}
+					}
+				}
+
+				if ($imgNeedMigrate) {
+					foreach ($imgTypes as $imgType) {
+						if (!$vehicle->vehicleImages->contains('type', $imgType)) {
+							array_push($queryImages, [
+								'vehicle_id' => $vehicle->id,
+								'type' => $imgType,
+								'image' => env('DEFAULT_IMAGE'),
+							]);
+						}
+					}
+				}
+			}
+
+			DB::beginTransaction();
+
+
+			if ($docNeedMigrate) {
+				VehicleDocument::insert($queryDocuments);
+			}
+
+			if ($imgNeedMigrate) {
+				VehicleImage::insert($queryImages);
+			}
+
+			DB::commit();
+			return redirect('/vehicles')->with('success', 'Migrate image completed!');
+		} catch (Exception $e) {
+			DB::rollBack();
+			return redirect('/vehicles')->with('error', $e->getMessage());
+		}
+	}
+
+	public function exportExcel(Request $request)
+	{
+		$timestamp = now()->timestamp;
+		$params = $request->input('ids');
+		$ids = preg_split("/[,]/", $params);
+		return Excel::download(new VehicleExport($ids), "vehicles_export_{$timestamp}.xlsx");
+	}
+
+	public function importExcel(Request $request)
+	{
+		try {
+			$request->validate([
+				'file' => 'required|mimes:csv,xls,xlsx'
+			]);
+
+			$file = $request->file('file')->store('file-import/vehicle/');
+
+			$import = new VehicleImport;
+			$import->import($file);
+
+			dd($import->errors());
+
+			return redirect('/vehicles')->with('success', 'Import completed!');
+		} catch (Exception $e) {
+			return redirect('/vehicles')->with('error', 'Import Failed! ' . $e->getMessage());
+		}
+	}
+
+	// Api Route
+	public function vehicleType($id)
+	{
+		$data = VehicleType::where('vehicle_brand_id', $id)->get();
+		return response()->json($data);
+	}
+
+	public function vehicleVariety($id)
+	{
+		$data = VehicleVariety::where('vehicle_type_id', $id)->get();
+		return response()->json($data);
+	}
 }

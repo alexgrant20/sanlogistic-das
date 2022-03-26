@@ -49,6 +49,7 @@
 
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
+      <input type="hidden" id="tableName" value="people">
       <div class="d-flex mb-5" id="actionContainer"></div>
 
       <h4 class="text-primary fw-bold">Table</h4>
@@ -56,6 +57,7 @@
       <table class="table table-hover text-center  table-dark nowrap" style="width: 100%">
         <thead>
           <tr class="header">
+            <th>ID</th>
             <th>Action</th>
             <th>Nama Orang</th>
             <th>Nama Perusahaan</th>
@@ -67,6 +69,7 @@
         <tbody>
           @foreach ($people as $person)
             <tr>
+              <td>{{ $person->id }}</td>
               <td>
                 <a href="{{ url("/people/$person->id/edit") }}" class="badge bg-primary"><i
                     class="bi bi-pencil"></i></a>

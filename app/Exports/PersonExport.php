@@ -10,16 +10,21 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class PersonExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
-  /**
-   * @return \Illuminate\Support\Collection
-   */
-  public function collection()
-  {
-    return Person::all();
-  }
+	private $ids;
 
-  public function headings(): array
-  {
-    return Schema::getColumnListing('people');
-  }
+	public function __construct(array $ids)
+	{
+		$this->ids = $ids;
+	}
+
+	public function collection()
+	{
+		if (count($this->ids) === 0) return Person::all();
+		return Person::whereIn('id', $this->ids)->get();
+	}
+
+	public function headings(): array
+	{
+		return Schema::getColumnListing('people');
+	}
 }

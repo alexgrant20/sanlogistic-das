@@ -10,16 +10,21 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class CompanyExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
-  /**
-   * @return \Illuminate\Support\Collection
-   */
-  public function collection()
-  {
-    return Company::all();
-  }
+	private $ids;
 
-  public function headings(): array
-  {
-    return Schema::getColumnListing('companies');
-  }
+	public function __construct(array $ids)
+	{
+		$this->ids = $ids;
+	}
+
+	public function collection()
+	{
+		if (count($this->ids) === 0) return Company::all();
+		return Company::whereIn('id', $this->ids)->get();
+	}
+
+	public function headings(): array
+	{
+		return Schema::getColumnListing('companies');
+	}
 }

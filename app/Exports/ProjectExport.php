@@ -10,16 +10,21 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class ProjectExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
-  /**
-   * @return \Illuminate\Support\Collection
-   */
-  public function collection()
-  {
-    return Project::all();
-  }
+	private $ids;
 
-  public function headings(): array
-  {
-    return Schema::getColumnListing('projects');
-  }
+	public function __construct(array $ids)
+	{
+		$this->ids = $ids;
+	}
+
+	public function collection()
+	{
+		if (count($this->ids) === 0) return Project::all();
+		return Project::whereIn('id', $this->ids)->get();
+	}
+
+	public function headings(): array
+	{
+		return Schema::getColumnListing('projects');
+	}
 }

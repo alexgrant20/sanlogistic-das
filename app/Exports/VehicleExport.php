@@ -10,17 +10,21 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class VehicleExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
-  /**
-   * @return \Illuminate\Support\Collection
-   */
+	private $ids;
 
-  public function collection()
-  {
-    return Vehicle::all();
-  }
+	public function __construct(array $ids)
+	{
+		$this->ids = $ids;
+	}
 
-  public function headings(): array
-  {
-    return Schema::getColumnListing('vehicles');
-  }
+	public function collection()
+	{
+		if (count($this->ids) === 0) return Vehicle::all();
+		return Vehicle::whereIn('id', $this->ids)->get();
+	}
+
+	public function headings(): array
+	{
+		return Schema::getColumnListing('vehicles');
+	}
 }

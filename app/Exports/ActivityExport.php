@@ -10,17 +10,21 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
-  /**
-   * @return \Illuminate\Support\Collection
-   */
-  public function collection()
-  {
-    return Activity::all();
-  }
+	private $ids;
 
+	public function __construct(array $ids)
+	{
+		$this->ids = $ids;
+	}
 
-  public function headings(): array
-  {
-    return Schema::getColumnListing('activities');
-  }
+	public function collection()
+	{
+		if (count($this->ids) === 0) return Activity::all();
+		return Activity::whereIn('id', $this->ids)->get();
+	}
+
+	public function headings(): array
+	{
+		return Schema::getColumnListing('activities');
+	}
 }
