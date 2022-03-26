@@ -3,16 +3,36 @@
 namespace App\Imports;
 
 use App\Models\Vehicle;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\RegistersEventListeners;
+use Maatwebsite\Excel\Concerns\SkipsErrors;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
+use Maatwebsite\Excel\Concerns\SkipsOnError;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Events\AfterImport;
+use Throwable;
 
-class VehicleImport implements ToModel, WithHeadingRow
+class VehicleImport implements
+	ToModel,
+	WithHeadingRow,
+	SkipsOnError,
+	WithValidation,
+	SkipsOnFailure,
+	WithBatchInserts,
+	WithChunkReading,
+	ShouldQueue,
+	WithEvents
 {
-	/**
-	 * @param array $row
-	 *
-	 * @return \Illuminate\Database\Eloquent\Model|null
-	 */
+
+	use Importable, SkipsErrors, SkipsFailures, RegistersEventListeners;
+
 	public function model(array $row)
 	{
 		return new Vehicle([
@@ -41,5 +61,26 @@ class VehicleImport implements ToModel, WithHeadingRow
 			'created_at' => $row['created_at'],
 			'updated_at' => $row['updated_at'],
 		]);
+	}
+
+	public function rules(): array
+	{
+		return [
+			'*.license_plate' => ['unique:vehicles']
+		];
+	}
+
+	public function batchSize(): int
+	{
+		return 1000;
+	}
+
+	public function chunkSize(): int
+	{
+		return 1000;
+	}
+
+	public static function afterImport(AfterImport $event)
+	{
 	}
 }

@@ -383,9 +383,11 @@ class VehicleController extends Controller
 			$import = new VehicleImport;
 			$import->import($file);
 
-			dd($import->errors());
+			if ($import->failures()->isNotEmpty()) {
+				return back()->with('importErrorList', $import->failures());
+			}
 
-			return redirect('/vehicles')->with('success', 'Import completed!');
+			return redirect('/vehicles')->with('success', 'Import Queued, we will send notification when import completed!');
 		} catch (Exception $e) {
 			return redirect('/vehicles')->with('error', 'Import Failed! ' . $e->getMessage());
 		}
