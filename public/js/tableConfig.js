@@ -17,45 +17,9 @@ document.addEventListener("DOMContentLoaded", function () {
 		},
 	});
 
-	// new $.fn.dataTable.Buttons(table, {
-	// 	buttons: {
-	// 		dom: {
-	// 			button: {
-	// 				className: "btn btn-primary me-2", //Primary class for all buttons
-	// 			},
-	// 		},
-	// 		buttons: [
-	// 			{
-	// 				extend: "collection",
-	// 				text: "Export",
-	// 				buttons: [
-	// 					{
-	// 						extend: "excelHtml5",
-	// 						exportOptions: {
-	// 							columns: [":visible"],
-	// 						},
-	// 					},
-	// 					{
-	// 						extend: "pdfHtml5",
-	// 						exportOptions: {
-	// 							columns: [":visible"],
-	// 						},
-	// 					},
-	// 					{
-	// 						extend: "searchBuilder",
-	// 						config: {
-	// 							depthLimit: 2,
-	// 						},
-	// 					},
-	// 					"colvis",
-	// 				],
-	// 			},
-	// 		],
-	// 	},
-	// 	dom: "Bfrtip",
-	// });
+	$.fn.dataTable.Buttons.defaults.dom.button.className =
+		"btn btn-outline-primary";
 
-	$.fn.dataTable.Buttons.defaults.dom.button.className = "btn btn-primary";
 	new $.fn.dataTable.Buttons(table, {
 		buttons: [
 			{
