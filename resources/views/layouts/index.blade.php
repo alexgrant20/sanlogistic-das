@@ -15,6 +15,6 @@
 @endsection
 
 @section('footJS')
-  <script type="text/javascript" src="/vendor/datatable/datatables.min.js"></script>
+  <script type="text/javascript" src="{{ asset('/vendor/datatable/datatables.min.js') }}"></script>
   @yield('add_footJS')
 @endsection
