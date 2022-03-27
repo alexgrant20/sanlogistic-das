@@ -11,6 +11,7 @@ use App\Models\CompanyDocument;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
+use App\Imports\CompanyImport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -252,6 +253,28 @@ class CompanyController extends Controller
     } catch (Exception $e) {
       DB::rollBack();
       return redirect('/companies')->with('error', $e->getMessage());
+    }
+  }
+
+  public function importExcel(Request $request)
+  {
+    try {
+      $request->validate([
+        'file' => 'required|mimes:csv,xls,xlsx'
+      ]);
+
+      $file = $request->file('file')->store('file-import/company/');
+
+      $import = new CompanyImport;
+      $import->import($file);
+
+      if ($import->failures()->isNotEmpty()) {
+        return back()->with('importErrorList', $import->failures());
+      }
+
+      return redirect('/companies')->with('success', 'Import completed!');
+    } catch (Exception $e) {
+      return redirect('/companies')->with('error', 'Import Failed! ' . $e->getMessage());
     }
   }
 

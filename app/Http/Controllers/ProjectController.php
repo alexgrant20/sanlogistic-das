@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use App\Imports\ProjectImport;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -126,6 +127,28 @@ class ProjectController extends Controller
   public function destroy(Project $project)
   {
     //
+  }
+
+  public function importExcel(Request $request)
+  {
+    try {
+      $request->validate([
+        'file' => 'required|mimes:csv,xls,xlsx'
+      ]);
+
+      $file = $request->file('file')->store('file-import/project/');
+
+      $import = new ProjectImport;
+      $import->import($file);
+
+      if ($import->failures()->isNotEmpty()) {
+        return back()->with('importErrorList', $import->failures());
+      }
+
+      return redirect('/projects')->with('success', 'Import completed!');
+    } catch (Exception $e) {
+      return redirect('/projects')->with('error', 'Import Failed! ' . $e->getMessage());
+    }
   }
 
   public function exportExcel(Request $request)

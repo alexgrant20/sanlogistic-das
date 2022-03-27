@@ -6,6 +6,7 @@ use App\Exports\AddressExport;
 use App\Models\Address;
 use App\Http\Requests\StoreAddressRequest;
 use App\Http\Requests\UpdateAddressRequest;
+use App\Imports\AddressImport;
 use App\Models\AddressType;
 use App\Models\Area;
 use App\Models\PoolType;
@@ -167,6 +168,27 @@ class AddressController extends Controller
     return response()->json($data->toArray());
   }
 
+  public function importExcel(Request $request)
+  {
+    try {
+      $request->validate([
+        'file' => 'required|mimes:csv,xls,xlsx'
+      ]);
+
+      $file = $request->file('file')->store('file-import/address/');
+
+      $import = new AddressImport;
+      $import->import($file);
+
+      if ($import->failures()->isNotEmpty()) {
+        return back()->with('importErrorList', $import->failures());
+      }
+
+      return redirect('/addresses')->with('success', 'Import completed!');
+    } catch (Exception $e) {
+      return redirect('/addresses')->with('error', 'Import Failed! ' . $e->getMessage());
+    }
+  }
 
   public function exportExcel(Request $request)
   {

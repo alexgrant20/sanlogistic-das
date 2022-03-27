@@ -12,6 +12,7 @@ use App\Models\Department;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StorePersonRequest;
 use App\Http\Requests\UpdatePersonRequest;
+use App\Imports\PersonImport;
 use App\Models\PersonDocument;
 use Exception;
 use Illuminate\Http\Request;
@@ -269,6 +270,28 @@ class PersonController extends Controller
   public function destroy(Person $person)
   {
     //
+  }
+
+  public function importExcel(Request $request)
+  {
+    try {
+      $request->validate([
+        'file' => 'required|mimes:csv,xls,xlsx'
+      ]);
+
+      $file = $request->file('file')->store('file-import/person/');
+
+      $import = new PersonImport;
+      $import->import($file);
+
+      if ($import->failures()->isNotEmpty()) {
+        return back()->with('importErrorList', $import->failures());
+      }
+
+      return redirect('/people')->with('success', 'Import completed!');
+    } catch (Exception $e) {
+      return redirect('/people')->with('error', 'Import Failed! ' . $e->getMessage());
+    }
   }
 
   public function exportExcel(Request $request)
