@@ -3,15 +3,28 @@
 namespace App\Imports;
 
 use App\Models\Activity;
+use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\SkipsErrors;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
 
-class ActivityImport implements ToModel
+class ActivityImport implements
+	ToModel,
+	WithHeadingRow,
+	SkipsErrors,
+	WithValidation,
+	SkipsOnFailure,
+	WithBatchInserts,
+	WithChunkReading
 {
-	/**
-	 * @param array $row
-	 *
-	 * @return \Illuminate\Database\Eloquent\Model|null
-	 */
+
+	use Importable, SkipsErrors, SkipsFailures;
+
 	public function model(array $row)
 	{
 		return new Activity([
@@ -54,5 +67,20 @@ class ActivityImport implements ToModel
 			'created_at' => $row['created_at'],
 			'updated_at' => $row['updated_at'],
 		]);
+	}
+
+	public function rules(): array
+	{
+		return [];
+	}
+
+	public function batchSize(): int
+	{
+		return 1000;
+	}
+
+	public function chunkSize(): int
+	{
+		return 1000;
 	}
 }
