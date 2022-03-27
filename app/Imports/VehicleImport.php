@@ -3,9 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Vehicle;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\Importable;
-use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnError;
@@ -13,11 +11,9 @@ use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Events\AfterImport;
-use Throwable;
+
 
 class VehicleImport implements
 	ToModel,
@@ -26,12 +22,10 @@ class VehicleImport implements
 	WithValidation,
 	SkipsOnFailure,
 	WithBatchInserts,
-	WithChunkReading,
-	ShouldQueue,
-	WithEvents
+	WithChunkReading
 {
 
-	use Importable, SkipsErrors, SkipsFailures, RegistersEventListeners;
+	use Importable, SkipsErrors, SkipsFailures;
 
 	public function model(array $row)
 	{
@@ -78,9 +72,5 @@ class VehicleImport implements
 	public function chunkSize(): int
 	{
 		return 1000;
-	}
-
-	public static function afterImport(AfterImport $event)
-	{
 	}
 }
