@@ -32,14 +32,16 @@ Route::get('/login', [LoginController::class, 'index'])->name('login')->middlewa
 Route::post('/login', [LoginController::class, 'authenticate'])->middleware('guest');
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
 
-// Route::get('/addresses/getAllLocation')
 Route::get('/addresses/export/excel', [AddressController::class, 'exportExcel'])->middleware('auth');
+Route::post('/addresses/import/excel', [AddressController::class, 'importExcel'])->middleware('auth');
 Route::resource('/addresses', AddressController::class)->middleware('auth');
 
 Route::get('/activities/export/excel', [ActivityController::class, 'exportExcel'])->middleware('auth');
+Route::post('/activities/import/excel', [ActivityController::class, 'importExcel'])->middleware('auth');
 Route::resource('/activities', ActivityController::class)->middleware('auth');
 
 Route::get('/people/export/excel', [PersonController::class, 'exportExcel'])->middleware('auth');
+Route::post('/people/import/excel', [PersonController::class, 'importExcel'])->middleware('auth');
 Route::resource('/people', PersonController::class)->middleware('auth');
 
 Route::get('/vehicles/export/excel', [VehicleController::class, 'exportExcel'])->middleware('auth');
@@ -48,8 +50,10 @@ Route::get('/vehicles/migrate/image', [VehicleController::class, 'migrateImage']
 Route::resource('/vehicles', VehicleController::class)->middleware('auth');
 
 Route::get('/companies/export/excel', [CompanyController::class, 'exportExcel'])->middleware('auth');
+Route::post('/companies/import/excel', [CompanyController::class, 'importExcel'])->middleware('auth');
 Route::get('/companies/migrate/image', [CompanyController::class, 'migrateImage'])->middleware('auth');
 Route::resource('/companies', CompanyController::class)->middleware('auth');
 
 Route::get('/projects/export/excel', [ProjectController::class, 'exportExcel'])->middleware('auth');
+Route::post('/projects/import/excel', [ProjectController::class, 'importExcel'])->middleware('auth');
 Route::resource('/projects', ProjectController::class)->middleware('auth');
