@@ -28,49 +28,10 @@
       </div>
     </div>
     <section class="container-fluid">
-
-      @if (session()->has('success'))
-        <div class="alert alert-success" role="alert">
-          {{ session('success') }}
-        </div>
-      @endif
-
-      @if (session()->has('error'))
-        <div class="alert alert-danger" role="alert">
-          {{ session('error') }}
-        </div>
-      @endif
-
-
       <h4 class="text-primary fw-bold">Address Location</h4>
       <hr>
       <div id='map' class="w-100 mb-5" style="height: 600px"></div>
-
-      <!-- Import Modal -->
-      <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
-        <form method="post" action="{{ url('/addresses/import/excel') }}" enctype="multipart/form-data">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="importExcelLabel">Import</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                @csrf
-
-                <label class="form-label">Pilih file excel</label>
-                <div class="form-group">
-                  <input class="form-control" type="file" name="file" required="required">
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Import</button>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-
+      @include('partials.index_response')
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
       <input type="hidden" id="tableName" value="addresses">
