@@ -50,13 +50,10 @@ document.addEventListener("DOMContentLoaded", function () {
 						action: function (param) {
 							let ids = "";
 							const data = table.rows({ filter: "applied" }).data();
-							const totalData = table
-								.rows({ filter: "applied" })
-								.nodes().length;
 
-							for (let i = 0; i < totalData; i++) {
-								ids += data[i][0] + ",";
-							}
+							data.map((e) => {
+								ids += e[0] + ",";
+							});
 
 							const tableName = $("#tableName").val();
 
@@ -77,4 +74,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 	table.buttons(0, null).containers().appendTo("#actionContainer");
+
+	$('table[data-display="datatables"] tbody').on("click", "tr", function () {
+		$(this).toggleClass("selected");
+		console.log(table.rows(".selected").data().count());
+	});
 });
