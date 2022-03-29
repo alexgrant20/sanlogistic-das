@@ -147,6 +147,27 @@
       </ul>
     </li>
 
+    <li class="sidebar-item {{ Request::is('finances*') ? 'active' : '' }}">
+      <a class="sidebar-link" href="#financesDropDown" data-bs-toggle="collapse">
+        <i class="bi bi-currency-dollar svg-icon svg-icon-sm svg-icon-heavy"></i>
+        <span>Finance</span>
+      </a>
+      <ul class="collapse list-unstyled {{ Request::is('finances*') ? 'show' : '' }}" id="financesDropDown">
+        <li>
+          <a class="sidebar-link {{ Request::is('finances/acceptance') ? 'text-primary' : '' }}"
+            href="{{ url('/finances/acceptance') }}">
+            Acceptance
+          </a>
+        </li>
+        <li>
+          <a class="sidebar-link {{ Request::is('finances/payment') ? 'text-primary' : '' }}"
+            href="{{ url('/finances/payment') }}">
+            Payment
+          </a>
+        </li>
+      </ul>
+    </li>
+
   </ul>
 
 </nav>
