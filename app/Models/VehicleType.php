@@ -9,8 +9,6 @@ class VehicleType extends Model
 {
   use HasFactory;
 
-  protected $table = 'vehicles_types';
-
   protected $with = ['vehicleBrand'];
 
   public function vehicleBrand()

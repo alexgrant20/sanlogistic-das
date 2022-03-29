@@ -9,8 +9,6 @@ class VehicleDocument extends Model
 {
   use HasFactory;
 
-  protected $table = 'vehicles_documents';
-
   protected $guarded = ['id'];
 
   public function vehicle()

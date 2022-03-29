@@ -9,8 +9,6 @@ class PersonDocument extends Model
 {
   use HasFactory;
 
-  protected $table = 'people_documents';
-
   protected $guarded = ['id'];
 
   public function person()
