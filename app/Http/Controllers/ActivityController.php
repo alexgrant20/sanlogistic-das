@@ -7,6 +7,7 @@ use App\Models\Activity;
 use App\Http\Requests\StoreActivityRequest;
 use App\Http\Requests\UpdateActivityRequest;
 use App\Imports\ActivityImport;
+use App\Models\ActivityStatus;
 use App\Models\Address;
 use App\Models\Person;
 use App\Models\Project;
@@ -78,11 +79,16 @@ class ActivityController extends Controller
 
       DB::beginTransaction();
 
-      Activity::create($data);
+      $activity = Activity::create($data);
+
+      ActivityStatus::create([
+        'activity_id' =>  $activity->id,
+        'status' => $request->status
+      ]);
 
       DB::commit();
 
-      return redirect('/activities')->with('success', 'New company has been added!');
+      return redirect('/activities')->with('success', 'New activity has been added!');
     } catch (Exception $e) {
       DB::rollback();
       return redirect('/activities/create')->withInput()->with('error', $e->getMessage());
@@ -152,7 +158,7 @@ class ActivityController extends Controller
 
       DB::commit();
 
-      return redirect('/activities')->with('success', 'Company has been updated!');
+      return redirect('/activities')->with('success', 'Activity has been updated!');
     } catch (Exception $e) {
       DB::rollback();
       return redirect("/activities/{$activity->id}/edit")->withInput()->with('error', $e->getMessage());
