@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OptionController;
 use App\Http\Controllers\PersonController;
@@ -23,9 +24,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-	return view('index', [
-		'title' => 'Home'
-	]);
+  return view('index', [
+    'title' => 'Home'
+  ]);
 })->middleware('auth');
 
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
@@ -57,3 +58,6 @@ Route::resource('/companies', CompanyController::class)->middleware('auth');
 Route::get('/projects/export/excel', [ProjectController::class, 'exportExcel'])->middleware('auth');
 Route::post('/projects/import/excel', [ProjectController::class, 'importExcel'])->middleware('auth');
 Route::resource('/projects', ProjectController::class)->middleware('auth');
+
+Route::get('/finances/acceptance', [FinanceController::class, 'acceptance'])->middleware('auth');
+Route::get('/finances/payment', [FinanceController::class, 'payment'])->middleware('auth');
