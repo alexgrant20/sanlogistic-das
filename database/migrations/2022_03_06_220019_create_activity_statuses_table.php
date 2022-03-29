@@ -17,7 +17,10 @@ return new class extends Migration
       $table->id();
       $table->foreignId('activity_id');
       $table->string('status');
+      $table->foreignId('created_by')->nullable();
+      $table->foreignId('updated_by')->nullable();
       $table->timestamp('created_at')->useCurrent();
+      $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
     });
   }
 
