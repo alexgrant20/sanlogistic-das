@@ -47,7 +47,7 @@
               <td>{{ $activity->departureLocation->name }}</td>
               <td>{{ $activity->arrivalLocation->name }}</td>
               <td>{{ $activity->type }}</td>
-              <td>{{ $activity->status }}</td>
+              <td>{{ $activity->activityStatus->status }}</td>
             </tr>
           @endforeach
         </tbody>
