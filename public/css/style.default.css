@@ -2293,6 +2293,11 @@ progress {
   color: var(--bs-table-hover-color);
 }
 
+.table-hover>tbody>.selected {
+  --bs-table-accent-bg: var(--bs-secondary) !important;
+  color: var(--bs-table-hover-color);
+}
+
 .table-primary {
   --bs-table-bg: #f8e0e3;
   --bs-table-striped-bg: #edd7da;
