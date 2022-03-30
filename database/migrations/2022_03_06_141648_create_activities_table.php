@@ -38,10 +38,6 @@ return new class extends Migration
       $table->string('retribution_image')->nullable();
       $table->integer('parking')->nullable();
       $table->string('parking_image')->nullable();
-      $table->integer('bbm_amount_approved')->nullable();
-      $table->integer('toll_amount_approved')->nullable();
-      $table->integer('parking_amount_approved')->nullable();
-      $table->integer('retribution_amount_approved')->nullable();
       $table->string('type')->default('TBD');
       $table->string('start_lat')->nullable();
       $table->string('start_lon')->nullable();
