@@ -37,8 +37,9 @@
             <tr>
               <td>{{ $activity->id }}</td>
               <td>
-                <a href="{{ url("/activities/$activity->id/edit") }}" class="badge bg-primary"><i
-                    class="bi bi-pencil"></i></a>
+                <a href="{{ url("/activities/$activity->id/edit") }}" class="badge bg-primary fs-6">
+                  <i class="bi bi-pencil"></i>
+                </a>
               </td>
               <td>{{ $activity->departure_date }}</td>
               <td>{{ $activity->driver->person->name }}</td>

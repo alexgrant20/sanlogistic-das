@@ -34,8 +34,9 @@
             <tr>
               <td>{{ $project->id }}</td>
               <td>
-                <a href="{{ url("/projects/$project->name/edit") }}" class="badge bg-primary"><i
-                    class="bi bi-pencil"></i></a>
+                <a href="{{ url("/projects/$project->name/edit") }}" class="badge bg-primary fs-6">
+                  <i class="bi bi-pencil"></i>
+                </a>
               </td>
               <td>{{ $project->company->name }}</td>
               <td>{{ $project->name }}</td>

@@ -36,8 +36,9 @@
             <tr>
               <td>{{ $company->id }}</td>
               <td>
-                <a href="{{ url("/companies/$company->name/edit") }}" class="badge bg-primary"><i
-                    class="bi bi-pencil"></i></a>
+                <a href="{{ url("/companies/$company->name/edit") }}" class="badge bg-primary fs-6">
+                  <i class="bi bi-pencil"></i>
+                </a>
               </td>
               <td>{{ $company->name }}</td>
               <td>Active</td>

@@ -56,8 +56,9 @@
             <tr>
               <td>{{ $address->id }}</td>
               <td>
-                <a href="{{ url("/addresses/$address->name/edit") }}" class="badge bg-primary"><i
-                    class="bi bi-pencil"></i></a>
+                <a href="{{ url("/addresses/$address->name/edit") }}" class="badge bg-primary fs-6">
+                  <i class="bi bi-pencil"></i>
+                </a>
               </td>
               <td>{{ $address->name }}</td>
               <td>{{ $address->addressType->name }}</td>
