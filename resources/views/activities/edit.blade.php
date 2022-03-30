@@ -229,7 +229,7 @@
             <div class="col-xl-4">
               <label for="status" class="form-label">Status</label>
               <input class="form-control form-control-lg" name="status" list="statuslistOptions"
-                value="{{ old('status', $activity['status']) }}" id="status">
+                value="{{ old('status', $activity->activityStatus->status) }}" id="status">
               <datalist id="statuslistOptions">
                 <option value="draft">
                 <option value="pending">
