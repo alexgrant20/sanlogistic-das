@@ -13,6 +13,7 @@
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
       <input type="hidden" id="tableName" value="activities">
+      <input type="hidden" name="_token" value="{{ csrf_token() }}">
       <div class="d-flex mb-5" id="actionContainer"></div>
 
       <h4 class="text-primary fw-bold">Table</h4>
@@ -31,13 +32,14 @@
             <th>Retribusi</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="selectable">
           @foreach ($activities as $activity)
             <tr>
               <td>{{ $activity->id }}</td>
               <td>
-                <a href="{{ url("/activities/$activity->id/edit") }}" class="badge bg-primary"><i
-                    class="bi bi-pencil"></i></a>
+                <a href="{{ url("/activities/$activity->id/edit") }}" class="badge bg-primary fs-6">
+                  <i class="bi bi-currency-dollar"></i>
+                </a>
               </td>
               <td>{{ $activity->departure_date }}</td>
               <td>{{ $activity->do_number }}</td>
