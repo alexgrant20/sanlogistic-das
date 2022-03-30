@@ -156,6 +156,13 @@ class ActivityController extends Controller
 
       $activity->update($data);
 
+      if ($activity->activityStatus()->first()->status !== $request->status) {
+        ActivityStatus::create([
+          'activity_id' => $activity->id,
+          'status' => $request->status
+        ]);
+      }
+
       DB::commit();
 
       return redirect('/activities')->with('success', 'Activity has been updated!');
