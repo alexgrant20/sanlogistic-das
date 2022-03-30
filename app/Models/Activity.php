@@ -17,6 +17,11 @@ class Activity extends Model
     return $this->belongsTo(User::class, 'user_id');
   }
 
+  public function scopeStatus($query, $status)
+  {
+    return $query->whereRelation('activityStatus', 'status', $status);
+  }
+
   public function vehicle()
   {
     return $this->belongsTo(Vehicle::class);
@@ -39,6 +44,6 @@ class Activity extends Model
 
   public function activityStatus()
   {
-    return $this->hasOne(ActivityStatus::class);
+    return $this->belongsTo(ActivityStatus::class);
   }
 }
