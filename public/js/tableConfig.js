@@ -75,40 +75,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
   table.buttons(0, null).containers().appendTo("#actionContainer");
 
-  $('table[data-display="datatables"] .selectable').on(
-    "click",
-    "tr",
-    function () {
-      $(this).toggleClass("selected");
+  $(".selectable input[type='checkbox']").on("click", function () {
+    $(this).closest("tr").toggleClass("selected");
 
-      const totalSelected = table.rows(".selected").data().length;
+    const totalSelected = table.rows(".selected").data().length;
+    const buttonExists = $(".acceptBtn").length;
 
-      if (totalSelected == 1) {
-        table.button().add(0, {
-          action: function (e, dt, button, config) {
-            const ids = [];
-            table
-              .rows(".selected")
-              .data()
-              .map((e) => ids.push(e[0]));
+    if (totalSelected && !buttonExists) {
+      table.button().add(0, {
+        action: async function (e, dt, button, config) {
+          const ids = [];
+          table
+            .rows(".selected")
+            .data()
+            .map((e) => ids.push(e[0]));
 
-            const data = JSON.stringify(ids);
+          const data = JSON.stringify(ids);
 
-            fetch("/finances/approve", {
-              method: "post",
-              headers: {
-                "X-CSRF-Token": $("input[name=_token]").val(),
-              },
-              body: data,
-            });
+          await fetch("/finances/approve", {
+            method: "post",
+            headers: {
+              "X-CSRF-Token": $("input[name=_token]").val(),
+            },
+            body: data,
+          });
 
-            location.reload();
-          },
-          text: "Accept",
-        });
-      } else if (totalSelected == 0) {
-        table.button("0").remove();
-      }
+          location.reload();
+        },
+        text: "Accept",
+        className: "acceptBtn",
+      });
+    } else if (totalSelected == 0 && buttonExists) {
+      table.button("0").remove();
     }
-  );
+  });
 });

@@ -62,3 +62,5 @@ Route::resource('/projects', ProjectController::class)->middleware('auth');
 Route::get('/finances/acceptance', [FinanceController::class, 'acceptance'])->middleware('auth');
 Route::get('/finances/payment', [FinanceController::class, 'payment'])->middleware('auth');
 Route::post('/finances/approve', [FinanceController::class, 'approve'])->middleware('auth');
+Route::get('/finances/acceptance/{activity:id}/edit', [FinanceController::class, 'edit'])->middleware('auth');
+Route::put('/finances/acceptance/{activity:id}', [FinanceController::class, 'audit'])->middleware('auth');

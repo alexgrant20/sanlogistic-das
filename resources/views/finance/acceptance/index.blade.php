@@ -18,10 +18,12 @@
 
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>
-      <table class="table table-hover text-center  table-dark nowrap" style="width: 100%" data-display="datatables">
+      <table class="table table-responsive table-hover text-center  table-dark nowrap" style="width: 100%"
+        data-display="datatables">
         <thead>
           <tr class="header">
             <th>ID</th>
+            <th>Check</th>
             <th>Action</th>
             <th>Tanggal</th>
             <th>Nomor DO</th>
@@ -32,12 +34,15 @@
             <th>Retribusi</th>
           </tr>
         </thead>
-        <tbody class="selectable">
+        <tbody class="selectable align-items-center">
           @foreach ($activities as $activity)
-            <tr>
+            <tr class="my-auto">
               <td>{{ $activity->id }}</td>
               <td>
-                <a href="{{ url("/activities/$activity->id/edit") }}" class="badge bg-primary fs-6">
+                <input type="checkbox" id="btncheck1" class="form-check-input">
+              </td>
+              <td>
+                <a href="{{ url("/finances/acceptance/$activity->id/edit") }}" class="badge bg-primary fs-6">
                   <i class="bi bi-currency-dollar"></i>
                 </a>
               </td>
