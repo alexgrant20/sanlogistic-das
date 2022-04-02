@@ -20,32 +20,25 @@
       <table class="table table-hover text-center  table-dark nowrap" style="width: 100%" data-display="datatables">
         <thead>
           <tr class="header">
-            <th>ID</th>
             <th>Action</th>
-            <th>Tanggal</th>
-            <th>Nomor DO</th>
+            <th>Project</th>
             <th>Nama Pengendara</th>
             <th>BBM</th>
             <th>Toll</th>
             <th>Parkir</th>
-            <th>Retribusi</th>
+            <th>Rertibusi</th>
           </tr>
         </thead>
         <tbody>
           @foreach ($activities as $activity)
             <tr>
-              <td>{{ $activity->id }}</td>
-              <td>
-                <a href="{{ url("/activities/$activity->id/edit") }}" class="badge bg-primary"><i
-                    class="bi bi-pencil"></i></a>
-              </td>
-              <td>{{ $activity->departure_date }}</td>
-              <td>{{ $activity->do_number }}</td>
-              <td>{{ $activity->driver->person->name }}</td>
-              <td>@money($activity->bbm_amount)</td>
-              <td>@money($activity->bbm_amount)</td>
-              <td>@money($activity->parking)</td>
-              <td>@money($activity->retribution_amount)</td>
+              <td>Action</td>
+              <td>{{ $activity->project_name }}</td>
+              <td>{{ $activity->person_name }}</td>
+              <td>@money($activity->total_bbm)</td>
+              <td>@money($activity->total_toll)</td>
+              <td>@money($activity->total_park)</td>
+              <td>@money($activity->total_retribution)</td>
             </tr>
           @endforeach
         </tbody>
