@@ -38,7 +38,7 @@
             </div>
 
             <div class="col-xl-4">
-              <label for="password" class="form-label">password</label>
+              <label for="password" class="form-label">Password</label>
               <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror"
                 id="password" name="password">
 
