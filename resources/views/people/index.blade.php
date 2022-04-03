@@ -44,7 +44,7 @@
               <td>{{ $person->department->name }}</td>
               @if (isset($person->user->username))
                 <td>
-                  <a href="{{ url('') }}" class="btn badge bg-warning fs-6">
+                  <a href="{{ url("/users/{$person->user->id}/edit") }}" class="btn badge bg-warning fs-6">
                     <i class="bi bi-person-fill"></i>
                   </a>
                 </td>

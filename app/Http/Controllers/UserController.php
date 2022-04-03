@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\Person;
 use App\Models\Role;
 use App\Models\User;
@@ -20,6 +21,7 @@ class UserController extends Controller
    */
   public function index()
   {
+    dd("G");
   }
 
   /**
@@ -75,7 +77,6 @@ class UserController extends Controller
    */
   public function show(User $user)
   {
-    //
   }
 
   /**
@@ -86,7 +87,11 @@ class UserController extends Controller
    */
   public function edit(User $user)
   {
-    //
+    return view('user.index', [
+      'title' => 'View User',
+      'user' => $user,
+      'roles' => Role::all(),
+    ]);
   }
 
   /**
@@ -96,9 +101,23 @@ class UserController extends Controller
    * @param  \App\Models\User  $user
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, User $user)
+  public function update(UpdateUserRequest $request, User $user)
   {
-    //
+    $data = $request->safe()->all();
+
+    $data['password'] = $data['password'] ? Hash::make($data['password']) : $user->password;
+
+    try {
+      DB::beginTransaction();
+
+      $user->update($data);
+
+      DB::commit();
+
+      return redirect("/people")->with('success', 'User successfully updated!');
+    } catch (Exception $e) {
+      return redirect("/people")->withInput()->with('error', $e->getMessage());
+    }
   }
 
   /**
