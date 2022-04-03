@@ -44,15 +44,18 @@
               <td>{{ $person->department->name }}</td>
               @if (isset($person->user->username))
                 <td>
-                  <a href="{{ url('') }}" class="badge bg-warning fs-6">
+                  <a href="{{ url('') }}" class="btn badge bg-warning fs-6">
                     <i class="bi bi-person-fill"></i>
                   </a>
                 </td>
               @else
                 <td>
-                  <a href="{{ url("/register/$person->id") }}" class="badge bg-info fs-6">
-                    <i class="bi bi-person-plus-fill"></i>
-                  </a>
+                  <form action="{{ url('/users/create') }}">
+                    <input type="hidden" name="person_id" value="{{ $person->id }}">
+                    <button type="submit" class="btn badge bg-info fs-6">
+                      <i class="bi bi-person-plus-fill"></i>
+                    </button>
+                  </form>
                 </td>
               @endif
             </tr>

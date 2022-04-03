@@ -10,13 +10,13 @@
     </div>
     <section class="container-fluid">
 
-      @if (session()->has('error'))
+      @error('person_id')
         <div class="alert alert-danger" role="alert">
-          {{ session('error') }}
+          {{ $message }}
         </div>
-      @endif
+      @enderror
 
-      <form action="/register" method="post">
+      <form action="/users" method="post">
         @csrf
         <div class="mb-5">
           <h4 class="text-primary fw-bold">Data</h4>
@@ -53,6 +53,7 @@
               <label for="role_id" class="form-label">Role</label>
               <select name="role_id" id="role_id"
                 class="form-select form-select-lg  @error('role_id') is-invalid @enderror">
+                <option hidden></option>
                 @foreach ($roles as $role)
                   @if ($role['id'] == old('role_id'))
                     <option value="{{ $role['id'] }}" selected>{{ $role['name'] }}</option>
