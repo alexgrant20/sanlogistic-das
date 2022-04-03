@@ -114,7 +114,7 @@ class ProjectController extends Controller
       return redirect('/projects')->with('success', 'Project has been updated!');
     } catch (Exception $e) {
       DB::rollBack();
-      return redirect('/projects')->withInput()->with('error', $e->getMessage());
+      return redirect("/projects/$project->id")->withInput()->with('error', $e->getMessage());
     }
   }
 

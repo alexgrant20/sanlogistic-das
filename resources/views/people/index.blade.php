@@ -43,9 +43,17 @@
               <td>{{ $person->phone_number }}</td>
               <td>{{ $person->department->name }}</td>
               @if (isset($person->user->username))
-                <td>{{ $person->user->username }}</td>
+                <td>
+                  <a href="{{ url('') }}" class="badge bg-warning fs-6">
+                    <i class="bi bi-person-fill"></i>
+                  </a>
+                </td>
               @else
-                <td>None</td>
+                <td>
+                  <a href="{{ url("/register/$person->id") }}" class="badge bg-info fs-6">
+                    <i class="bi bi-person-plus-fill"></i>
+                  </a>
+                </td>
               @endif
             </tr>
           @endforeach

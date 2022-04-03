@@ -12,6 +12,7 @@ use App\Models\Department;
 use App\Models\Person;
 use App\Models\Project;
 use App\Models\Regional;
+use App\Models\Role;
 use App\Models\SimType;
 use App\Models\Vehicle;
 use App\Models\VehicleBrand;
@@ -36,6 +37,18 @@ class DatabaseSeeder extends Seeder
       'role_id' => '1',
       'username' => 'stevenAlexander',
       'password' => bcrypt('password')
+    ]);
+
+    Role::create([
+      'name' => 'admin'
+    ]);
+
+    Role::create([
+      'name' => 'driver'
+    ]);
+
+    Role::create([
+      'name' => 'finances'
     ]);
 
     VehicleLicensePlateColor::create([

@@ -8,6 +8,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OptionController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Livewire\Vehicle;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,8 @@ Route::get('/', function () {
 
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
 Route::post('/login', [LoginController::class, 'authenticate'])->middleware('guest');
+Route::get('/register/{id}', [RegisterController::class, 'create'])->middleware('auth');
+Route::post('/register', [RegisterController::class, 'store'])->middleware('auth');
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
 
 Route::get('/addresses/export/excel', [AddressController::class, 'exportExcel'])->middleware('auth');
