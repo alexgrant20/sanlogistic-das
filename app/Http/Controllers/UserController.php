@@ -33,6 +33,8 @@ class UserController extends Controller
 
     $person = Person::findOrFail($data['person_id']);
 
+    if ($person->user) return abort(404);
+
     return view('user.register.index', [
       'title' => 'Register',
       'roles' => Role::all(),
