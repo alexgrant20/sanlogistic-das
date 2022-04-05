@@ -6,7 +6,6 @@
 @endsection
 
 @section('headJS')
-  <script type="text/javascript" src="{{ asset('/js/tableConfig.js') }}"></script>
   @yield('add_headJS')
 @endsection
 

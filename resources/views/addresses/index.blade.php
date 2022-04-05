@@ -32,6 +32,7 @@
       <hr>
       <div id='map' class="w-100 mb-5" style="height: 600px"></div>
       @include('partials.index_response')
+      @include('partials.import')
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
       <input type="hidden" id="tableName" value="addresses">

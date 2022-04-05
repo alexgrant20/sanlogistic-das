@@ -11,6 +11,7 @@
     </div>
     <section class="container-fluid">
       @include('partials.index_response')
+      @include('partials.import')
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
       <input type="hidden" id="tableName" value="vehicles">

@@ -103,7 +103,10 @@ class ActivityController extends Controller
    */
   public function show(Activity $activity)
   {
-    //
+
+    $data = ActivityStatus::with('created_user')->where('activity_id', $activity->id)->get();
+
+    return redirect('/activities')->with('log_data', $data);
   }
 
   /**

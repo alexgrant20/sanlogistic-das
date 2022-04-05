@@ -16,4 +16,9 @@ class ActivityStatus extends Model
   {
     return $this->belongsTo(Activity::class);
   }
+
+  public function created_user()
+  {
+    return $this->belongsTo(User::class, 'created_by');
+  }
 }

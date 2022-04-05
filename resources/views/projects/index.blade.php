@@ -10,11 +10,11 @@
     </div>
     <section class="container-fluid">
       @include('partials.index_response')
+      @include('partials.import')
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
       <input type="hidden" id="tableName" value="projects">
       <div class="d-flex mb-5" id="actionContainer"></div>
-
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>
       <table class="table table-hover text-center table-dark nowrap" style="width: 100%" data-display="datatables">
@@ -34,8 +34,11 @@
             <tr>
               <td>{{ $project->id }}</td>
               <td>
-                <a href="{{ url("/projects/$project->name/edit") }}" class="badge bg-primary fs-6">
+                <a href="{{ url("/projects/$project->name/edit") }}" class="btn badge bg-primary fs-6 me-2">
                   <i class="bi bi-pencil"></i>
+                </a>
+                <a href="{{ url("/projects/$project->name/edit") }}" class="btn badge bg-success fs-6">
+                  <i class="bi bi-kanban"></i>
                 </a>
               </td>
               <td>{{ $project->company->name }}</td>

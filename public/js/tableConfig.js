@@ -74,39 +74,4 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   table.buttons(0, null).containers().appendTo("#actionContainer");
-
-  $(".selectable input[type='checkbox']").on("click", function () {
-    $(this).closest("tr").toggleClass("selected");
-
-    const totalSelected = table.rows(".selected").data().length;
-    const buttonExists = $(".acceptBtn").length;
-
-    if (totalSelected && !buttonExists) {
-      table.button().add(0, {
-        action: async function (e, dt, button, config) {
-          const ids = [];
-          table
-            .rows(".selected")
-            .data()
-            .map((e) => ids.push(e[0]));
-
-          const data = JSON.stringify(ids);
-
-          await fetch("/finances/approve", {
-            method: "post",
-            headers: {
-              "X-CSRF-Token": $("input[name=_token]").val(),
-            },
-            body: data,
-          });
-
-          location.reload();
-        },
-        text: "Accept",
-        className: "acceptBtn",
-      });
-    } else if (totalSelected == 0 && buttonExists) {
-      table.button("0").remove();
-    }
-  });
 });

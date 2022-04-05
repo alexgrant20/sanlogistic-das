@@ -14,9 +14,9 @@ class FinanceController extends Controller
 {
   public function acceptance()
   {
+
     return view('finance.acceptance.index', [
-      'activities' => Activity::status('pending')->get(),
-      'importPath' => '/finance/acceptance/import/excel',
+      'activities' => Activity::with('driver', 'driver.person')->status('pending')->orWhereRelation('activityStatus', 'status', 'rejected')->get(),
       'title' => 'Acceptance'
     ]);
   }
@@ -52,6 +52,60 @@ class FinanceController extends Controller
     } catch (Exception $e) {
       DB::rollBack();
       session()->flash('error', 'Failed to approved!');
+    }
+  }
+
+  public function pay(Request $request)
+  {
+    try {
+      $ids = json_decode($request->getContent());
+
+      $activities = Activity::whereIn('user_id', $ids)->status('approved')->get('id');
+
+      DB::beginTransaction();
+
+      foreach ($activities as $activity) {
+        ActivityStatus::create([
+          'activity_id' => $activity['id'],
+          'status' => 'paid',
+        ]);
+      }
+
+      DB::commit();
+
+      session()->flash('success', 'Activity successfully paid!');
+    } catch (Exception $e) {
+      DB::rollBack();
+      session()->flash('error', 'Failed to pay!');
+    }
+  }
+
+  public function reject(Request $request)
+  {
+    $data = $request->validate([
+      'project_id' => 'required',
+      'user_id' => 'required',
+    ]);
+
+    $activities = Activity::where('project_id', $data['project_id'])->where('user_id', $data['user_id'])->status('approved')->get('id');
+
+    try {
+
+      DB::beginTransaction();
+
+      foreach ($activities as $activity) {
+        ActivityStatus::create([
+          'activity_id' => $activity['id'],
+          'status' => 'rejected',
+        ]);
+      }
+
+      DB::commit();
+
+      return redirect('/finances/payment')->with('success', 'Activity successfully rejected!');
+    } catch (Exception $e) {
+      DB::rollBack();
+      return redirect('/finances/payment')->with('error', 'Failed to reject activity!');
     }
   }
 
@@ -108,13 +162,13 @@ class FinanceController extends Controller
         ->selectRaw("SUM(activity_payments.toll_amount) as total_toll")
         ->selectRaw("SUM(activity_payments.parking_amount) as total_park")
         ->selectRaw("SUM(activity_payments.retribution_amount) as total_retribution")
-        ->selectRaw("projects.name as project_name, people.name as person_name")
+        ->selectRaw("projects.name as project_name, people.name as person_name, activities.user_id as user_id, activities.project_id as project_id")
         ->groupBy('activities.project_id')
         ->groupBy('user_id')
         ->orderByDesc('activity_payments.id')
+        ->status('approved')
         ->get(),
-      'importPath' => '/finance/acceptance/import/excel',
-      'title' => 'Acceptance'
+      'title' => 'Pay'
     ]);
   }
 }
