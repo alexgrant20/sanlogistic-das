@@ -158,4 +158,11 @@ class ProjectController extends Controller
     $ids = preg_split("/[,]/", $params);
     return Excel::download(new ProjectExport($ids), "projects_export_{$timestamp}.xlsx");
   }
+
+  public function indexAssignVehicle(Project $project)
+  {
+    return view('projects.assign.vehicle', [
+      'title' => 'Assign Vehicle'
+    ]);
+  }
 }

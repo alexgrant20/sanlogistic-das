@@ -58,9 +58,18 @@ Route::post('/companies/import/excel', [CompanyController::class, 'importExcel']
 Route::get('/companies/migrate/image', [CompanyController::class, 'migrateImage'])->middleware('auth');
 Route::resource('/companies', CompanyController::class)->middleware('auth');
 
+// === Project ===
+// Export & Import
 Route::get('/projects/export/excel', [ProjectController::class, 'exportExcel'])->middleware('auth');
 Route::post('/projects/import/excel', [ProjectController::class, 'importExcel'])->middleware('auth');
+
+// Assign
+Route::get('/projects/assign/vehicle/{project:name}', [ProjectController::class, 'indexAssignVehicle'])->middleware('auth');
+Route::get('/projects/assign/person/{project:name}', [ProjectController::class, 'indexAssignVehicle'])->middleware('auth');
+Route::get('/projects/assign/address/{project:name}', [ProjectController::class, 'indexAssignVehicle'])->middleware('auth');
+
 Route::resource('/projects', ProjectController::class)->middleware('auth');
+//================
 
 Route::get('/finances/acceptance', [FinanceController::class, 'acceptance'])->middleware('auth');
 Route::get('/finances/payment', [FinanceController::class, 'payment'])->middleware('auth');

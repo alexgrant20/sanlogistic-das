@@ -37,8 +37,8 @@
                 <a href="{{ url("/projects/$project->name/edit") }}" class="btn badge bg-primary fs-6 me-2">
                   <i class="bi bi-pencil"></i>
                 </a>
-                <a href="{{ url("/projects/$project->name/edit") }}" class="btn badge bg-success fs-6">
-                  <i class="bi bi-kanban"></i>
+                <a href="{{ url("/projects/assign/vehicle/$project->name") }}" class="btn badge bg-primary fs-6">
+                  <i class="bi bi-truck"></i>
                 </a>
               </td>
               <td>{{ $project->company->name }}</td>
