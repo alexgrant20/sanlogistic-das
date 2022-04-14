@@ -8,7 +8,12 @@ use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Imports\ProjectImport;
+use App\Models\Address;
+use App\Models\AddressProject;
+use App\Models\Person;
+use App\Models\Vehicle;
 use Exception;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -161,8 +166,223 @@ class ProjectController extends Controller
 
   public function indexAssignVehicle(Project $project)
   {
+    // Set cookie for js
+    setcookie('project_id', $project->id);
     return view('projects.assign.vehicle', [
-      'title' => 'Assign Vehicle'
+      'title' => 'Assign Vehicle',
+      'projectName' => $project->name,
+      'totalVehicle' => Vehicle::where('project_id', $project->id)->count(),
+      'totalAddress' => Address::all()->count(),
+      'totalPerson' => Person::where('project_id', $project->id)->count(),
     ]);
+  }
+
+  public function indexAssignPerson(Project $project)
+  {
+    // Set cookie for js
+    setcookie('project_id', $project->id);
+    return view('projects.assign.person', [
+      'title' => 'Assign Person',
+      'projectName' => $project->name,
+      'totalVehicle' => Vehicle::where('project_id', $project->id)->count(),
+      'totalAddress' => Address::all()->count(),
+      'totalPerson' => Person::where('project_id', $project->id)->count(),
+    ]);
+  }
+
+  public function indexAssignAddress(Project $project)
+  {
+    // Set cookie for js
+    setcookie('project_id', $project->id);
+    return view('projects.assign.address', [
+      'title' => 'Assign Address',
+      'projectName' => $project->name,
+      'totalVehicle' => Vehicle::where('project_id', $project->id)->count(),
+      'totalAddress' => Address::all()->count(),
+      'totalPerson' => Person::where('project_id', $project->id)->count(),
+    ]);
+  }
+
+  public function assignVehicle(Request $request)
+  {
+    $data = $request->all();
+    try {
+
+      $action = $data['action'];
+      $vehicle_id = $data['vehicle_id'];
+      $project_id = $data['project_id'];
+
+      if (!$action || !$vehicle_id || !$project_id) {
+        throw new Exception('Input Invalid', 500);
+      }
+
+      if ($action == 'assign') {
+
+        Vehicle::where('id', $vehicle_id)->update(['project_id' => $project_id]);
+
+        exit(json_encode(
+          array(
+            'status' => true
+          )
+        ));
+      } else {
+        Vehicle::where('id', $vehicle_id)->update(['project_id' => null]);
+
+        exit(json_encode(
+          array(
+            'status' => true
+          )
+        ));
+      }
+    } catch (Exception $e) {
+
+      echo json_encode(
+        array(
+          'status' => false,
+          'error' => $e->getMessage(),
+          'error_code' => $e->getCode()
+        )
+      );
+
+      exit;
+    }
+  }
+
+  public function assignPerson(Request $request)
+  {
+    try {
+
+      $data = $request->validate([
+        'person_id' => 'required',
+        'project_id' => 'required',
+        'action' => 'required'
+      ]);
+
+      $action = $data['action'];
+      $person_id = $data['person_id'];
+      $project_id = $data['project_id'];
+
+      if ($action == 'assign') {
+
+        Person::where('id', $person_id)->update(['project_id' => $project_id]);
+
+        exit(json_encode(
+          array(
+            'status' => true
+          )
+        ));
+      } else {
+
+        Person::where('id', $person_id)->update(['project_id' => null]);
+
+        exit(json_encode(
+          array(
+            'status' => true
+          )
+        ));
+      }
+    } catch (Exception $e) {
+
+      echo json_encode(
+        array(
+          'status' => false,
+          'error' => $e->getMessage(),
+          'error_code' => $e->getCode()
+        )
+      );
+
+      exit;
+    }
+  }
+
+  public function vehicles()
+  {
+    if (isset($_GET['keyword'])) {
+      $keyword = $_GET['keyword'];
+      $project_id = $_GET['projectId'];
+      $type = $_GET['type'];
+
+      if ($type == 'notInProject') {
+        $result = Vehicle::with('vehiclesDocuments', 'vehiclesLicensePlateColor')
+          ->where('license_plate', 'like', "%{$keyword}%")
+          ->where('project_id', '!=', $project_id)
+          ->orWhere('project_id', null)
+          ->orderBy('license_plate')
+          ->orderBy('project_id')
+          ->get();
+      } else {
+        $result = Vehicle::with('vehiclesDocuments', 'vehiclesLicensePlateColor')
+          ->where('license_plate', 'like', "%{$keyword}%")
+          ->where('project_id', $project_id)
+          ->orderBy('license_plate')
+          ->get();
+      }
+
+      if (empty($result)) {
+        echo json_encode([]);
+      } else {
+        echo json_encode($result);
+      }
+    }
+  }
+
+  public function people()
+  {
+    if (isset($_GET['keyword'])) {
+      $keyword = $_GET['keyword'];
+      $project_id = $_GET['projectId'];
+      $type = $_GET['type'];
+
+      if ($type == 'notInProject') {
+        $result = Person::where('name', 'like', "%{$keyword}%")
+          ->where('project_id', '!=', $project_id)
+          ->orWhere('project_id', null)
+          ->orderBy('project_id')
+          ->orderBy('name')
+          ->get();
+      } else {
+        $result = Person::where('name', 'like', "%{$keyword}%")
+          ->where('project_id', $project_id)
+          ->orderBy('name')
+          ->get();
+      }
+
+      if (empty($result)) {
+        echo json_encode([]);
+      } else {
+        echo json_encode($result);
+      }
+    }
+  }
+
+  public function address()
+  {
+    if (isset($_GET['keyword'])) {
+      $keyword = $_GET['keyword'];
+      $project_id = $_GET['projectId'];
+      $type = $_GET['type'];
+
+      if ($type == 'notInProject') {
+
+        $addressInProject = AddressProject::where('project_id', $project_id)->get('address_id');
+
+        $result = Address::where('name', 'like', "%{$keyword}%")
+          ->whereNotIn('id',  $addressInProject)
+          ->orderBy('name')
+          ->get();
+      } else {
+        $result = AddressProject::with('address')
+          ->where('project_id', $project_id)
+          ->whereRelation('address', 'name', 'like', "%{$keyword}%")
+          ->orderBy('address.name')
+          ->get();
+      }
+
+      if (empty($result)) {
+        echo json_encode([]);
+      } else {
+        echo json_encode($result);
+      }
+    }
   }
 }

@@ -65,8 +65,11 @@ Route::post('/projects/import/excel', [ProjectController::class, 'importExcel'])
 
 // Assign
 Route::get('/projects/assign/vehicle/{project:name}', [ProjectController::class, 'indexAssignVehicle'])->middleware('auth');
-Route::get('/projects/assign/person/{project:name}', [ProjectController::class, 'indexAssignVehicle'])->middleware('auth');
-Route::get('/projects/assign/address/{project:name}', [ProjectController::class, 'indexAssignVehicle'])->middleware('auth');
+Route::get('/projects/assign/person/{project:name}', [ProjectController::class, 'indexAssignPerson'])->middleware('auth');
+Route::get('/projects/assign/address/{project:name}', [ProjectController::class, 'indexAssignAddress'])->middleware('auth');
+Route::post('/projects/assign/vehicle', [ProjectController::class, 'assignVehicle'])->middleware('auth');
+Route::post('/projects/assign/person', [ProjectController::class, 'assignPerson'])->middleware('auth');
+Route::post('/projects/assign/address', [ProjectController::class, 'assignAddress'])->middleware('auth');
 
 Route::resource('/projects', ProjectController::class)->middleware('auth');
 //================

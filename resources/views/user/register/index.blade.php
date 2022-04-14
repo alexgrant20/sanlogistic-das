@@ -16,7 +16,7 @@
         </div>
       @enderror
 
-      <form action="/users" method="post">
+      <form action="/users" method="post" autocomplete="off">
         @csrf
         <div class="mb-5">
           <h4 class="text-primary fw-bold">Data</h4>

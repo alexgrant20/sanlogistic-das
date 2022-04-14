@@ -114,7 +114,7 @@ select:disabled {
   background-color: #666 !important;
 }
 
-input[type='checkbox'] {
+input[type="checkbox"] {
   vertical-align: middle;
   outline: none;
   font-size: inherit;
@@ -124,4 +124,8 @@ input[type='checkbox'] {
   background: white;
   border-radius: 0.25em;
   border: 0.125em solid #555;
+}
+
+.disabled {
+  filter: brightness(75%);
 }
