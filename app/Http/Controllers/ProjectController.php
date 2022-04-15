@@ -327,7 +327,7 @@ class ProjectController extends Controller
       $address_id = $data['address_id'];
       $project_id = $data['project_id'];
 
-      $address = Address::find($address_id)->name;
+      $addressName = Address::find($address_id)->name;
 
       if ($action == 'assign') {
 
@@ -339,7 +339,7 @@ class ProjectController extends Controller
         exit(json_encode(
           array(
             'status' => true,
-            'message' => "{$address} Assigned!",
+            'message' => "{$addressName} Assigned!",
             'action' => $action
           )
         ));
@@ -350,7 +350,7 @@ class ProjectController extends Controller
         exit(json_encode(
           array(
             'status' => true,
-            'message' => "{$address} Removed!",
+            'message' => "{$addressName} Removed!",
             'action' => $action
           )
         ));
