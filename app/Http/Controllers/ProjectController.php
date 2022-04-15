@@ -220,24 +220,26 @@ class ProjectController extends Controller
         throw new Exception('Input Invalid', 500);
       }
 
+      $vehicle = Vehicle::where('id', $vehicle_id);
+
       if ($action == 'assign') {
 
-        Vehicle::where('id', $vehicle_id)->update(['project_id' => $project_id]);
+        $vehicle->update(['project_id' => $project_id]);
 
         exit(json_encode(
           array(
             'status' => true,
-            'message' => 'Vehicle Assigned!',
+            'message' => "{$vehicle->first()->license_plate} Assigned!",
             'action' => $action
           )
         ));
       } else {
-        Vehicle::where('id', $vehicle_id)->update(['project_id' => null]);
+        $vehicle->update(['project_id' => null]);
 
         exit(json_encode(
           array(
             'status' => true,
-            'message' => 'Vehicle Removed!',
+            'message' => "{$vehicle->first()->license_plate} Removed!",
             'action' => $action
           )
         ));
@@ -249,7 +251,7 @@ class ProjectController extends Controller
           'status' => false,
           'error' => $e->getMessage(),
           'error_code' => $e->getCode(),
-          'message' => 'Failed to send the request!',
+          'message' => $e->getMessage(),
         )
       );
 
@@ -271,25 +273,27 @@ class ProjectController extends Controller
       $person_id = $data['person_id'];
       $project_id = $data['project_id'];
 
+      $person = Person::where('id', $person_id);
+
       if ($action == 'assign') {
 
-        Person::where('id', $person_id)->update(['project_id' => $project_id]);
+        $person->update(['project_id' => $project_id]);
 
         exit(json_encode(
           array(
             'status' => true,
-            'message' => 'Person Assigned!',
+            'message' => "{$person->first()->name} Assigned!",
             'action' => $action
           )
         ));
       } else {
 
-        Person::where('id', $person_id)->update(['project_id' => null]);
+        $person->update(['project_id' => null]);
 
         exit(json_encode(
           array(
             'status' => true,
-            'message' => 'Person Removed!',
+            'message' => "{$person->first()->name} Removed!",
             'action' => $action
           )
         ));
@@ -323,6 +327,8 @@ class ProjectController extends Controller
       $address_id = $data['address_id'];
       $project_id = $data['project_id'];
 
+      $address = Address::find($address_id)->name;
+
       if ($action == 'assign') {
 
         AddressProject::create([
@@ -333,7 +339,7 @@ class ProjectController extends Controller
         exit(json_encode(
           array(
             'status' => true,
-            'message' => 'Address Assigned!',
+            'message' => "{$address} Assigned!",
             'action' => $action
           )
         ));
@@ -344,7 +350,7 @@ class ProjectController extends Controller
         exit(json_encode(
           array(
             'status' => true,
-            'message' => 'Address Removed!',
+            'message' => "{$address} Removed!",
             'action' => $action
           )
         ));
