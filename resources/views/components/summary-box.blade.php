@@ -6,7 +6,8 @@
           <i class="bi {{ $icon }} svg-icon svg-icon-sm svg-icon-heavy text-gray-600 mb-2"></i>
           <p class="text-sm text-uppercase text-gray-600 lh-1 mb-0">{{ $summaryTitle ?? '' }}</p>
         </div>
-        <p class="text-xxl lh-1 mb-0 {{ $summaryTotalColor ?? 'text-dash-color-1' }}">{{ $summaryTotal }}</p>
+        <p class="text-xxl lh-1 mb-0 {{ $summaryTotalColor ?? 'text-dash-color-1' }}" id="{{ $id }}-value">
+          {{ $summaryTotal }}</p>
       </div>
       {{-- Pake detail bila memang ada detail --}}
       <div class="d-flex bg-gray-800 {{ $detail ?? 'd-none' }}">
