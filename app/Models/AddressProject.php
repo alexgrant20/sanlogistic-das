@@ -9,6 +9,8 @@ class AddressProject extends Model
 {
   use HasFactory;
 
+  protected $guarded = ['id'];
+
   public function address()
   {
     return $this->belongsTo(Address::class);

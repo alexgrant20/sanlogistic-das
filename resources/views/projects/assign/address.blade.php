@@ -116,8 +116,6 @@
 
               $.each(data, function(index, item) {
 
-                console.log(item)
-
                 const inSameProject = item.project_id == projectId;
 
                 const value = inSameProject ? "Remove" : "Assign";
@@ -126,33 +124,41 @@
 
                 let iconClass;
 
+                console.log(item)
+
                 switch (Number(item.address_type_id)) {
                   case 1:
-                    iconClass = 'far fa-building';
+                    // Main Office
+                    iconClass = 'bi bi-building';
                     break;
 
                   case 2:
-                    iconClass = 'fas fa-dolly';
+                    // Delivery Location
+                    iconClass = 'bi bi-geo-alt';
                     break;
 
                   case 3:
-                    iconClass = 'fas fa-toolbox';
+                    // Pool
+                    iconClass = 'bi bi-house-fill';
                     break;
 
                   case 4:
-                    iconClass = 'fas fa-gas-pump';
+                    // Station
+                    iconClass = 'bi bi-lightning-charge-fill';
                     break;
 
                   case 5:
-                    iconClass = 'fas fa-hammer';
+                    // Workshop
+                    iconClass = 'bi bi-tools';
                     break;
 
                   case 6:
-                    iconClass = 'fas fa-id-card';
+                    // Pkb/Samsat
+                    iconClass = 'bi bi-card-text';
                     break;
 
                   default:
-                    iconClass = 'far fa-question-circle';
+                    iconClass = 'bi bi-question-circle-fill';
                 }
 
                 str +=
@@ -160,10 +166,11 @@
                     <div class="col-xxl-3">
                         <div class="card">
                           <div class="card-body d-flex align-items-center">
-                          <i class="${iconClass} fa-3x me-2"></i>
+                          <i class="${iconClass} fs-3 me-2"></i>
                             <span class="text-truncate me-2">${item.name}</span>
-                            <form action="" method="POST" class="ms-auto">
-                              <input type="hidden" name="address_id" value="${item.address_id}">
+                            <form action="#" method="POST" class="ms-auto" listener="false">
+                              @csrf
+                              <input type="hidden" name="address_id" value="${item.id}">
                               <input type="hidden" name="action" value="${value.toLowerCase()}">
                               <input type="submit" value="${value}" class="btn ${className}">
                             </form>
@@ -201,7 +208,7 @@
         inputs.prop("disabled", true);
 
         request = $.ajax({
-          url: "/projects/assign/vehicle",
+          url: "/projects/assign/address",
           type: "post",
           data: serializedData
         });

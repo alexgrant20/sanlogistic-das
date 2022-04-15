@@ -172,7 +172,7 @@ class ProjectController extends Controller
       'title' => 'Assign Vehicle',
       'projectName' => $project->name,
       'totalVehicle' => Vehicle::where('project_id', $project->id)->count(),
-      'totalAddress' => Address::all()->count(),
+      'totalAddress' => AddressProject::where('project_id', $project->id)->count(),
       'totalPerson' => Person::where('project_id', $project->id)->count(),
     ]);
   }
@@ -185,7 +185,7 @@ class ProjectController extends Controller
       'title' => 'Assign Person',
       'projectName' => $project->name,
       'totalVehicle' => Vehicle::where('project_id', $project->id)->count(),
-      'totalAddress' => Address::all()->count(),
+      'totalAddress' => AddressProject::where('project_id', $project->id)->count(),
       'totalPerson' => Person::where('project_id', $project->id)->count(),
     ]);
   }
@@ -198,15 +198,19 @@ class ProjectController extends Controller
       'title' => 'Assign Address',
       'projectName' => $project->name,
       'totalVehicle' => Vehicle::where('project_id', $project->id)->count(),
-      'totalAddress' => Address::all()->count(),
+      'totalAddress' => AddressProject::where('project_id', $project->id)->count(),
       'totalPerson' => Person::where('project_id', $project->id)->count(),
     ]);
   }
 
   public function assignVehicle(Request $request)
   {
-    $data = $request->all();
     try {
+      $data = $request->validate([
+        'vehicle_id' => 'required',
+        'project_id' => 'required',
+        'action' => 'required'
+      ]);
 
       $action = $data['action'];
       $vehicle_id = $data['vehicle_id'];
@@ -295,6 +299,56 @@ class ProjectController extends Controller
     }
   }
 
+  public function assignAddress(Request $request)
+  {
+    try {
+
+      $data = $request->validate([
+        'address_id' => 'required',
+        'project_id' => 'required',
+        'action' => 'required'
+      ]);
+
+      $action = $data['action'];
+      $address_id = $data['address_id'];
+      $project_id = $data['project_id'];
+
+      if ($action == 'assign') {
+
+        AddressProject::create([
+          'address_id' => $address_id,
+          'project_id' => $project_id
+        ]);
+
+        exit(json_encode(
+          array(
+            'status' => true
+          )
+        ));
+      } else {
+
+        AddressProject::where(['project_id' => $project_id, 'address_id' => $address_id])->delete();
+
+        exit(json_encode(
+          array(
+            'status' => true
+          )
+        ));
+      }
+    } catch (Exception $e) {
+
+      echo json_encode(
+        array(
+          'status' => false,
+          'error' => $e->getMessage(),
+          'error_code' => $e->getCode()
+        )
+      );
+
+      exit;
+    }
+  }
+
   public function vehicles()
   {
     if (isset($_GET['keyword'])) {
@@ -362,19 +416,17 @@ class ProjectController extends Controller
       $project_id = $_GET['projectId'];
       $type = $_GET['type'];
 
+      $addressInProject = AddressProject::where('project_id', $project_id)->get('address_id');
+
       if ($type == 'notInProject') {
-
-        $addressInProject = AddressProject::where('project_id', $project_id)->get('address_id');
-
         $result = Address::where('name', 'like', "%{$keyword}%")
           ->whereNotIn('id',  $addressInProject)
           ->orderBy('name')
           ->get();
       } else {
-        $result = AddressProject::with('address')
-          ->where('project_id', $project_id)
-          ->whereRelation('address', 'name', 'like', "%{$keyword}%")
-          ->orderBy('address.name')
+        $result = Address::where('name', 'like', "%{$keyword}%")
+          ->whereIn('id', $addressInProject)
+          ->orderBy('name')
           ->get();
       }
 
