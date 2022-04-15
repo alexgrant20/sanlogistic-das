@@ -36,6 +36,9 @@
             className: "btn-outline-primary",
             buttons: [{
                 text: "Excel",
+                action: function() {
+                  $("#exportExcel").modal("show");
+                }
               },
               {
                 extend: "pdfHtml5",
@@ -67,8 +70,6 @@
 
             const data = JSON.stringify(uniqueIds);
 
-            console.log(data);
-
             await fetch("/finances/pay", {
               method: "post",
               headers: {
@@ -95,6 +96,49 @@
         <h2 class="h5 mb-0">Activities</h2>
       </div>
     </div>
+
+
+    <!-- Import Modal -->
+    <div class="modal fade" id="exportExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
+      <form method="post" action="{{ url('/activity/accepted/export/excel') }}" enctype="multipart/form-data">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="importExcelLabel">Import</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              @csrf
+
+              <div class="mb-3">
+                <label class="form-label">Pilih Bulan</label>
+                <div class="form-group">
+                  <select class="form-select" name="month">
+                    <option value="{{ now()->format('m') }}">{{ now()->format('F') }}</option>
+                    <option value="{{ now()->submonth(1)->format('m') }}">{{ now()->submonth(1)->format('F') }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <label class="form-label">Pilih Project</label>
+              <div class="form-group">
+                <select class="form-select" name="project_id">
+                  @foreach ($projects as $project)
+                    <option value="{{ $project->id }}">{{ $project->name }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Export</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+
     <section class="container-fluid">
       @include('partials.index_response')
       <h4 class="text-primary fw-bold">Action</h4>

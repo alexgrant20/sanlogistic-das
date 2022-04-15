@@ -74,6 +74,7 @@ Route::post('/projects/assign/address', [ProjectController::class, 'assignAddres
 Route::resource('/projects', ProjectController::class)->middleware('auth');
 //================
 
+Route::post('/activity/accepted/export/excel', [FinanceController::class, 'exportExcel'])->middleware('auth');
 Route::get('/finances/acceptance', [FinanceController::class, 'acceptance'])->middleware('auth');
 Route::get('/finances/payment', [FinanceController::class, 'payment'])->middleware('auth');
 Route::post('/finances/approve', [FinanceController::class, 'approve'])->middleware('auth');

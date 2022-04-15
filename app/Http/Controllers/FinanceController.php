@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ActivityRecapExport;
 use App\Http\Requests\UpdateActivityCostRequest;
 use App\Models\Activity;
 use App\Models\ActivityPayment;
 use App\Models\ActivityStatus;
+use App\Models\Project;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FinanceController extends Controller
 {
@@ -168,7 +171,19 @@ class FinanceController extends Controller
         ->orderByDesc('activity_payments.id')
         ->status('approved')
         ->get(),
-      'title' => 'Pay'
+      'title' => 'Pay',
+      'projects' => Project::all(),
     ]);
+  }
+
+  public function exportExcel(Request $request)
+  {
+    $timestamp = now()->timestamp;
+    $params = $request->validate([
+      'month' => 'required',
+      'project_id' => 'required',
+    ]);
+
+    return Excel::download(new ActivityRecapExport($params), "activities_export_{$timestamp}.xlsx");
   }
 }
