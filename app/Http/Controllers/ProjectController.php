@@ -226,7 +226,9 @@ class ProjectController extends Controller
 
         exit(json_encode(
           array(
-            'status' => true
+            'status' => true,
+            'message' => 'Vehicle Assigned!',
+            'action' => $action
           )
         ));
       } else {
@@ -234,7 +236,9 @@ class ProjectController extends Controller
 
         exit(json_encode(
           array(
-            'status' => true
+            'status' => true,
+            'message' => 'Vehicle Removed!',
+            'action' => $action
           )
         ));
       }
@@ -244,7 +248,8 @@ class ProjectController extends Controller
         array(
           'status' => false,
           'error' => $e->getMessage(),
-          'error_code' => $e->getCode()
+          'error_code' => $e->getCode(),
+          'message' => 'Failed to send the request!',
         )
       );
 
@@ -272,7 +277,9 @@ class ProjectController extends Controller
 
         exit(json_encode(
           array(
-            'status' => true
+            'status' => true,
+            'message' => 'Person Assigned!',
+            'action' => $action
           )
         ));
       } else {
@@ -281,7 +288,9 @@ class ProjectController extends Controller
 
         exit(json_encode(
           array(
-            'status' => true
+            'status' => true,
+            'message' => 'Person Removed!',
+            'action' => $action
           )
         ));
       }
@@ -291,7 +300,8 @@ class ProjectController extends Controller
         array(
           'status' => false,
           'error' => $e->getMessage(),
-          'error_code' => $e->getCode()
+          'error_code' => $e->getCode(),
+          'message' => 'Failed to send the request!',
         )
       );
 
@@ -317,12 +327,14 @@ class ProjectController extends Controller
 
         AddressProject::create([
           'address_id' => $address_id,
-          'project_id' => $project_id
+          'project_id' => $project_id,
         ]);
 
         exit(json_encode(
           array(
-            'status' => true
+            'status' => true,
+            'message' => 'Address Assigned!',
+            'action' => $action
           )
         ));
       } else {
@@ -331,7 +343,9 @@ class ProjectController extends Controller
 
         exit(json_encode(
           array(
-            'status' => true
+            'status' => true,
+            'message' => 'Address Removed!',
+            'action' => $action
           )
         ));
       }
@@ -341,7 +355,8 @@ class ProjectController extends Controller
         array(
           'status' => false,
           'error' => $e->getMessage(),
-          'error_code' => $e->getCode()
+          'error_code' => $e->getCode(),
+          'message' => 'Failed to send the request!',
         )
       );
 
@@ -428,6 +443,10 @@ class ProjectController extends Controller
           ->whereIn('id', $addressInProject)
           ->orderBy('name')
           ->get();
+
+        foreach ($result as $res) {
+          $res->project_id = $project_id;
+        }
       }
 
       if (empty($result)) {

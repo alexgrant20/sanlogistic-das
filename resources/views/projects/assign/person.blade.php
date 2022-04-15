@@ -75,10 +75,17 @@
         </div>
       </div>
 
+      <x-basic-toast>
+        <x-slot name="id">person-project-toast</x-slot>
+      </x-basic-toast>
+
     </section>
   </div>
   <script type="text/javascript" defer>
     $(document).ready(function() {
+
+      const toast = new bootstrap.Toast(document.getElementById('person-project-toast'))
+
       $('#keywordNotInProject').on('keyup', function() {
         getData($(this).val() || "%", "listNotInProject", "notInProject");
       })
@@ -137,7 +144,6 @@
                     <div class="col-xxl-3">
                       <div class="card">
                         <div class="card-body d-flex align-items-center">
-                          <img src="img/person_document/person_image/${item.image || 'default.png'}" class="rounded-circle me-2" alt="" width="60" height="60">
                           <span class="w-50 text-truncate">${item.name}</span>
                           <form action="#" method="POST" class="ms-auto" listener="false">
                             @csrf
@@ -186,25 +192,18 @@
 
         request.done(function(response, textStatus, jqXHR) {
           const res = JSON.parse(response);
-          console.log(res)
           if (res.status) {
             // the row element
             getData("%", "listNotInProject", "notInProject");
             getData("%", "listInProject", "inProject");
             $('.keywoard').val('')
-          } else {
-            console.log("false")
+
+            // Change Card Value
+            const textValue = $('#total-person-value').text();
+            $('#total-person-value').text((Number(textValue) + (res.action == 'assign' ? 1 : -1)))
           }
-        });
-
-        request.fail(function(jqXHR, textStatus, errorThrown) {
-          console.error(
-            'ERROR'
-          );
-        });
-
-        request.always(function() {
-          inputs.prop("disabled", false);
+          $('#toast-body-person-project-toast').text(res.message);
+          toast.show();
         });
       }
 

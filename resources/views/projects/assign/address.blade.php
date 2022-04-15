@@ -75,10 +75,17 @@
         </div>
       </div>
 
+      <x-basic-toast>
+        <x-slot name="id">address-project-toast</x-slot>
+      </x-basic-toast>
+
     </section>
   </div>
   <script type="text/javascript" defer>
     $(document).ready(function() {
+
+      const toast = new bootstrap.Toast(document.getElementById('address-project-toast'))
+
       $('#keywordNotInProject').on('keyup', function() {
         getData($(this).val() || "%", "listNotInProject", "notInProject");
       })
@@ -220,19 +227,13 @@
             getData("%", "listNotInProject", "notInProject");
             getData("%", "listInProject", "inProject");
             $('.keywoard').val('')
-          } else {
-            console.log("false")
+
+            // Change Card Value
+            const textValue = $('#total-address-value').text();
+            $('#total-address-value').text((Number(textValue) + (res.action == 'assign' ? 1 : -1)))
           }
-        });
-
-        request.fail(function(jqXHR, textStatus, errorThrown) {
-          console.error(
-            'ERROR'
-          );
-        });
-
-        request.always(function() {
-          inputs.prop("disabled", false);
+          $('#toast-body-address-project-toast').text(res.message);
+          toast.show();
         });
       }
 
