@@ -16,6 +16,7 @@ use App\Models\District;
 use App\Models\Subdistrict;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -26,8 +27,10 @@ class AddressController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index(Request $request)
   {
+    // $this->authorize('viewAsadny');
+
     return view('addresses.index', [
       'addresses' => Address::with([
         'addressType',
