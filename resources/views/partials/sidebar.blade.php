@@ -4,7 +4,7 @@
     <img class="avatar shadow-0 img-fluid rounded-circle" src="{{ asset('/img/avatar-6.jpg') }}" alt="">
     <div class="ms-3 title">
       <h1 class="h5 mb-1">{{ auth()->user()->username }}</h1>
-      <p class="text-sm text-gray-700 mb-0 lh-1">Web Designer</p>
+      <p class="text-sm text-capitalize text-gray-700 mb-0 lh-1">{{ auth()->user()->role->name }}</p>
     </div>
   </div>
 
@@ -22,26 +22,28 @@
   <span class="text-uppercase text-gray-600 text-xs heading mb-2 mx-3 text-wrap d-block">Super Admin</span>
   <ul class="list-unstyled">
 
-    <li class="sidebar-item {{ Request::is('addresses*') ? 'active' : '' }}">
-      <a class="sidebar-link" href="#addressesDropDown" data-bs-toggle="collapse">
-        <i class="bi bi-cursor svg-icon svg-icon-sm svg-icon-heavy"></i>
-        <span>Addresses</span>
-      </a>
-      <ul class="collapse list-unstyled {{ Request::is('addresses*') ? 'show' : '' }}" id="addressesDropDown">
-        <li>
-          <a class="sidebar-link {{ Request::is('addresses/create') ? 'text-primary' : '' }}"
-            href="{{ url('/addresses/create') }}">
-            Add
-          </a>
-        </li>
-        <li>
-          <a class="sidebar-link {{ Request::is('addresses') ? 'text-primary' : '' }}"
-            href="{{ url('/addresses') }}">
-            View
-          </a>
-        </li>
-      </ul>
-    </li>
+    @can('viewAny', 'App\Models\Address')
+      <li class="sidebar-item {{ Request::is('addresses*') ? 'active' : '' }}">
+        <a class="sidebar-link" href="#addressesDropDown" data-bs-toggle="collapse">
+          <i class="bi bi-cursor svg-icon svg-icon-sm svg-icon-heavy"></i>
+          <span>Addresses</span>
+        </a>
+        <ul class="collapse list-unstyled {{ Request::is('addresses*') ? 'show' : '' }}" id="addressesDropDown">
+          <li>
+            <a class="sidebar-link {{ Request::is('addresses/create') ? 'text-primary' : '' }}"
+              href="{{ url('/addresses/create') }}">
+              Add
+            </a>
+          </li>
+          <li>
+            <a class="sidebar-link {{ Request::is('addresses') ? 'text-primary' : '' }}"
+              href="{{ url('/addresses') }}">
+              View
+            </a>
+          </li>
+        </ul>
+      </li>
+    @endcan
 
     <li class="sidebar-item {{ Request::is('activities*') ? 'active' : '' }}">
       <a class="sidebar-link" href="#activitiesDropDown" data-bs-toggle="collapse">

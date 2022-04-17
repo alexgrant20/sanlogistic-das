@@ -18,7 +18,7 @@ class AddressPolicy
    */
   public function viewAny(User $user)
   {
-    dd($user);
+    return in_array($user->role->name, ['admin']);
   }
 
   /**
