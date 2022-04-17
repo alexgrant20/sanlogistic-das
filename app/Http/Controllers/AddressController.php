@@ -18,10 +18,12 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AddressController extends Controller
 {
+
   /**
    * Display a listing of the resource.
    *
@@ -29,7 +31,10 @@ class AddressController extends Controller
    */
   public function index(Request $request)
   {
-    // $this->authorize('viewAsadny');
+
+    if ($request->user()->cannot('viewAny', Address::class)) {
+      abort(403);
+    }
 
     return view('addresses.index', [
       'addresses' => Address::with([
@@ -49,8 +54,12 @@ class AddressController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function create()
+  public function create(Request $request)
   {
+    if ($request->user()->cannot('create', Address::class)) {
+      abort(403);
+    }
+
     return view('addresses.create', [
       'title' => 'Create Address',
       'areas' => Area::all(),

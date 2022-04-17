@@ -19,7 +19,6 @@ class AddressPolicy
   public function viewAny(User $user)
   {
     dd($user);
-    // return true;
   }
 
   /**
@@ -42,7 +41,7 @@ class AddressPolicy
    */
   public function create(User $user)
   {
-    //
+    return in_array($user->role->name, ['admin']);
   }
 
   /**
@@ -54,7 +53,7 @@ class AddressPolicy
    */
   public function update(User $user, Address $address)
   {
-    return true;
+    //
   }
 
   /**
