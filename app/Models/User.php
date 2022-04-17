@@ -58,4 +58,14 @@ class User extends Authenticatable
   {
     return $this->hasMany(Activity::class);
   }
+
+  public function hasRole(String $role)
+  {
+    return $this->role->name === $role;
+  }
+
+  public function hasRoles(array $roles)
+  {
+    return in_array($this->role->name, $roles);
+  }
 }
