@@ -29,7 +29,10 @@ class ActivityController extends Controller
   {
     return view('activities.index', [
       'title' => 'Activities',
-      'activities' => Activity::latest()->with('driver', 'vehicle', 'departureLocation', 'arrivalLocation')->get(),
+      'activities' => Activity::with('activityStatus', 'departureLocation', 'arrivalLocation', 'driver.person')
+        ->latest()
+        ->with('driver', 'vehicle', 'departureLocation', 'arrivalLocation')
+        ->get(),
       'importPath' => '/activities/import/excel',
     ]);
   }

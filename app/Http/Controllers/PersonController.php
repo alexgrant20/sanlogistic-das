@@ -28,7 +28,7 @@ class PersonController extends Controller
   public function index()
   {
     return view('people.index', [
-      'people' => Person::with('department')->latest()->get(),
+      'people' => Person::with('department', 'project', 'user')->latest()->get(),
       'title' => 'People',
       'importPath' => '/people/import/excel',
     ]);

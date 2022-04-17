@@ -28,7 +28,7 @@ class ProjectController extends Controller
   public function index()
   {
     return view('projects.index', [
-      'projects' => Project::latest()->get(),
+      'projects' => Project::with('company')->latest()->get(),
       'title' => 'Projects',
       'importPath' => '/projects/import/excel',
     ]);
