@@ -15,8 +15,8 @@ return new class extends Migration
   {
     Schema::create('person_mutations', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('person_id');
-      $table->foreignId('created_by');
+      $table->foreignId('person_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      $table->foreignId('created_by')->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
       $table->date('date');
       $table->string('mutation_number');
       $table->string('employee_number');

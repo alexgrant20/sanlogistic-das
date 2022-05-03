@@ -15,7 +15,7 @@ return new class extends Migration
   {
     Schema::create('vehicle_types', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('vehicle_brand_id');
+      $table->foreignId('vehicle_brand_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->string('name')->unique();
       $table->timestamp('created_at')->useCurrent();
       $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();

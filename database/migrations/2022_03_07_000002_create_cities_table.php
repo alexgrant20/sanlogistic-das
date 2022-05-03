@@ -13,10 +13,10 @@ return new class extends Migration
    */
   public function up()
   {
-    Schema::create('address_projects', function (Blueprint $table) {
+    Schema::create('cities', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('address_id');
-      $table->foreignId('project_id');
+      $table->string('name');
+      $table->foreignId('province_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->timestamp('created_at')->useCurrent();
       $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
     });
@@ -29,6 +29,6 @@ return new class extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('address_projects');
+    Schema::dropIfExists('cities');
   }
 };

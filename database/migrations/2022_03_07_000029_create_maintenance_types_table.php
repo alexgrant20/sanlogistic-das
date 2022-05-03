@@ -13,12 +13,9 @@ return new class extends Migration
    */
   public function up()
   {
-    Schema::create('vehicle_varieties', function (Blueprint $table) {
+    Schema::create('maintenance_types', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('vehicle_type_id');
-      $table->string('name')->unique();
-      $table->timestamp('created_at')->useCurrent();
-      $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+      $table->timestamps();
     });
   }
 
@@ -29,6 +26,6 @@ return new class extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('vehicle_varieties');
+    Schema::dropIfExists('maintenance_types');
   }
 };

@@ -15,9 +15,9 @@ return new class extends Migration
   {
     Schema::create('vehicle_checklists', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('user_id');
-      $table->foreignId('vehicle_id');
-      $table->foreignId('address_id');
+      $table->foreignId('user_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      $table->foreignId('vehicle_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      $table->foreignId('address_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->integer('odo');
       $table->smallInteger('lampu_besar');
       $table->smallInteger('lampu_kota');

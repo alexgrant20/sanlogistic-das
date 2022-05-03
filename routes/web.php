@@ -82,3 +82,16 @@ Route::post('/finances/reject', [FinanceController::class, 'reject'])->middlewar
 Route::post('/finances/pay', [FinanceController::class, 'pay'])->middleware('auth');
 Route::get('/finances/acceptance/{activity:id}/edit', [FinanceController::class, 'edit'])->middleware('auth');
 Route::put('/finances/acceptance/{activity:id}', [FinanceController::class, 'audit'])->middleware('auth');
+
+// Option
+Route::get('/vehicles/vehicle_type/{id}', [VehicleController::class, 'vehicleType']);
+Route::get('/vehicles/vehicle_variety/{id}', [VehicleController::class, 'vehicleVariety']);
+
+Route::get('/addresses/city/{id}', [AddressController::class, 'city']);
+Route::get('/addresses/district/{id}', [AddressController::class, 'district']);
+Route::get('/addresses/sub_district/{id}', [AddressController::class, 'subDistrict']);
+Route::get('/addresses/location', [AddressController::class, 'location']);
+
+Route::get('/project/vehicle', [ProjectController::class, 'vehicles']);
+Route::get('/project/address', [ProjectController::class, 'address']);
+Route::get('/project/person', [ProjectController::class, 'people']);

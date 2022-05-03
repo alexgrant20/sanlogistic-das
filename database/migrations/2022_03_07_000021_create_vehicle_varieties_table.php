@@ -7,18 +7,16 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
   /**
-   * Run the migrations.p
+   * Run the migrations.
    *
    * @return void
    */
   public function up()
   {
-    Schema::create('activity_statuses', function (Blueprint $table) {
+    Schema::create('vehicle_varieties', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('activity_id');
-      $table->string('status');
-      $table->foreignId('created_by')->nullable();
-      $table->foreignId('updated_by')->nullable();
+      $table->foreignId('vehicle_type_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      $table->string('name')->unique();
       $table->timestamp('created_at')->useCurrent();
       $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
     });
@@ -31,6 +29,6 @@ return new class extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('activity_statuses');
+    Schema::dropIfExists('vehicle_varieties');
   }
 };

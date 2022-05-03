@@ -13,14 +13,10 @@ return new class extends Migration
    */
   public function up()
   {
-    Schema::create('vehicle_documents', function (Blueprint $table) {
+    Schema::create('districts', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('vehicle_id');
-      $table->string('type');
-      $table->string('number');
-      $table->string('image');
-      $table->date('expire');
-      $table->boolean('active');
+      $table->foreignId('city_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      $table->string('name');
       $table->timestamp('created_at')->useCurrent();
       $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
     });
@@ -33,6 +29,6 @@ return new class extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('vehicle_documents');
+    Schema::dropIfExists('districts');
   }
 };

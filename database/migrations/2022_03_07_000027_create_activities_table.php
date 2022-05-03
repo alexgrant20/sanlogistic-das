@@ -15,12 +15,11 @@ return new class extends Migration
   {
     Schema::create('activities', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('user_id');
-      $table->foreignId('vehicle_id');
-      $table->foreignId('project_id');
-      $table->foreignId('departure_location_id');
-      $table->foreignId('arrival_location_id');
-      $table->foreignId('activity_status_id')->nullable();
+      $table->foreignId('user_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      $table->foreignId('vehicle_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      $table->foreignId('project_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      $table->foreignId('departure_location_id')->references('id')->on('addresses')->restrictOnDelete()->cascadeOnUpdate();
+      $table->foreignId('arrival_location_id')->references('id')->on('addresses')->restrictOnDelete()->cascadeOnUpdate();
       $table->date('do_date');
       $table->string('do_number');
       $table->string('do_image');
@@ -45,8 +44,6 @@ return new class extends Migration
       $table->string('end_lat')->nullable();
       $table->string('end_lon')->nullable();
       $table->string('end_loc')->nullable();
-      $table->foreignId('created_by')->nullable();
-      $table->foreignId('updated_by')->nullable();
       $table->timestamp('created_at')->useCurrent();
       $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
     });

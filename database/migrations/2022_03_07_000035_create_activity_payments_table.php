@@ -15,7 +15,7 @@ return new class extends Migration
   {
     Schema::create('activity_payments', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('activity_status_id');
+      $table->foreignId('activity_status_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->integer('bbm_amount');
       $table->integer('toll_amount');
       $table->integer('parking_amount');

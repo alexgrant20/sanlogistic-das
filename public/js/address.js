@@ -3,7 +3,7 @@ $(document).ready(function () {
 	const CITY_ID = $("#ci_id").val();
 	const DIS_ID = $("#di_id").val();
 	const SUBDIS_ID = $("#su_id").val();
-	const API_ROUTE = "/api/addresses";
+	const API_ROUTE = "/addresses";
 
 	if (PROV_ID) {
 		if (CITY_ID) {

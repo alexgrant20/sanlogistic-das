@@ -13,14 +13,17 @@ return new class extends Migration
    */
   public function up()
   {
-    Schema::create('company_documents', function (Blueprint $table) {
+    Schema::create('person_documents', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('company_id');
+      $table->foreignId('person_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      // For SIM (Not Constrained)
+      $table->foreignId('specialID')->nullable();
       $table->string('type');
       $table->string('number');
+      $table->string('address')->nullable();
       $table->string('image');
-      $table->date('expire');
-      $table->boolean('active');
+      $table->date('expire')->nullable();
+      $table->tinyInteger('active')->default(1);
       $table->timestamp('created_at')->useCurrent();
       $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
     });
@@ -33,6 +36,6 @@ return new class extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('company_documents');
+    Schema::dropIfExists('person_documents');
   }
 };

@@ -13,13 +13,16 @@ return new class extends Migration
    */
   public function up()
   {
-    Schema::create('vehicle_images', function (Blueprint $table) {
+    Schema::create('users', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('vehicle_id');
-      $table->string('image');
-      $table->string('type');
+      $table->foreignId('person_id')->unique()->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      $table->foreignId('role_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      $table->string('username');
+      $table->string('password');
+      $table->smallInteger('total_cust_trip')->default(0);
       $table->timestamp('created_at')->useCurrent();
       $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+      $table->softDeletes();
     });
   }
 
@@ -30,6 +33,6 @@ return new class extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('vehicle_images');
+    Schema::dropIfExists('users');
   }
 };

@@ -98,7 +98,7 @@
 
       function getData(keyword, templateId, type) {
         $.ajax({
-          url: '/api/project/vehicle',
+          url: '/project/vehicle',
           type: 'GET',
           data: {
             keyword,

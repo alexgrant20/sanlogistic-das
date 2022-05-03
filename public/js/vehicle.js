@@ -2,7 +2,7 @@ $(document).ready(function () {
 	const brandID = $("#vehicle_brand_id").val();
 	const typeID = $("#type_id").val();
 	const varietyID = $("#variety_id").val();
-	const API_ROUTE = "/api/vehicles";
+	const API_ROUTE = "/vehicles";
 
 	if (brandID) {
 		if (typeID) {
