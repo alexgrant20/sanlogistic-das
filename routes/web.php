@@ -84,14 +84,14 @@ Route::get('/finances/acceptance/{activity:id}/edit', [FinanceController::class,
 Route::put('/finances/acceptance/{activity:id}', [FinanceController::class, 'audit'])->middleware('auth');
 
 // Option
-Route::get('/vehicles/vehicle_type/{id}', [VehicleController::class, 'vehicleType']);
-Route::get('/vehicles/vehicle_variety/{id}', [VehicleController::class, 'vehicleVariety']);
+Route::get('/vehicles/vehicle_type/{id}', [VehicleController::class, 'vehicleType'])->middleware('auth');
+Route::get('/vehicles/vehicle_variety/{id}', [VehicleController::class, 'vehicleVariety'])->middleware('auth');
 
-Route::get('/addresses/city/{id}', [AddressController::class, 'city']);
-Route::get('/addresses/district/{id}', [AddressController::class, 'district']);
-Route::get('/addresses/sub_district/{id}', [AddressController::class, 'subDistrict']);
-Route::get('/addresses/location', [AddressController::class, 'location']);
+Route::get('/addresses/city/{id}', [AddressController::class, 'city'])->middleware('auth');
+Route::get('/addresses/district/{id}', [AddressController::class, 'district'])->middleware('auth');
+Route::get('/addresses/sub_district/{id}', [AddressController::class, 'subDistrict'])->middleware('auth');
+Route::get('/addresses/location', [AddressController::class, 'location'])->middleware('auth');
 
-Route::get('/project/vehicle', [ProjectController::class, 'vehicles']);
-Route::get('/project/address', [ProjectController::class, 'address']);
-Route::get('/project/person', [ProjectController::class, 'people']);
+Route::get('/project/vehicle', [ProjectController::class, 'vehicles'])->middleware('auth');
+Route::get('/project/address', [ProjectController::class, 'address'])->middleware('auth');
+Route::get('/project/person', [ProjectController::class, 'people'])->middleware('auth');
