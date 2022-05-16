@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PoolType>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Subdistrict>
  */
-class PoolTypeFactory extends Factory
+class SubdistrictFactory extends Factory
 {
   /**
    * Define the model's default state.
@@ -17,7 +17,8 @@ class PoolTypeFactory extends Factory
   public function definition()
   {
     return [
-      'name' => $this->faker->name()
+      'district_id' => random_int(1, 9),
+      'name' => $this->faker->citySuffix(),
     ];
   }
 }

@@ -136,10 +136,10 @@ class AddressController extends Controller
       $address->update($request->safe()->except(['province_id', 'city_id', 'district_id']));
 
       DB::commit();
-      return redirect('/addresses')->with('success', "New address has been added!");
+      return redirect('/addresses')->with('success', "Address has been updated!");
     } catch (Exception $e) {
       DB::rollBack();
-      return redirect('/addresses/create')->withInput()->with('error', $e->getMessage());
+      return redirect("/addresses/{$address->id}/edit")->withInput()->with('error', $e->getMessage());
     }
   }
 

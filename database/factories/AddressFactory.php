@@ -17,9 +17,9 @@ class AddressFactory extends Factory
   public function definition()
   {
     return [
-      'address_type_id' => random_int(1, 10),
-      'area_id' => 1,
-      'subdistrict_id' => 1,
+      'address_type_id' => random_int(1, 9),
+      'area_id' => 2,
+      'subdistrict_id' => 2,
       'pool_type_id' => 1,
       'name' => $this->faker->unique()->name(),
       'full_address' => $this->faker->address(),

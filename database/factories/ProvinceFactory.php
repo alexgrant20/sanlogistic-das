@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PoolType>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Province>
  */
-class PoolTypeFactory extends Factory
+class ProvinceFactory extends Factory
 {
   /**
    * Define the model's default state.
@@ -17,7 +17,7 @@ class PoolTypeFactory extends Factory
   public function definition()
   {
     return [
-      'name' => $this->faker->name()
+      'name' => $this->faker->country()
     ];
   }
 }

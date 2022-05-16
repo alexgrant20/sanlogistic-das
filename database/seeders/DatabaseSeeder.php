@@ -6,14 +6,19 @@ use App\Models\User;
 use App\Models\Address;
 use App\Models\AddressType;
 use App\Models\Area;
+use App\Models\City;
 use App\Models\Company;
 use App\Models\CompanyType;
 use App\Models\Department;
+use App\Models\District;
 use App\Models\Person;
+use App\Models\PoolType;
 use App\Models\Project;
+use App\Models\Province;
 use App\Models\Regional;
 use App\Models\Role;
 use App\Models\SimType;
+use App\Models\Subdistrict;
 use App\Models\Vehicle;
 use App\Models\VehicleBrand;
 use App\Models\VehicleLicensePlateColor;
@@ -32,47 +37,54 @@ class DatabaseSeeder extends Seeder
    */
   public function run()
   {
+
+
+    // Role::create([
+    //   'name' => 'admin'
+    // ]);
+
+    // Role::create([
+    //   'name' => 'driver'
+    // ]);
+
+    // Role::create([
+    //   'name' => 'finances'
+    // ]);
+
+    // VehicleLicensePlateColor::create([
+    //   'name' => 'yellow'
+    // ]);
+
+    // VehicleLicensePlateColor::create([
+    //   'name' => 'black'
+    // ]);
+
+    // Department::factory(10)->create();
+    // SimType::factory(5)->create();
+    // AddressType::factory(10)->create();
+    // CompanyType::factory(5)->create();
+    // VehicleBrand::factory(10)->create();
+    // VehicleType::factory(30)->create();
+    // VehicleVariety::factory(200)->create();
+    // Regional::factory(20)->create();
+    // Area::factory(30)->create();
+    // Province::factory(10)->create();
+    // City::factory(10)->create();
+    // District::factory(10)->create();
+    // Subdistrict::factory(10)->create();
+    // PoolType::factory(10)->create();
+    // Address::factory(100)->create();
+    // Company::factory(20)->create();
+    // Project::factory(20)->create();
+    // Person::factory(20)->create();
+    // VehicleTowing::factory(10)->create();
+    Vehicle::factory(20)->create();
+
     User::create([
       'person_id' => '1',
       'role_id' => '1',
       'username' => 'stevenAlexander',
       'password' => bcrypt('password')
     ]);
-
-    Role::create([
-      'name' => 'admin'
-    ]);
-
-    Role::create([
-      'name' => 'driver'
-    ]);
-
-    Role::create([
-      'name' => 'finances'
-    ]);
-
-    VehicleLicensePlateColor::create([
-      'name' => 'yellow'
-    ]);
-
-    VehicleLicensePlateColor::create([
-      'name' => 'black'
-    ]);
-
-    Address::factory(100)->create();
-    Company::factory(20)->create();
-    AddressType::factory(10)->create();
-    CompanyType::factory(5)->create();
-    VehicleBrand::factory(10)->create();
-    VehicleType::factory(30)->create();
-    VehicleVariety::factory(200)->create();
-    Project::factory(20)->create();
-    Area::factory(30)->create();
-    Regional::factory(20)->create();
-    VehicleTowing::factory(10)->create();
-    Vehicle::factory(20)->create();
-    Department::factory(10)->create();
-    SimType::factory(5)->create();
-    Person::factory(20)->create();
   }
 }
