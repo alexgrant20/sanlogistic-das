@@ -38,6 +38,10 @@ Route::resource('/users', UserController::class)->middleware('auth');
 
 Route::get('/addresses/export/excel', [AddressController::class, 'exportExcel'])->middleware('auth');
 Route::post('/addresses/import/excel', [AddressController::class, 'importExcel'])->middleware('auth');
+Route::get('/addresses/city/{id}', [AddressController::class, 'city'])->middleware('auth');
+Route::get('/addresses/district/{id}', [AddressController::class, 'district'])->middleware('auth');
+Route::get('/addresses/sub_district/{id}', [AddressController::class, 'subDistrict'])->middleware('auth');
+Route::get('/addresses/location', [AddressController::class, 'location'])->middleware('auth');
 Route::resource('/addresses', AddressController::class)->middleware('auth');
 
 Route::get('/activities/export/excel', [ActivityController::class, 'exportExcel'])->middleware('auth');
@@ -51,6 +55,9 @@ Route::resource('/people', PersonController::class)->middleware('auth');
 Route::get('/vehicles/export/excel', [VehicleController::class, 'exportExcel'])->middleware('auth');
 Route::post('/vehicles/import/excel', [VehicleController::class, 'importExcel'])->middleware('auth');
 Route::get('/vehicles/migrate/image', [VehicleController::class, 'migrateImage'])->middleware('auth');
+// Option
+Route::get('/vehicles/vehicle_type/{id}', [VehicleController::class, 'vehicleType'])->middleware('auth');
+Route::get('/vehicles/vehicle_variety/{id}', [VehicleController::class, 'vehicleVariety'])->middleware('auth');
 Route::resource('/vehicles', VehicleController::class)->middleware('auth');
 
 Route::get('/companies/export/excel', [CompanyController::class, 'exportExcel'])->middleware('auth');
@@ -70,6 +77,9 @@ Route::get('/projects/assign/address/{project:name}', [ProjectController::class,
 Route::post('/projects/assign/vehicle', [ProjectController::class, 'assignVehicle'])->middleware('auth');
 Route::post('/projects/assign/person', [ProjectController::class, 'assignPerson'])->middleware('auth');
 Route::post('/projects/assign/address', [ProjectController::class, 'assignAddress'])->middleware('auth');
+// Route::get('/project/vehicle', [ProjectController::class, 'vehicles'])->middleware('auth');
+Route::get('/project/address', [ProjectController::class, 'address'])->middleware('auth');
+Route::get('/project/person', [ProjectController::class, 'people'])->middleware('auth');
 
 Route::resource('/projects', ProjectController::class)->middleware('auth');
 //================
@@ -82,16 +92,3 @@ Route::post('/finances/reject', [FinanceController::class, 'reject'])->middlewar
 Route::post('/finances/pay', [FinanceController::class, 'pay'])->middleware('auth');
 Route::get('/finances/acceptance/{activity:id}/edit', [FinanceController::class, 'edit'])->middleware('auth');
 Route::put('/finances/acceptance/{activity:id}', [FinanceController::class, 'audit'])->middleware('auth');
-
-// Option
-Route::get('/vehicles/vehicle_type/{id}', [VehicleController::class, 'vehicleType'])->middleware('auth');
-Route::get('/vehicles/vehicle_variety/{id}', [VehicleController::class, 'vehicleVariety'])->middleware('auth');
-
-Route::get('/addresses/city/{id}', [AddressController::class, 'city'])->middleware('auth');
-Route::get('/addresses/district/{id}', [AddressController::class, 'district'])->middleware('auth');
-Route::get('/addresses/sub_district/{id}', [AddressController::class, 'subDistrict'])->middleware('auth');
-Route::get('/addresses/location', [AddressController::class, 'location'])->middleware('auth');
-
-Route::get('/project/vehicle', [ProjectController::class, 'vehicles'])->middleware('auth');
-Route::get('/project/address', [ProjectController::class, 'address'])->middleware('auth');
-Route::get('/project/person', [ProjectController::class, 'people'])->middleware('auth');

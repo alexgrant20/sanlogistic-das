@@ -91,7 +91,7 @@
 
     const getLocation = async () => {
       try {
-        const res = await fetch('/api/addresses/location', {
+        const res = await fetch('/addresses/location', {
           method: 'GET'
         });
         const data = await res.json();
