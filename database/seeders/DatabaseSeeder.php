@@ -39,45 +39,45 @@ class DatabaseSeeder extends Seeder
   {
 
 
-    // Role::create([
-    //   'name' => 'admin'
-    // ]);
+    Role::create([
+      'name' => 'admin'
+    ]);
 
-    // Role::create([
-    //   'name' => 'driver'
-    // ]);
+    Role::create([
+      'name' => 'driver'
+    ]);
 
-    // Role::create([
-    //   'name' => 'finances'
-    // ]);
+    Role::create([
+      'name' => 'finances'
+    ]);
 
-    // VehicleLicensePlateColor::create([
-    //   'name' => 'yellow'
-    // ]);
+    VehicleLicensePlateColor::create([
+      'name' => 'yellow'
+    ]);
 
-    // VehicleLicensePlateColor::create([
-    //   'name' => 'black'
-    // ]);
+    VehicleLicensePlateColor::create([
+      'name' => 'black'
+    ]);
 
-    // Department::factory(10)->create();
-    // SimType::factory(5)->create();
-    // AddressType::factory(10)->create();
-    // CompanyType::factory(5)->create();
-    // VehicleBrand::factory(10)->create();
-    // VehicleType::factory(30)->create();
-    // VehicleVariety::factory(200)->create();
-    // Regional::factory(20)->create();
-    // Area::factory(30)->create();
-    // Province::factory(10)->create();
-    // City::factory(10)->create();
-    // District::factory(10)->create();
-    // Subdistrict::factory(10)->create();
-    // PoolType::factory(10)->create();
-    // Address::factory(100)->create();
-    // Company::factory(20)->create();
-    // Project::factory(20)->create();
-    // Person::factory(20)->create();
-    // VehicleTowing::factory(10)->create();
+    Department::factory(10)->create();
+    SimType::factory(5)->create();
+    AddressType::factory(10)->create();
+    CompanyType::factory(5)->create();
+    VehicleBrand::factory(10)->create();
+    VehicleType::factory(30)->create();
+    VehicleVariety::factory(200)->create();
+    Regional::factory(20)->create();
+    Area::factory(30)->create();
+    Province::factory(10)->create();
+    City::factory(10)->create();
+    District::factory(10)->create();
+    Subdistrict::factory(10)->create();
+    PoolType::factory(10)->create();
+    Address::factory(100)->create();
+    Company::factory(20)->create();
+    Project::factory(20)->create();
+    Person::factory(20)->create();
+    VehicleTowing::factory(10)->create();
     Vehicle::factory(20)->create();
 
     User::create([

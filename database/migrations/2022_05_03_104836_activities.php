@@ -14,7 +14,9 @@ return new class extends Migration
   public function up()
   {
     Schema::table('activities', function (Blueprint $table) {
-      //
+      $table->foreignId('created_by')->nullable()->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
+      $table->foreignId('updated_by')->nullable()->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
+      $table->foreignId('activity_status_id')->nullable()->constrained()->restrictOnDelete()->cascadeOnUpdate();
     });
   }
 
@@ -26,9 +28,7 @@ return new class extends Migration
   public function down()
   {
     Schema::table('activities', function (Blueprint $table) {
-      $table->foreignId('created_by')->nullable()->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
-      $table->foreignId('updated_by')->nullable()->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
-      $table->foreignId('activity_status_id')->nullable()->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      Schema::dropIfExists('activities');
     });
   }
 };
