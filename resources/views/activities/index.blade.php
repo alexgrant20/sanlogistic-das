@@ -9,21 +9,53 @@
       </div>
     </div>
     <section class="container-fluid">
-      <div class="row mb-4">
+      <div class="row mb-4 g-3">
         <x-summary-box>
           <x-slot name="summaryTitle">Total Activity</x-slot>
           <x-slot name="summaryTotal">{{ $activities->count() }}</x-slot>
           <x-slot name="icon">bi bi-journal-text</x-slot>
-          <x-slot name="id">total-project</x-slot>
-          <x-slot name="summaryTotalColor">text-primary</x-slot>
+          <x-slot name="id">total-activity</x-slot>
+          <x-slot name="summaryTotalColor">text-dash-color-1</x-slot>
           <x-slot name="customCardClass">disabled</x-slot>
         </x-summary-box>
         <x-summary-box>
           <x-slot name="summaryTitle">On Going</x-slot>
-          <x-slot name="summaryTotal">{{ $activities->count() }}</x-slot>
+          <x-slot name="summaryTotal">
+            {{ $activities->filter(fn($item) => $item->activityStatus->status === 'draft')->count() }}
+          </x-slot>
           <x-slot name="icon">bi bi-journal-arrow-up</x-slot>
-          <x-slot name="id">total-project</x-slot>
+          <x-slot name="id">total-ongoing-activity</x-slot>
           <x-slot name="summaryTotalColor">text-info</x-slot>
+          <x-slot name="customCardClass">disabled</x-slot>
+        </x-summary-box>
+        <x-summary-box>
+          <x-slot name="summaryTitle">Approved</x-slot>
+          <x-slot name="summaryTotal">
+            {{ $activities->filter(fn($item) => $item->activityStatus->status === 'approved')->count() }}
+          </x-slot>
+          <x-slot name="icon">bi bi-journal-check</x-slot>
+          <x-slot name="id">total-approved-activity</x-slot>
+          <x-slot name="summaryTotalColor">text-success</x-slot>
+          <x-slot name="customCardClass">disabled</x-slot>
+        </x-summary-box>
+        <x-summary-box>
+          <x-slot name="summaryTitle">Rejected</x-slot>
+          <x-slot name="summaryTotal">
+            {{ $activities->filter(fn($item) => $item->activityStatus->status === 'rejected')->count() }}
+          </x-slot>
+          <x-slot name="icon">bi bi-journal-x</x-slot>
+          <x-slot name="id">total-rejected-activity</x-slot>
+          <x-slot name="summaryTotalColor">text-primary</x-slot>
+          <x-slot name="customCardClass">disabled</x-slot>
+        </x-summary-box>
+        <x-summary-box>
+          <x-slot name="summaryTitle">Paid</x-slot>
+          <x-slot name="summaryTotal">
+            {{ $activities->filter(fn($item) => $item->activityStatus->status === 'rejected')->count() }}
+          </x-slot>
+          <x-slot name="icon">bi bi-wallet-fill</x-slot>
+          <x-slot name="id">total-paid-activity</x-slot>
+          <x-slot name="summaryTotalColor">text-dash-color-2</x-slot>
           <x-slot name="customCardClass">disabled</x-slot>
         </x-summary-box>
       </div>
@@ -33,11 +65,11 @@
 
       @if (session()->has('log_data'))
         <x-modal id="my-modal">
-          <x-slot name="title">Activity Log</x-slot>
+          <x-slot name="title">Activity sLog</x-slot>
           <x-slot name="class">openModal</x-slot>
           <x-slot name="size">modal-lg</x-slot>
           <x-slot name="body">
-            <table class="table table-hover table-dark text-center nowrap" style="width: 100%">
+            <table class="table table-hover table-dark text-center nowrap" style="widths: 100%">
               <tr>
                 <th>Status</th>
                 <th>By</th>

@@ -43,7 +43,7 @@
               <x-slot name="summaryTitle">Total Addresses</x-slot>
               <x-slot name="summaryTotal">{{ $addresses->count() }}</x-slot>
               <x-slot name="icon">bi bi-building</x-slot>
-              <x-slot name="id">total-project</x-slot>
+              <x-slot name="id">total-address</x-slot>
               <x-slot name="summaryTotalColor">text-primary</x-slot>
               <x-slot name="customCardClass">disabled</x-slot>
             </x-summary-box>

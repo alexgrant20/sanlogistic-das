@@ -14,7 +14,7 @@
           <x-slot name="summaryTitle">Total Company</x-slot>
           <x-slot name="summaryTotal">{{ $companies->count() }}</x-slot>
           <x-slot name="icon">bi bi-building</x-slot>
-          <x-slot name="id">total-project</x-slot>
+          <x-slot name="id">total-company</x-slot>
           <x-slot name="summaryTotalColor">text-primary</x-slot>
           <x-slot name="customCardClass">disabled</x-slot>
         </x-summary-box>
