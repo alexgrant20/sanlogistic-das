@@ -9,6 +9,25 @@
       </div>
     </div>
     <section class="container-fluid">
+      <div class="row mb-4">
+        <x-summary-box>
+          <x-slot name="summaryTitle">Total Activity</x-slot>
+          <x-slot name="summaryTotal">{{ $activities->count() }}</x-slot>
+          <x-slot name="icon">bi bi-journal-text</x-slot>
+          <x-slot name="id">total-project</x-slot>
+          <x-slot name="summaryTotalColor">text-primary</x-slot>
+          <x-slot name="customCardClass">disabled</x-slot>
+        </x-summary-box>
+        <x-summary-box>
+          <x-slot name="summaryTitle">On Going</x-slot>
+          <x-slot name="summaryTotal">{{ $activities->count() }}</x-slot>
+          <x-slot name="icon">bi bi-journal-arrow-up</x-slot>
+          <x-slot name="id">total-project</x-slot>
+          <x-slot name="summaryTotalColor">text-info</x-slot>
+          <x-slot name="customCardClass">disabled</x-slot>
+        </x-summary-box>
+      </div>
+
       @include('partials.index_response')
       @include('partials.import')
 

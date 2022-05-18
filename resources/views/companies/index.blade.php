@@ -9,6 +9,17 @@
       </div>
     </div>
     <section class="container-fluid">
+      <div class="row mb-4">
+        <x-summary-box>
+          <x-slot name="summaryTitle">Total Company</x-slot>
+          <x-slot name="summaryTotal">{{ $companies->count() }}</x-slot>
+          <x-slot name="icon">bi bi-building</x-slot>
+          <x-slot name="id">total-project</x-slot>
+          <x-slot name="summaryTotalColor">text-primary</x-slot>
+          <x-slot name="customCardClass">disabled</x-slot>
+        </x-summary-box>
+      </div>
+
       @include('partials.index_response')
       @include('partials.import')
       <h4 class="text-primary fw-bold">Action</h4>

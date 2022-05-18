@@ -17,7 +17,6 @@
           <x-slot name="id">total-project</x-slot>
           <x-slot name="summaryTotalColor">text-primary</x-slot>
           <x-slot name="customCardClass">disabled</x-slot>
-          <x-slot name="link">/projects/assign/project</x-slot>
         </x-summary-box>
       </div>
 

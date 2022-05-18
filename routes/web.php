@@ -77,7 +77,7 @@ Route::get('/projects/assign/address/{project:name}', [ProjectController::class,
 Route::post('/projects/assign/vehicle', [ProjectController::class, 'assignVehicle'])->middleware('auth');
 Route::post('/projects/assign/person', [ProjectController::class, 'assignPerson'])->middleware('auth');
 Route::post('/projects/assign/address', [ProjectController::class, 'assignAddress'])->middleware('auth');
-// Route::get('/project/vehicle', [ProjectController::class, 'vehicles'])->middleware('auth');
+Route::get('/project/vehicle', [ProjectController::class, 'vehicles'])->middleware('auth');
 Route::get('/project/address', [ProjectController::class, 'address'])->middleware('auth');
 Route::get('/project/person', [ProjectController::class, 'people'])->middleware('auth');
 

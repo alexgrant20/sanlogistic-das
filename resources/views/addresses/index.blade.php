@@ -28,9 +28,28 @@
       </div>
     </div>
     <section class="container-fluid">
-      <h4 class="text-primary fw-bold">Address Location</h4>
-      <hr>
-      <div id='map' class="w-100 mb-5" style="height: 600px"></div>
+      <div class="row">
+        <div class="col-xl-8">
+          <h4 class="text-primary fw-bold">Address Location</h4>
+          <hr>
+          <div id='map' class="w-100 mb-5" style="height: 600px"></div>
+        </div>
+        <div class="col-xl-4">
+          <h4 class="text-primary fw-bold">Address Summary</h4>
+          <hr>
+          <div class="row">
+            <x-summary-box>
+              <x-slot name="size">col-12</x-slot>
+              <x-slot name="summaryTitle">Total Addresses</x-slot>
+              <x-slot name="summaryTotal">{{ $addresses->count() }}</x-slot>
+              <x-slot name="icon">bi bi-building</x-slot>
+              <x-slot name="id">total-project</x-slot>
+              <x-slot name="summaryTotalColor">text-primary</x-slot>
+              <x-slot name="customCardClass">disabled</x-slot>
+            </x-summary-box>
+          </div>
+        </div>
+      </div>
       @include('partials.index_response')
       @include('partials.import')
       <h4 class="text-primary fw-bold">Action</h4>
