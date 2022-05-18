@@ -28,11 +28,11 @@
       </div>
     </div>
     <section class="container-fluid">
-      <div class="row">
+      <div class="row mb-5 g-3">
         <div class="col-xl-8">
           <h4 class="text-primary fw-bold">Address Location</h4>
           <hr>
-          <div id='map' class="w-100 mb-5" style="height: 600px"></div>
+          <div id='map' class="w-100" style="height: 600px"></div>
         </div>
         <div class="col-xl-4">
           <h4 class="text-primary fw-bold">Address Summary</h4>
