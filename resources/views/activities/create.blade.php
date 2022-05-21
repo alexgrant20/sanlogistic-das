@@ -402,5 +402,5 @@
 @endsection
 
 @section('footJS')
-  <script src="/vendor/currency/currency.js"></script>
+  <script src="{{ asset('/vendor/currency/currency.js') }}"></script>
 @endsection
