@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Activity;
+use App\Models\ActivityPayment;
 use App\Models\ActivityStatus;
 use Illuminate\Support\Facades\DB;
 

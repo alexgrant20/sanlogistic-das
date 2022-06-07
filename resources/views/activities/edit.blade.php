@@ -246,8 +246,8 @@
             <div class="col-xl-4">
               <label for="bbm_amount" class="form-label">BBM</label>
               <input type="text" class="form-control form-control-lg @error('bbm_amount') is-invalid @enderror"
-                id="bbm_amount" name="bbm_amount" value="{{ old('bbm_amount', $activity['bbm_amount']) }}"
-                data="money">
+                id="bbm_amount" name="bbm_amount"
+                value="{{ old('bbm_amount', $activity->activityStatus->activityPayment->bbm_amount) }}" data="money">
 
               @error('bbm_amount')
                 <div class="invalid-feedback">
@@ -259,8 +259,8 @@
             <div class="col-xl-4">
               <label for="toll_amount" class="form-label">Toll</label>
               <input type="text" class="form-control form-control-lg @error('toll_amount') is-invalid @enderror"
-                id="toll_amount" name="toll_amount" value="{{ old('toll_amount', $activity['toll_amount']) }}"
-                data="money">
+                id="toll_amount" name="toll_amount"
+                value="{{ old('toll_amount', $activity->activityStatus->activityPayment->toll_amount) }}" data="money">
 
               @error('toll_amount')
                 <div class="invalid-feedback">
@@ -273,7 +273,8 @@
               <label for="retribution_amount" class="form-label">Retribusi</label>
               <input type="text" class="form-control form-control-lg @error('retribution_amount') is-invalid @enderror"
                 id="retribution_amount" name="retribution_amount"
-                value="{{ old('retribution_amount', $activity['retribution_amount']) }}" data="money">
+                value="{{ old('retribution_amount', $activity->activityStatus->activityPayment->retribution_amount) }}"
+                data="money">
 
               @error('retribution_amount')
                 <div class="invalid-feedback">
@@ -285,7 +286,8 @@
             <div class="col-xl-4">
               <label for="parking" class="form-label">Parkir</label>
               <input type="text" class="form-control form-control-lg @error('parking') is-invalid @enderror" id="parking"
-                name="parking" value="{{ old('parking', $activity['parking']) }}" data="money">
+                name="parking" value="{{ old('parking', $activity->activityStatus->activityPayment->parking_amount) }}"
+                data="money">
 
               @error('parking')
                 <div class="invalid-feedback">

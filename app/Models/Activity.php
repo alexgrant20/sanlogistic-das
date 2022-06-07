@@ -12,6 +12,8 @@ class Activity extends Model
 
   protected $guarded = ['id'];
 
+  protected $with = ['activityStatus'];
+
   public function driver()
   {
     return $this->belongsTo(User::class, 'user_id');

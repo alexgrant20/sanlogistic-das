@@ -7,6 +7,7 @@ use App\Models\Activity;
 use App\Http\Requests\StoreActivityRequest;
 use App\Http\Requests\UpdateActivityRequest;
 use App\Imports\ActivityImport;
+use App\Models\ActivityPayment;
 use App\Models\ActivityStatus;
 use App\Models\Address;
 use App\Models\Person;
@@ -84,9 +85,17 @@ class ActivityController extends Controller
 
       $activity = Activity::create($data);
 
-      ActivityStatus::create([
+      $activityStatus = ActivityStatus::create([
         'activity_id' =>  $activity->id,
         'status' => $request->status
+      ]);
+
+      ActivityPayment::create([
+        'activity_status_id' => $activityStatus->id,
+        'bbm_amount' => $data['bbm_amount'],
+        'toll_amount' => $data['toll_amount'],
+        'parking_amount' => $data['parking'],
+        'retribution_amount' => $data['retribution_amount'],
       ]);
 
       DB::commit();
@@ -161,6 +170,13 @@ class ActivityController extends Controller
       DB::beginTransaction();
 
       $activity->update($data);
+
+      ActivityPayment::where('id', $activity->activityStatus->activityPayment->id)->update([
+        'bbm_amount' => $data['bbm_amount'],
+        'toll_amount' => $data['toll_amount'],
+        'parking_amount' => $data['parking'],
+        'retribution_amount' => $data['retribution_amount'],
+      ]);
 
       if ($activity->activityStatus()->first()->status !== $request->status) {
         ActivityStatus::create([

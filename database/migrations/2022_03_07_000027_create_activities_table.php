@@ -29,13 +29,9 @@ return new class extends Migration
       $table->dateTime('arrival_date')->nullable();
       $table->bigInteger('arrival_odo')->nullable();
       $table->string('arrival_odo_image')->nullable();
-      $table->integer('bbm_amount')->nullable();
       $table->string('bbm_image')->nullable();
-      $table->integer('toll_amount')->nullable();
       $table->string('toll_image')->nullable();
-      $table->integer('retribution_amount')->nullable();
       $table->string('retribution_image')->nullable();
-      $table->integer('parking')->nullable();
       $table->string('parking_image')->nullable();
       $table->string('type')->default('TBD');
       $table->string('start_lat')->nullable();

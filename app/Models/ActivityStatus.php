@@ -12,6 +12,8 @@ class ActivityStatus extends Model
 
   protected $guarded = ['id'];
 
+  protected $with = ['activityPayment'];
+
   public function activity()
   {
     return $this->belongsTo(Activity::class);
@@ -20,5 +22,10 @@ class ActivityStatus extends Model
   public function created_user()
   {
     return $this->belongsTo(User::class, 'created_by');
+  }
+
+  public function activityPayment()
+  {
+    return $this->hasOne(ActivityPayment::class);
   }
 }
