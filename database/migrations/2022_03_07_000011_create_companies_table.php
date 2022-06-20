@@ -15,7 +15,7 @@ return new class extends Migration
   {
     Schema::create('companies', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('address_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      $table->foreignId('city_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->foreignId('company_type_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->string('name')->unique();
       $table->string('phone_number');
@@ -25,6 +25,7 @@ return new class extends Migration
       $table->string('director');
       $table->string('npwp');
       $table->string('fax')->nullable();
+      $table->string('full_address');
       $table->timestamp('created_at')->useCurrent();
       $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
       $table->softDeletes();

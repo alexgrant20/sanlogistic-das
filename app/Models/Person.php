@@ -8,37 +8,37 @@ use Illuminate\Database\Eloquent\Model;
 
 class Person extends Model
 {
-	use HasFactory, Blameable;
+  use HasFactory, Blameable;
 
-	protected $guarded = ['id'];
+  protected $guarded = ['id'];
 
-	public function project()
-	{
-		return $this->belongsTo(Project::class);
-	}
+  public function project()
+  {
+    return $this->belongsTo(Project::class);
+  }
 
-	public function department()
-	{
-		return $this->belongsTo(Department::class);
-	}
+  public function department()
+  {
+    return $this->belongsTo(Department::class);
+  }
 
-	public function area()
-	{
-		return $this->belongsTo(Area::class);
-	}
+  public function area()
+  {
+    return $this->belongsTo(Area::class);
+  }
 
-	public function address()
-	{
-		return $this->belongsTo(Address::class);
-	}
+  public function city()
+  {
+    return $this->belongsTo(City::class);
+  }
 
-	public function user()
-	{
-		return $this->hasOne(User::class);
-	}
+  public function user()
+  {
+    return $this->hasOne(User::class);
+  }
 
-	public function personDocuments()
-	{
-		return $this->hasMany(PersonDocument::class);
-	}
+  public function personDocuments()
+  {
+    return $this->hasMany(PersonDocument::class);
+  }
 }

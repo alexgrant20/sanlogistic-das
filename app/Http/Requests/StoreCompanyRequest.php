@@ -24,7 +24,7 @@ class StoreCompanyRequest extends FormRequest
   public function rules()
   {
     return [
-      'address_id' => 'required|integer',
+      'city_id' => 'required|integer',
       'company_type_id' => 'required|integer',
       'name' => 'required|string|unique:companies',
       'phone_number' => 'required|integer',
@@ -39,7 +39,8 @@ class StoreCompanyRequest extends FormRequest
       'sipa' => 'required|string',
       'sipa_expire' => 'required|date',
       'sipa_image' => 'required|image',
-      'note' => 'nullable|string'
+      'note' => 'nullable|string',
+      'full_address' => 'required|string',
     ];
   }
 }

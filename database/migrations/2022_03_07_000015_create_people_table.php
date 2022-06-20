@@ -18,13 +18,14 @@ return new class extends Migration
       $table->foreignId('project_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->foreignId('department_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->foreignId('area_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
-      $table->foreignId('address_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      $table->foreignId('city_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->string('name');
       $table->string('image');
       $table->string('place_of_birth');
       $table->date('date_of_birth');
       $table->string('phone_number');
       $table->date('joined_at');
+      $table->string('full_address');
       $table->text('note')->nullable();
       $table->tinyInteger('active')->default(1);
       $table->timestamp('created_at')->useCurrent();

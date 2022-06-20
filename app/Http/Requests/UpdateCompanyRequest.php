@@ -24,7 +24,7 @@ class UpdateCompanyRequest extends FormRequest
   public function rules()
   {
     return [
-      'address_id' => 'required|integer',
+      'city_id' => 'required|integer',
       'company_type_id' => 'required|integer',
       'name' => "required|string|unique:companies,name,{$this->company->id}",
       'phone_number' => 'required|integer',
@@ -39,7 +39,8 @@ class UpdateCompanyRequest extends FormRequest
       'sipa' => 'required|string',
       'sipa_expire' => 'required|date',
       'sipa_image' => 'nullable|image',
-      'note' => 'nullable|string'
+      'note' => 'nullable|string',
+      'full_address' => 'required|string'
     ];
   }
 }

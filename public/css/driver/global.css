@@ -1,0 +1,116 @@
+@import url("https://fonts.googleapis.com/css2?family=Heebo:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+body {
+  color: #d9d8d7;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+* {
+  font-family: "Heebo", sans-serif;
+  box-sizing: border-box;
+}
+
+p input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+a:hover {
+  color: inherit;
+}
+
+.bg-main {
+  background-color: #0d0d0d;
+}
+
+.bg-transparent {
+  background-color: transparent;
+}
+
+.ba-secondary {
+  background-color: #262626;
+}
+
+.bg-blue {
+  background-color: #1b52c8;
+}
+
+.bg-softWhite {
+  background-color: #d9d8d7;
+}
+
+.bg-purplish {
+  background-color: #1e2021;
+}
+
+.bg-darkGreen {
+  background-color: #1c1c19;
+}
+
+.bg-green {
+  background-color: #47594c;
+}
+
+.bg-brown {
+  background-color: #473232;
+}
+
+.form-dark,
+.form-dark:focus {
+  background-color: transparent !important;
+  color: #d9d8d7 !important;
+}
+
+input[readonly],
+input[readonly]:focus,
+input[disabled],
+select[disabled] {
+  cursor: not-allowed;
+  background-color: #222 !important;
+  color: #d9d8d7 !important;
+}
+
+.form-dark option {
+  background-color: #262626;
+}
+
+.border-none {
+  border: none;
+}
+
+input {
+  color: inherit;
+  outline: none;
+  border: none;
+}
+
+input:focus {
+  border: 1px solid #1b52c8;
+}
+
+.text-blue {
+  color: #1b52c8;
+}
+
+.flip-icon {
+  transition: all 1s ease-in-out;
+  transform: scale(1, -1);
+}

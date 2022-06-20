@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\City;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,7 +21,7 @@ class PersonFactory extends Factory
       'project_id' => random_int(1, 20),
       'department_id' => random_int(1, 10),
       'area_id' => random_int(1, 30),
-      'address_id' => random_int(1, 100),
+      'city_id' => City::factory(),
       'name' => $this->faker->name(),
       'image' => $this->faker->name(),
       'place_of_birth' => $this->faker->address(),
@@ -28,6 +29,7 @@ class PersonFactory extends Factory
       'phone_number' => $this->faker->phoneNumber(),
       'joined_at' => $this->faker->date(),
       'note' => $this->faker->sentence(),
+      'full_address' => $this->faker->address()
     ];
   }
 }

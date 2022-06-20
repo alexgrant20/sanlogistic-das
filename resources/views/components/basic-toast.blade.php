@@ -4,6 +4,8 @@
       <strong class="me-auto">Sanlogistic</strong>
       <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
     </div>
-    <div class="toast-body" id="toast-body-{{ $id }}"></div>
+    <div class="toast-body" id="toast-body-{{ $id }}">
+      {{ $content ?? null }}
+    </div>
   </div>
 </div>

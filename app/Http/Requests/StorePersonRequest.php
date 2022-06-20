@@ -27,7 +27,7 @@ class StorePersonRequest extends FormRequest
       'project_id' => 'required|integer',
       'department_id' => 'required|integer',
       'area_id' => 'required|integer',
-      'address_id' => 'required|integer',
+      'city_id' => 'required|integer',
       'name' => 'required|string',
       'image' => 'required|image',
       'place_of_birth' => 'required|string',
@@ -51,6 +51,7 @@ class StorePersonRequest extends FormRequest
       'bpjs_ketenagakerjaan_image' => 'required|image',
       'npwp' => 'required|alpha_num',
       'npwp_image' => 'required|image',
+      'full_address' => 'required|string'
     ];
   }
 }
