@@ -13,7 +13,7 @@
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-5">
-            <h3 class="fw-bold text-primary">Project <?= mb_convert_case('dsa', MB_CASE_TITLE, 'UTF-8') ?></h3>
+            <h3 class="fw-bold text-primary">Project <?= mb_convert_case($projectName, MB_CASE_TITLE, 'UTF-8') ?></h3>
           </div>
           <div class="row mb-4">
             <x-summary-box>
@@ -42,6 +42,7 @@
               <x-slot name="link">/admin/assign/address/{{ $projectName }}</x-slot>
             </x-summary-box>
           </div>
+          <hr class="mb-5">
           <div class="pb-5">
             <div class="d-flex align-items-center justify-content-between">
               <h4 class="text-secondary fw-bold">In Project</h4>
@@ -57,6 +58,7 @@
               </div>
             </div>
           </div>
+          <hr>
           <div class="pt-5">
             <div class="d-flex align-items-center justify-content-between">
               <h4 class="text-secondary fw-bold">Assign</h4>
@@ -170,7 +172,7 @@
                       <div class="card">
                           <div class="card-body d-flex justify-content-between align-items-center">
                             <div class="w-50 rounded shadow-lg" style="background-color: ${plateColor}">
-                              <a href="/vehicles/${item.license_plate}/edit" class="d-flex flex-column align-items-center mw-100 text-truncate p-2">
+                              <a target="_blank" href="/admin/vehicles/${item.license_plate}/edit" class="d-flex flex-column align-items-center mw-100 text-truncate p-2">
                                   <span class="${textColor} fw-bold mb-1 text-truncate text-center w-75" id="plateNumber">${item.license_plate}</span>
                                   <hr class="w-100 border border-white border-5 m-0 mb-1">
                                   <div class="d-flex justify-content-between w-100">

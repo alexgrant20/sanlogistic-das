@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Province;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,7 +19,7 @@ class CityFactory extends Factory
   {
     return [
       'name' => $this->faker->city(),
-      'province_id' => random_int(1, 9),
+      'province_id' => Province::factory(),
     ];
   }
 }

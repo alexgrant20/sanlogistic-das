@@ -2,6 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\Address;
+use App\Models\Area;
+use App\Models\Company;
+use App\Models\Project;
+use App\Models\VehicleLicensePlateColor;
+use App\Models\VehicleTowing;
+use App\Models\VehicleVariety;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,13 +24,13 @@ class VehicleFactory extends Factory
   public function definition()
   {
     return [
-      'project_id' => $this->faker->numberBetween(1, 20),
-      'area_id' => $this->faker->numberBetween(1, 30),
-      'vehicle_variety_id' => $this->faker->numberBetween(1, 200),
-      'address_id' => $this->faker->numberBetween(1, 50),
-      'owner_id' => $this->faker->numberBetween(1, 5),
-      'vehicle_towing_id' => $this->faker->numberBetween(1, 10),
-      'vehicle_license_plate_color_id' => $this->faker->numberBetween(1, 2),
+      'project_id' => Project::factory(),
+      'area_id' => Area::factory(),
+      'vehicle_variety_id' => VehicleVariety::factory(),
+      'address_id' => Address::factory(),
+      'owner_id' => Company::factory(),
+      'vehicle_towing_id' => VehicleTowing::factory(),
+      'vehicle_license_plate_color_id' => random_int(1, 2),
       'license_plate' => $this->faker->unique()->name(),
       'frame_number' => $this->faker->randomNumber(9, true),
       'registration_number' => $this->faker->randomNumber(9, true),

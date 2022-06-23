@@ -27,7 +27,7 @@ class AddressController extends Controller
   {
 
     if ($request->user()->cannot('viewAny', Address::class)) {
-      abort(403);
+      abort(404);
     }
 
     return view('admin.addresses.index', [

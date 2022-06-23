@@ -59,21 +59,44 @@ class DatabaseSeeder extends Seeder
       'name' => 'black'
     ]);
 
+    AddressType::create([
+      'name' => 'Kantor Utama'
+    ]);
+
+    AddressType::create([
+      'name' => 'Tujuan Pengiriman'
+    ]);
+
+    AddressType::create([
+      'name' => 'Pool'
+    ]);
+
+    AddressType::create([
+      'name' => 'Station'
+    ]);
+
+    AddressType::create([
+      'name' => 'Workshop'
+    ]);
+
+    AddressType::create([
+      'name' => 'PKB/SAMSAT'
+    ]);
+
     Department::factory(10)->create();
     SimType::factory(5)->create();
-    AddressType::factory(10)->create();
     CompanyType::factory(5)->create();
     VehicleBrand::factory(10)->create();
     VehicleType::factory(30)->create();
-    VehicleVariety::factory(200)->create();
+    VehicleVariety::factory(20)->create();
     Regional::factory(20)->create();
     Area::factory(30)->create();
-    Province::factory(10)->create();
-    City::factory(10)->create();
-    District::factory(10)->create();
-    Subdistrict::factory(10)->create();
+    Province::factory(20)->create();
+    City::factory(20)->create();
+    District::factory(20)->create();
+    Subdistrict::factory(20)->create();
     PoolType::factory(10)->create();
-    Address::factory(100)->create();
+    Address::factory(20)->create();
     Company::factory(20)->create();
     Project::factory(20)->create();
     Person::factory(20)->create();

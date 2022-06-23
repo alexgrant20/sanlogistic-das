@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -40,8 +41,10 @@ class AuthController extends Controller
           );
 
           if ($user->hasRole('driver')) {
-            $request->session()->put('activity_id', $user->last_activity_id);
+            $activity = Activity::whereRelation('activityStatus', 'status', 'draft')->where('user_id', $user->id)->latest()->limit(1)->first();
+            if ($activity->id) $request->session()->put('activity_id', $activity->id);
           }
+
           return to_route('index')->with($notification);
         }
       }

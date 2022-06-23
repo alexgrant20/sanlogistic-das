@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\City;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,7 @@ class DistrictFactory extends Factory
   public function definition()
   {
     return [
-      'city_id' => random_int(1, 9),
+      'city_id' => City::factory(),
       'name' => $this->faker->city()
     ];
   }

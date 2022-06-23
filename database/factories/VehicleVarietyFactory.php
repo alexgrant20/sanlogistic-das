@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\VehicleType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,7 @@ class VehicleVarietyFactory extends Factory
   public function definition()
   {
     return [
-      'vehicle_type_id' => $this->faker->numberBetween(1, 20),
+      'vehicle_type_id' => VehicleType::factory(),
       'name' => $this->faker->unique()->name(),
     ];
   }

@@ -96,5 +96,5 @@
 @endsection
 
 @section('footJS')
-  <script src="{{ asset('/js/driver/create.js') }}"></script>
+  <script src="{{ asset('/js/driver/activity/create.js') }}"></script>
 @endsection

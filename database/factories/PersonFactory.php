@@ -2,7 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Area;
 use App\Models\City;
+use App\Models\Department;
+use App\Models\Project;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,9 +21,9 @@ class PersonFactory extends Factory
   public function definition()
   {
     return [
-      'project_id' => random_int(1, 20),
-      'department_id' => random_int(1, 10),
-      'area_id' => random_int(1, 30),
+      'project_id' => Project::factory(),
+      'department_id' => Department::factory(),
+      'area_id' => Area::factory(),
       'city_id' => City::factory(),
       'name' => $this->faker->name(),
       'image' => $this->faker->name(),

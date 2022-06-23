@@ -13,7 +13,7 @@
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-5">
-            <h3 class="fw-bold text-primary">Project <?= mb_convert_case('dsa', MB_CASE_TITLE, 'UTF-8') ?></h3>
+            <h3 class="fw-bold text-primary">Project <?= mb_convert_case($projectName, MB_CASE_TITLE, 'UTF-8') ?></h3>
           </div>
           <div class="row mb-4">
             <x-summary-box>

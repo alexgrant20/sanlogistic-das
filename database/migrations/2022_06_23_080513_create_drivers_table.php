@@ -13,15 +13,12 @@ return new class extends Migration
    */
   public function up()
   {
-    Schema::create('users', function (Blueprint $table) {
+    Schema::create('drivers', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('person_id')->unique()->constrained()->restrictOnDelete()->cascadeOnUpdate();
-      $table->foreignId('role_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
-      $table->string('username');
-      $table->string('password');
+      $table->foreignId('user_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      $table->smallInteger('total_cust_trip')->default(0);
       $table->timestamp('created_at')->useCurrent();
       $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
-      $table->softDeletes();
     });
   }
 
@@ -32,6 +29,6 @@ return new class extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('users');
+    Schema::dropIfExists('drivers');
   }
 };

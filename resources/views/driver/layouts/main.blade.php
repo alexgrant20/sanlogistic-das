@@ -42,7 +42,9 @@
 
   <!-- JavaScript files-->
   <script src="{{ asset('/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="https://unpkg.com/just-validate@latest/dist/just-validate.production.min.js"></script>
   <!-- Main File-->
+  <script src="{{ asset('/js/front.js') }}"></script>
   <script src="{{ asset('/js/function.js') }}"></script>
   {{-- Zoom JS --}}
   <script src="{{ asset('/vendor/zoom/zoom.js') }}"></script>
