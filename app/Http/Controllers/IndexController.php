@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class IndexController extends Controller
 {
   public function index()
   {
-    $userID = auth()->user()->id;
-
-    $isUserDriver = User::find($userID)->hasRole('driver');
+    $isUserDriver = Session::get('user_role') === 'driver';
 
     $params = [
       'title' => 'Home'

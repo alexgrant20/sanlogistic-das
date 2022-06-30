@@ -1,4 +1,4 @@
-@extends('admin.layouts.index_custom')
+@extends('admin.layouts.index-custom')
 
 @section('add_headJS')
   <script>
@@ -100,7 +100,7 @@
 
     <!-- Import Modal -->
     <div class="modal fade" id="exportExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
-      <form method="post" action="{{ route('admin.finance.export.accepted.excel') }}" enctype="multipart/form-data">
+      <form method="post" action="{{ route('admin.finance.export.excel.accepted') }}" enctype="multipart/form-data">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">

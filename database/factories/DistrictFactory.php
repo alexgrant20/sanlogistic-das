@@ -18,7 +18,7 @@ class DistrictFactory extends Factory
   public function definition()
   {
     return [
-      'city_id' => City::factory(),
+      'city_id' => rand(1, 20),
       'name' => $this->faker->city()
     ];
   }

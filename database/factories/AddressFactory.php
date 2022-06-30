@@ -21,7 +21,7 @@ class AddressFactory extends Factory
   public function definition()
   {
     return [
-      'address_type_id' => AddressType::factory(),
+      'address_type_id' => rand(1, 6),
       'area_id' => Area::factory(),
       'subdistrict_id' => Subdistrict::factory(),
       'pool_type_id' => PoolType::factory(),

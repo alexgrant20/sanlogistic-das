@@ -1,29 +1,36 @@
 <?php
 
+use App\Transaction\Constants\NotifactionTypeConstant;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Str;
+
+use function PHPUnit\Framework\isNan;
+use function PHPUnit\Framework\isNull;
 
 function convertMoneyInt($money)
 {
   return preg_replace("/[^0-9]/", "", $money);
 }
 
-function getAllPath($image, $doNumber, $timestamp, $type)
+function getAllPath($image, $mainIdentifier, $timestamp, $type)
 {
-  $tempPath = $image->getPathName();
+  // POTENTIAL BUG
+  // $tempPath = $image->getPathName();
+  $tempPath = $image->getRealPath();
   $extension = $image->extension();
-  $filePath = "{$type}-images/{$type}-{$doNumber}-{$timestamp}.{$extension}";
+  $filePath = "{$type}-images/{$type}-{$mainIdentifier}-{$timestamp}.{$extension}";
   $fullPath = "storage/{$filePath}";
 
   return [$filePath, $fullPath, $tempPath];
 }
 
-function uploadImages($images, $doNumber, $timestamp)
+function uploadImages($images, $mainIdentifier, $timestamp)
 {
   $arayOfPath = [];
   foreach ($images as $key => $image) {
-    $type = explode("_image", (string) $key)[0];
+    $type =  Str::before($key, '_image');
 
-    [$filePath, $fullPath, $tempPath] = getAllPath($image, $doNumber, $timestamp, $type);
+    [$filePath, $fullPath, $tempPath] = getAllPath($image, $mainIdentifier, $timestamp, $type);
 
     // compress & saving image
     $img = Image::make($tempPath);
@@ -34,11 +41,24 @@ function uploadImages($images, $doNumber, $timestamp)
   return $arayOfPath;
 }
 
+function uploadImage($image, $type, $mainIdentifier, $timestamp)
+{
+  $type =  Str::before($type, '_image');
+
+  [$filePath, $fullPath, $tempPath] = getAllPath($image, $mainIdentifier, $timestamp, $type);
+
+  // compress & saving image
+  $img = Image::make($tempPath);
+  $img->save($fullPath, env('IMG_COMPRESS_PERCENTAGE'));
+
+  return $filePath;
+}
+
 function login_ngt()
 {
   $login_data = json_encode(array(
-    "username" => "naturagas.api",
-    "password" => "pdk329mNc@52Mncu"
+    "username" => env('USERNAME_NGT'),
+    "password" => env('PASSWORD_NGT')
   ));
 
   $url = "https://api.ngt.systems/dx/api/account/login";
@@ -99,4 +119,22 @@ function get_location_ngt($plate_number)
   }
 
   return $value['data'][0];
+}
+
+function genereateNotifaction(string $notifType, string $subject = "", string $action = ""): array
+{
+  $message = NotifactionTypeConstant::NOTIFICATIONS[$notifType];
+
+  if (!$message) {
+    return [];
+  }
+
+  $message = Str::wordCount($action) > 0 ?
+    Str::replaceArray('?', [ucfirst($subject), ucfirst($action)], $message) :
+    $subject;
+
+  return [
+    'message' => $message,
+    'alert-type' => $notifType,
+  ];
 }

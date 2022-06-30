@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use App\Models\User;
-use Exception;
-use Illuminate\Database\QueryException;
+use App\Transaction\Constants\NotifactionTypeConstant;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -21,44 +20,30 @@ class AuthController extends Controller
 
   public function login(Request $request)
   {
-    try {
-      $request->validate([
-        'username' => 'required',
-        'password' => 'required'
-      ]);
+    $request->validate([
+      'username' => 'required',
+      'password' => 'required'
+    ]);
 
-      $user = User::where('username', $request->username)->first();
+    $user = User::where('username', $request->username)->first();
 
-      if ($user) {
-        if (Hash::check($request->password, $user->password)) {
-          Auth::login($user);
-          $request->session()->regenerate();
+    if ($user && Hash::check($request->password, $user->password)) {
+      Auth::login($user);
+      $request->session()->regenerate();
 
-
-          $notification = array(
-            'message' => 'Login Successfull!',
-            'alert-type' => 'success',
-          );
-
-          if ($user->hasRole('driver')) {
-            $activity = Activity::whereRelation('activityStatus', 'status', 'draft')->where('user_id', $user->id)->latest()->limit(1)->first();
-            if ($activity->id) $request->session()->put('activity_id', $activity->id);
-          }
-
-          return to_route('index')->with($notification);
-        }
+      if ($user->hasRole('driver')) {
+        $activity = Activity::whereRelation('activityStatus', 'status', 'draft')->where('user_id', $user->id)->latest()->limit(1)->first();
+        if ($activity && $activity->id) $request->session()->put('activity_id', $activity->id);
       }
 
-      $notification = array(
-        'message' => 'Login Failed!',
-        'alert-type' => 'error',
-      );
-    } catch (QueryException $e) {
-      $notification['message'] = 'Failed to Connect to Server!';
-    } catch (Exception $e) {
-      $notification['message'] = $e->getMessage();
+      $request->session()->put('user_role', $user->role->name);
+
+      return to_route('index')
+        ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'Login Successfull!'));
     }
-    return to_route('login')->with($notification);
+
+    return to_route('login')
+      ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, "Username or Password Not Found!"));
   }
 
   public function logout(Request $request)
@@ -69,11 +54,9 @@ class AuthController extends Controller
 
     $request->session()->regenerateToken();
 
-    $notification = array(
-      'message' => 'Logout Success!',
-      'alert-type' => 'success',
-    );
+    Cache::flush();
 
-    return to_route('login')->with($notification);
+    return to_route('login')
+      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'Logout Successfull!'));
   }
 }

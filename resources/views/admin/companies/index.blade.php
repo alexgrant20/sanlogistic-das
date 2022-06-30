@@ -46,7 +46,7 @@
             <tr>
               <td>{{ $company->id }}</td>
               <td>
-                <a href="{{ url("/admin/companies/$company->name/edit") }}" class="badge bg-primary fs-6">
+                <a href="{{ route('admin.company.edit', $company->name) }}" class="badge bg-primary fs-6">
                   <i class="bi bi-pencil"></i>
                 </a>
               </td>
@@ -58,13 +58,13 @@
               @if ($company->companyDocuments->contains('type', 'siup'))
                 <td>{{ $company->companyDocuments->where('type', 'siup')->first()->number }}</td>
               @else
-                <td></td>
+                <td class="text-primary">No Data</td>
               @endif
 
               @if ($company->companyDocuments->contains('type', 'sipa'))
                 <td>{{ $company->companyDocuments->where('type', 'sipa')->first()->number }}</td>
               @else
-                <td></td>
+                <td class="text-primary">No Data</td>
               @endif
 
             </tr>

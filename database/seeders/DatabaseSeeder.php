@@ -11,6 +11,7 @@ use App\Models\Company;
 use App\Models\CompanyType;
 use App\Models\Department;
 use App\Models\District;
+use App\Models\Driver;
 use App\Models\Person;
 use App\Models\PoolType;
 use App\Models\Project;
@@ -106,8 +107,17 @@ class DatabaseSeeder extends Seeder
     User::create([
       'person_id' => '1',
       'role_id' => '1',
-      'username' => 'stevenAlexander',
-      'password' => bcrypt('password')
+      'username' => 'admin',
+      'password' => bcrypt('admin')
     ]);
+
+    User::create([
+      'person_id' => '2',
+      'role_id' => '2',
+      'username' => 'driver',
+      'password' => bcrypt('driver')
+    ]);
+
+    Driver::factory(1)->create();
   }
 }

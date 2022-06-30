@@ -2,6 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", function () {
   const table = $('table[data-display="datatables"]').DataTable({
+    order: [],
     responsive: {
       details: {
         display: $.fn.dataTable.Responsive.display.modal({

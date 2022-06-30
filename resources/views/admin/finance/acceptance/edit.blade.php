@@ -26,7 +26,7 @@
 
       </div>
 
-      <form action="{{ url("/admin/finances/acceptance/$activity->id") }}" method="post" enctype="multipart/form-data">
+      <form action="{{ route('admin.finance.audit', $activity->id) }}" method="post" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="mb-5">
@@ -54,7 +54,8 @@
               <label for="toll_amount" class="form-label">Toll</label>
               <input type="text" class="form-control form-control-lg @error('toll_amount') is-invalid @enderror"
                 id="toll_amount" name="toll_amount"
-                value="{{ old('toll_amount', $activity->activityStatus->activityPayment->toll_amount) }}" data="money">
+                value="{{ old('toll_amount', $activity->activityStatus->activityPayment->toll_amount) }}"
+                data="money">
 
               @error('toll_amount')
                 <div class="invalid-feedback">
@@ -86,12 +87,13 @@
             </div>
 
             <div class="col-xl-4">
-              <label for="parking" class="form-label">Parkir</label>
-              <input type="text" class="form-control form-control-lg @error('parking') is-invalid @enderror" id="parking"
-                name="parking" value="{{ old('parking', $activity->activityStatus->activityPayment->parking_amount) }}"
+              <label for="parking_amount" class="form-label">Parkir</label>
+              <input type="text" class="form-control form-control-lg @error('parking_amount') is-invalid @enderror"
+                id="parking_amount" name="parking_amount"
+                value="{{ old('parking_amount', $activity->activityStatus->activityPayment->parking_amount) }}"
                 data="money">
 
-              @error('parking')
+              @error('parking_amount')
                 <div class="invalid-feedback">
                   {{ $message }}
                 </div>

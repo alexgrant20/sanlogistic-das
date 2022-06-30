@@ -21,12 +21,12 @@ class PersonFactory extends Factory
   public function definition()
   {
     return [
-      'project_id' => Project::factory(),
-      'department_id' => Department::factory(),
-      'area_id' => Area::factory(),
-      'city_id' => City::factory(),
+      'project_id' => rand(1, 20),
+      'department_id' => rand(1, 10),
+      'area_id' => rand(1, 30),
+      'city_id' => rand(1, 20),
       'name' => $this->faker->name(),
-      'image' => $this->faker->name(),
+      'image' => null,
       'place_of_birth' => $this->faker->address(),
       'date_of_birth' => $this->faker->date(),
       'phone_number' => $this->faker->phoneNumber(),

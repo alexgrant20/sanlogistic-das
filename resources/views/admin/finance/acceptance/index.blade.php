@@ -1,4 +1,4 @@
-@extends('admin.layouts.index_custom')
+@extends('admin.layouts.index-custom')
 
 @section('add_headJS')
   <script>
@@ -127,17 +127,17 @@
                 <input type="checkbox" id="btncheck1" class="form-check-input">
               </td>
               <td>
-                <a href="{{ url("/admin/finances/acceptance/$activity->id/edit") }}" class="badge bg-primary fs-6">
+                <a href="{{ route('admin.finance.acceptance.edit', $activity->id) }}" class="badge bg-primary fs-6">
                   <i class="bi bi-currency-dollar"></i>
                 </a>
               </td>
               <td>{{ $activity->departure_date }}</td>
               <td>{{ $activity->do_number }}</td>
-              <td>{{ $activity->driver->person->name }}</td>
-              <td>@money($activity->activityStatus->activityPayment->bbm_amount)</td>
-              <td>@money($activity->activityStatus->activityPayment->toll_amount)</td>
-              <td>@money($activity->activityStatus->activityPayment->parking_amount)</td>
-              <td>@money($activity->activityStatus->activityPayment->retribution_amount)</td>
+              <td>{{ $activity->name }}</td>
+              <td>@money($activity->bbm_amount)</td>
+              <td>@money($activity->toll_amount)</td>
+              <td>@money($activity->parking_amount)</td>
+              <td>@money($activity->retribution_amount)</td>
             </tr>
           @endforeach
         </tbody>

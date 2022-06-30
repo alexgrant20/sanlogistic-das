@@ -42,23 +42,21 @@
                   <i class="bi bi-pencil"></i>
                 </a>
               </td>
-              <td>{{ $vehicle->owner->name ?? null }}</td>
-              <td>{{ $vehicle->project->name ?? null }}</td>
-              <td>{{ $vehicle->status ?? null }}</td>
-              <td>{{ $vehicle->vehicleVariety->vehicleType->vehicleBrand->name ?? null }}</td>
-              <td>{{ $vehicle->vehicleVariety->vehicleType->name ?? null }}</td>
-              <td>{{ $vehicle->odo ?? null }}</td>
-
-              @if ($vehicle->vehiclesDocuments->contains('type', 'kir'))
-                <td>{{ $vehicle->vehiclesDocuments->where('type', 'kir')->first()->expire }}</td>
+              <td>{{ $vehicle->company_name }}</td>
+              <td>{{ $vehicle->project_name }}</td>
+              <td>{{ $vehicle->status }}</td>
+              <td>{{ $vehicle->vehicle_brand }}</td>
+              <td>{{ $vehicle->vehicle_type }}</td>
+              <td>{{ $vehicle->odo }}</td>
+              @if ($vehicle->kir_expire)
+                <td>{{ $vehicle->kir_expire }}</td>
               @else
-                <td></td>
+                <td class="text-primary">No Data</td>
               @endif
-
-              @if ($vehicle->vehiclesDocuments->contains('type', 'stnk'))
-                <td>{{ $vehicle->vehiclesDocuments->where('type', 'stnk')->first()->expire }}</td>
+              @if ($vehicle->kir_expire)
+                <td>{{ $vehicle->stnk_expire }}</td>
               @else
-                <td></td>
+                <td class="text-primary">No Data</td>
               @endif
             </tr>
           @endforeach

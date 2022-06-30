@@ -18,7 +18,7 @@ return new class extends Migration
       $table->foreignId('company_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->string('type');
       $table->string('number');
-      $table->string('image');
+      $table->string('image')->nullable();
       $table->date('expire');
       $table->boolean('active');
       $table->timestamp('created_at')->useCurrent();

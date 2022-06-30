@@ -9,6 +9,8 @@ class ActivityPayment extends Model
 {
   protected $guarded = ['id'];
 
+  public $timestamps = false;
+
   public function activityStatus()
   {
     return $this->belongsTo(ActivityStatus::class);

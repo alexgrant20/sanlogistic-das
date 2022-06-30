@@ -151,7 +151,7 @@
                 let kir_month = "XX";
                 let kir_year = "XX";
 
-                if (kir.expire) {
+                if (kir && kir.expire) {
                   const expire = kir.expire.split("-")
                   kir_month = expire[1];
                   kir_year = expire[0].slice(-2);
@@ -160,7 +160,7 @@
                 let stnk_month = "XX";
                 let stnk_year = "XX";
 
-                if (stnk.expire) {
+                if (stnk && stnk.expire) {
                   const expire = stnk.expire.split("-")
                   stnk_month = expire[1];
                   stnk_year = expire[0].slice(-2);

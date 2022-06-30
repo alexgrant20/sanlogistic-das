@@ -12,176 +12,110 @@ use App\Models\Project;
 use App\Models\SimType;
 use App\Models\Department;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\StorePersonRequest;
-use App\Http\Requests\UpdatePersonRequest;
+use App\Http\Requests\Admin\StorePersonRequest;
+use App\Http\Requests\Admin\UpdatePersonRequest;
 use App\Imports\PersonImport;
 use App\Models\City;
 use App\Models\PersonDocument;
+use App\Transaction\Constants\NotifactionTypeConstant;
+use App\Transaction\Constants\PersonDTConstant;
 use Exception;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PersonController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
   public function index()
   {
+    $people = Person::with('department', 'project', 'user')->latest()->get();
+
     return view('admin.people.index', [
-      'people' => Person::with('department', 'project', 'user')->latest()->get(),
+      'people' => $people,
       'title' => 'People',
       'importPath' => '/admin/people/import/excel',
     ]);
   }
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
   public function create()
   {
     return view('admin.people.create', [
-      'areas' => Area::all(),
-      'departments' => Department::all(),
-      'projects' => Project::all(),
-      'cities' => City::all(),
-      'simTypes' => SimType::all(),
+      'person' => new Person(),
+      'areas' => Area::orderBy('name')->get(),
+      'departments' => Department::orderBy('name')->get(),
+      'projects' => Project::orderBy('name')->get(),
+      'cities' => City::orderBy('name')->get(),
+      'simTypes' => SimType::orderBy('name')->get(),
       'title' => 'Create Person',
     ]);
   }
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @param  \App\Http\Requests\StorePersonRequest  $request
-   * @return \Illuminate\Http\Response
-   */
   public function store(StorePersonRequest $request)
   {
+    $timestamp = now()->timestamp;
+    $personData = $request->safe()->except(PersonDTConstant::DOCUMENT_TYPE_INPUT);
+    $personData['image'] = $request->hasFile('image')
+      ? uploadImage($request->file('image'), 'person_image', $request->name, $timestamp)
+      : null;
+    $documentQuery = [];
+
+    DB::beginTransaction();
+
     try {
-      // Init Configuration
-      $otherTable = [
-        'ktp',
-        'ktp_address',
-        'ktp_image',
-        'sim',
-        'sim_type_id',
-        'sim_expire',
-        'sim_address',
-        'sim_image',
-        'assurance',
-        'assurance_image',
-        'bpjs_kesehatan',
-        'bpjs_kesehatan_image',
-        'bpjs_ketenagakerjaan',
-        'bpjs_ketenagakerjaan_image',
-        'npwp',
-        'npwp_image',
-      ];
+      $person = Person::create($personData);
+      $personName = str_replace(' ', '', $person['name']);
 
-      $timestamp = now()->timestamp;
-      $documents = ['ktp', 'sim', 'assurance', 'bpjs_kesehatan', 'bpjs_ketenagakerjaan', 'npwp'];
-      $documentQuery = [];
+      foreach (PersonDTConstant::DOCUMENT_TYPE as $docType) {
+        $imageKey = "{$docType}_image";
+        $imagePath = $request->hasFile($imageKey)
+          ? uploadImage($request->file($imageKey), $docType, $personName, $timestamp)
+          : null;
 
-      $personData = $request->safe()->except($otherTable);
-
-      if ($request->file("image")) {
-        $fileName = "person_image-{$personData['name']}-{$timestamp}.{$request->file('image')->extension()}";
-        $imagePath = $request->file('image')->storeAs("person-images", $fileName, 'public');
-      }
-
-      $personData['image'] = $imagePath;
-
-      DB::beginTransaction();
-
-      $newPerson = Person::create($personData);
-      $personID = $newPerson['id'];
-      $personName = str_replace(' ', '', $newPerson['name']);
-
-      foreach ($documents as $doc) {
-
-        if ($request->file("{$doc}_image")) {
-          $fileName = "{$doc}-{$personName}-{$timestamp}.{$request->file("{$doc}_image")->extension()}";
-          $imagePath = $request->file("{$doc}_image")->storeAs("{$doc}-images", $fileName, 'public');
-        }
-
-        if (isset($doc["{$doc}_expire"])) {
-          $active = $doc["{$doc}_expire"] > now() ? 1 : 0;
-        } else {
-          $active = 1;
-        }
+        $expireKey = "{$docType}_expire";
+        $active = $request->has($expireKey) && ($request->get($expireKey) > now()) ? 1 : 0;
 
         array_push($documentQuery, [
-          'person_id' => $personID,
-          'type' => $doc,
-          'specialID' => $request["{$doc}_type_id"] ?? null,
-          'number' => $request[$doc],
-          'address' => $request["{$doc}_address"] ?? null,
+          'person_id' => $person->id,
+          'type' => $docType,
+          'specialID' => $request->get("{$docType}_type_id") ?? null,
+          'number' => $request->get($docType),
+          'address' => $request->get("{$docType}_address") ?? null,
           'image' => $imagePath,
-          'expire' => $request["{$doc}_expire"] ?? null,
+          'expire' => $request->get($expireKey) ?? null,
           'active' => $active,
         ]);
       }
 
       PersonDocument::insert($documentQuery);
-
-      DB::commit();
-
-      $notification = array(
-        'message' => 'Person successfully created!',
-        'alert-type' => 'success',
-      );
-
-      return to_route('admin.person.index')->with($notification);
     } catch (Exception $e) {
       DB::rollback();
 
-      $notification = array(
-        'message' => 'Person failed to create!',
-        'alert-type' => 'error',
-      );
-
-      return to_route('admin.person.create')->withInput()->with($notification);
+      return to_route('admin.person.create')->withInput()
+        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'person', 'create'));
     }
+    DB::commit();
+
+    return to_route('admin.person.index')
+      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'person', 'created'));
   }
 
-  /**
-   * Display the specified resource.
-   *
-   * @param  \App\Models\Person  $person
-   * @return \Illuminate\Http\Response
-   */
-  public function show(Person $person)
-  {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  \App\Models\Person  $person
-   * @return \Illuminate\Http\Response
-   */
   public function edit(Person $person)
   {
-    $ktp = $person->personDocuments->where('type', 'ktp')->first();
-    $sim = $person->personDocuments->where('type', 'sim')->first();
-    $assurance = $person->personDocuments->where('type', 'assurance')->first();
-    $bpjs_kesehatan = $person->personDocuments->where('type', 'bpjs_kesehatan')->first();
-    $bpjs_ketenagakerjaan = $person->personDocuments->where('type', 'bpjs_ketenagakerjaan')->first();
-    $npwp = $person->personDocuments->where('type', 'npwp')->first();
+    $personDocuments = PersonDocument::where('person_id', $person->id)->get();
+
+    $ktp = $personDocuments->filter(fn ($item) => $item->type === 'ktp')->first();
+    $sim = $personDocuments->filter(fn ($item) => $item->type === 'sim')->first();
+    $assurance = $personDocuments->filter(fn ($item) => $item->type === 'assurance')->first();
+    $bpjs_kesehatan = $personDocuments->filter(fn ($item) => $item->type === 'bpjs_kesehatan')->first();
+    $bpjs_ketenagakerjaan = $personDocuments->filter(fn ($item) => $item->type === 'bpjs_ketenagakerjaan')->first();
+    $npwp = $personDocuments->filter(fn ($item) => $item->type === 'npwp')->first();
 
     return view('admin.people.edit', [
       'person' => $person,
-      'areas' => Area::all(),
-      'departments' => Department::all(),
-      'projects' => Project::all(),
-      'cities' => City::all(),
-      'simTypes' => SimType::all(),
+      'areas' => Area::orderBy('name')->get(),
+      'departments' => Department::orderBy('name')->get(),
+      'projects' => Project::orderBy('name')->get(),
+      'cities' => City::orderBy('name')->get(),
+      'simTypes' => SimType::orderBy('name')->get(),
       'ktp' => $ktp,
       'sim' => $sim,
       'assurance' => $assurance,
@@ -192,150 +126,82 @@ class PersonController extends Controller
     ]);
   }
 
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \App\Http\Requests\UpdatePersonRequest  $request
-   * @param  \App\Models\Person  $person
-   * @return \Illuminate\Http\Response
-   */
   public function update(UpdatePersonRequest $request, Person $person)
   {
+    $timestamp = now()->timestamp;
+    $personPayload = $request->safe()->except(PersonDTConstant::DOCUMENT_TYPE_INPUT);
+    $personPayload['image'] = $request->hasFile('image')
+      ? uploadImage($request->file('image'), 'person_image', $request->name, $timestamp)
+      : $person->image;
+    $personDocuments = collect(PersonDocument::where('person_id', $person->id)->get());
+
+    DB::beginTransaction();
 
     try {
-      // Init Configuration
-      $otherTable = [
-        'ktp',
-        'ktp_address',
-        'ktp_image',
-        'sim',
-        'sim_type_id',
-        'sim_expire',
-        'sim_address',
-        'sim_image',
-        'assurance',
-        'assurance_image',
-        'bpjs_kesehatan',
-        'bpjs_kesehatan_image',
-        'bpjs_ketenagakerjaan',
-        'bpjs_ketenagakerjaan_image',
-        'npwp',
-        'npwp_image',
-      ];
+      $person->update($personPayload);
 
-      $timestamp = now()->timestamp;
-      $types = ['ktp', 'sim', 'assurance', 'bpjs_kesehatan', 'bpjs_ketenagakerjaan', 'npwp'];
+      foreach (PersonDTConstant::DOCUMENT_TYPE as $docType) {
+        $doc = $personDocuments->firstWhere('type', $docType);
 
-      $personUpdatedData = $request->safe()->except($otherTable);
-      $personName = $request->name;
-      $personID = $person->id;
+        $imageKey = "{$docType}_image";
 
-      if ($request->file("image")) {
-        $fileName = "person_image-{$personName}-{$timestamp}.{$request->file("image")->extension()}";
-        $imagePath = $request->file("image")->storeAs("person-images", $fileName, 'public');
-        $personUpdatedData['image'] = $imagePath;
-      }
+        $imagePath = $request->hasFile($imageKey)
+          ? uploadImage($request->file($imageKey), $docType, $request->name, $timestamp)
+          : $doc->image ?? null;
 
-      DB::beginTransaction();
-
-      $person->update($personUpdatedData);
-
-      foreach ($types as $type) {
-
-        $document = $person->personDocuments->where('type', $type)->first();
-
-        $imagePath = $document->image ?? null;
-
-        if ($request->file("{$type}_image")) {
-          $fileName = "{$type}-{$personName}-{$timestamp}.{$request->file("{$type}_image")->extension()}";
-          $imagePath = $request->file("{$type}_image")->storeAs("{$type}-images", $fileName, 'public');
-        }
-
-        if (isset($type["{$type}_expire"])) {
-          $active = $type["{$type}_expire"] > now() ? 1 : 0;
-        } else {
-          $active = 1;
-        }
+        $expireKey = "{$docType}_expire";
+        $active = $request->has($expireKey) && ($request->get($expireKey) > now()) ? 1 : 0;
 
         PersonDocument::updateOrCreate(
           [
-            'id' => $document->id ?? null,
+            'id' => $doc->id ?? null,
           ],
           [
-            'person_id' => $personID,
-            'type' => $type,
-            'specialID' => $request["{$type}_type_id"] ?? null,
-            'number' => $request[$type],
-            'address' => $request["{$type}_address"] ?? null,
+            'person_id' => $person->id,
+            'type' => $docType,
+            'specialID' => $request->get("{$docType}_type_id") ?? null,
+            'number' => $request->get($docType),
+            'address' => $request->get("{$docType}_address") ?? null,
             'image' => $imagePath,
-            'expire' => $request["{$type}_expire"] ?? null,
+            'expire' => $request->get("{$docType}_expire") ?? null,
             'active' => $active,
           ]
         );
       }
-
-      DB::commit();
-
-      $notification = array(
-        'message' => 'Person successfully updated!',
-        'alert-type' => 'success',
-      );
-
-      return to_route('admin.person.index')->with($notification);
     } catch (Exception $e) {
       DB::rollback();
 
-      $notification = array(
-        'message' => 'Person failed to update! Error:' . $e->getMessage(),
-        'alert-type' => 'error',
-      );
-
-      return redirect("/admin/people/{$personID}/edit")->withInput()->with($notification);
+      return to_route('admin.person.edit', $person->id)->withInput()
+        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'person', 'update'));
     }
-  }
 
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  \App\Models\Person  $person
-   * @return \Illuminate\Http\Response
-   */
-  public function destroy(Person $person)
-  {
-    //
+    DB::commit();
+
+    return to_route('admin.person.index')
+      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'person', 'updated'));
   }
 
   public function importExcel(Request $request)
   {
+    $request->validate([
+      'file' => 'required|mimes:csv,xls,xlsx'
+    ]);
+    $import = new PersonImport;
+
     try {
-      $request->validate([
-        'file' => 'required|mimes:csv,xls,xlsx'
-      ]);
-
       $file = $request->file('file')->store('file-import/person/');
-
-      $import = new PersonImport;
       $import->import($file);
 
       if ($import->failures()->isNotEmpty()) {
         return back()->with('importErrorList', $import->failures());
       }
-
-      $notification = array(
-        'message' => 'Person successfully imported!',
-        'alert-type' => 'success',
-      );
-
-      return to_route('admin.person.index')->with($notification);
     } catch (Exception $e) {
-
-      $notification = array(
-        'message' => 'Person failed to import!',
-        'alert-type' => 'error',
-      );
-
-      return to_route('admin.person.index')->with($notification);
+      return to_route('admin.person.index')
+        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'person', 'import'));
     }
+
+    return to_route('admin.person.index')
+      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'person', 'imported'));
   }
 
   public function exportExcel(Request $request)

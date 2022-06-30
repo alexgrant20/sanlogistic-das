@@ -16,7 +16,7 @@ return new class extends Migration
     Schema::create('vehicle_images', function (Blueprint $table) {
       $table->id();
       $table->foreignId('vehicle_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
-      $table->string('image');
+      $table->string('image')->nullable();
       $table->string('type');
       $table->timestamp('created_at')->useCurrent();
       $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();

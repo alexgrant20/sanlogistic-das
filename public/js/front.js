@@ -301,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
         $(id).val(formated);
       }
 
-      $(id).on("keydown", (e) => {
+      $(id).on("keyup", (e) => {
         const formated = currency(e.target.value, moneyFormat).format();
         $(id).val(formated);
       });

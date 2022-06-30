@@ -1,6 +1,6 @@
 @extends('driver.layouts.main')
 
-@section('container')
+@section('content')
   <form action="{{ url('/driver/activities/' . $activity->id) }}" method="POST" enctype="multipart/form-data"
     id="form">
     @csrf
@@ -40,7 +40,8 @@
         <div class="row g-3">
           <div class="col-md-6">
             <label for="arrival_id" class="form-label fs-5">Lokasi Tujuan</label>
-            <select id="arrival_id" name="arrival_id" class="form-dark form-select form-select-lg">
+            <select id="arrival_id" name="arrival_id"
+              class="form-dark form-select form-select-lg @error('arrival_id') is-invalid @enderror">
               <option hidden></option>
               @foreach ($arrival_addresses as $arrival_address)
                 @if ($arrival_address->address->id == old('arrival_id', $activity->arrival_location_id))
@@ -61,8 +62,10 @@
 
           <div class="col-md-6">
             <label for="arrival_odo" class="form-label fs-5">Odometer</label>
-            <input type="number" id="arrival_odo" name="arrival_odo" class="form-control form-control-lg form-dark"
-              value="{{ old('arrival_odo', $activity->arrival_odo) }}">
+            <input type="number" id="arrival_odo" name="arrival_odo"
+              class="form-control form-control-lg form-dark  @error('arrival_odo') is-invalid @enderror"
+              value="{{ old('arrival_odo', $activity->arrival_odo) }}"
+              onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57">
 
             @error('arrival_odo')
               <div class="invalid-feedback d-block">
@@ -72,24 +75,7 @@
           </div>
 
           <div class="col-md-12">
-            <div class="d-flex flex-column">
-              <div class="mb-3">
-                <label for="arrival_odo_image" class="form-label fs-5">Foto Odometer</label>
-                <input class="form-control form-dark form-control-lg" id="arrival_odo_image" name="arrival_odo_image"
-                  accept=".jpg, .jpeg, .png" onchange="previewImage('arrival_odo_image')" type="file">
-
-                @error('arrival_odo_image')
-                  <div class="invalid-feedback d-block">
-                    {{ $message }}
-                  </div>
-                @enderror
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-12">
-            <img src="" style="height: 300px;" id="arrival_odo_image-preview" data-action="zoom"
-              class="img-fluid zoom m-auto d-block mw-100" alt="">
+            @livewire('component.image-input', ['name' => 'arrival_odo_image', 'label' => 'ODO Image'])
           </div>
         </div>
       </div>
@@ -126,8 +112,8 @@
             </div>
           </div>
           <div class="col-md-12">
-            <img src="" style="height: 300px;" class="img-fluid zoom m-auto d-block mw-100"
-              id="bbm_image-preview" data-action="zoom" alt="">
+            <img src="#" style="height: 300px;" class="img-fluid zoom m-auto d-block mw-100" id="bbm_image-preview"
+              data-action="zoom" alt="">
           </div>
         </div>
       </div>

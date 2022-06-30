@@ -21,7 +21,7 @@ return new class extends Migration
       $table->string('type');
       $table->string('number');
       $table->string('address')->nullable();
-      $table->string('image');
+      $table->string('image')->nullable();
       $table->date('expire')->nullable();
       $table->tinyInteger('active')->default(1);
       $table->timestamp('created_at')->useCurrent();

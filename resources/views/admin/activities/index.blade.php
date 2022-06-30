@@ -21,7 +21,7 @@
         <x-summary-box>
           <x-slot name="summaryTitle">On Going</x-slot>
           <x-slot name="summaryTotal">
-            {{ $activities->filter(fn($item) => $item->activityStatus->status === 'draft')->count() }}
+            {{ $activities->filter(fn($item) => $item->status === 'draft')->count() }}
           </x-slot>
           <x-slot name="icon">bi bi-journal-arrow-up</x-slot>
           <x-slot name="id">total-ongoing-activity</x-slot>
@@ -31,7 +31,7 @@
         <x-summary-box>
           <x-slot name="summaryTitle">Pending</x-slot>
           <x-slot name="summaryTotal">
-            {{ $activities->filter(fn($item) => $item->activityStatus->status === 'pending')->count() }}
+            {{ $activities->filter(fn($item) => $item->status === 'pending')->count() }}
           </x-slot>
           <x-slot name="icon">bi bi-journal-medical</x-slot>
           <x-slot name="id">total-pending-activity</x-slot>
@@ -41,7 +41,7 @@
         <x-summary-box>
           <x-slot name="summaryTitle">Approved</x-slot>
           <x-slot name="summaryTotal">
-            {{ $activities->filter(fn($item) => $item->activityStatus->status === 'approved')->count() }}
+            {{ $activities->filter(fn($item) => $item->status === 'approved')->count() }}
           </x-slot>
           <x-slot name="icon">bi bi-journal-check</x-slot>
           <x-slot name="id">total-approved-activity</x-slot>
@@ -51,7 +51,7 @@
         <x-summary-box>
           <x-slot name="summaryTitle">Rejected</x-slot>
           <x-slot name="summaryTotal">
-            {{ $activities->filter(fn($item) => $item->activityStatus->status === 'rejected')->count() }}
+            {{ $activities->filter(fn($item) => $item->status === 'rejected')->count() }}
           </x-slot>
           <x-slot name="icon">bi bi-journal-x</x-slot>
           <x-slot name="id">total-rejected-activity</x-slot>
@@ -61,7 +61,7 @@
         <x-summary-box>
           <x-slot name="summaryTitle">Paid</x-slot>
           <x-slot name="summaryTotal">
-            {{ $activities->filter(fn($item) => $item->activityStatus->status === 'paid')->count() }}
+            {{ $activities->filter(fn($item) => $item->status === 'paid')->count() }}
           </x-slot>
           <x-slot name="icon">bi bi-wallet-fill</x-slot>
           <x-slot name="id">total-paid-activity</x-slot>
@@ -74,7 +74,7 @@
 
       @if (session()->has('log_data'))
         <x-modal id="my-modal">
-          <x-slot name="title">Activity sLog</x-slot>
+          <x-slot name="title">Activity Log</x-slot>
           <x-slot name="class">openModal</x-slot>
           <x-slot name="size">modal-lg</x-slot>
           <x-slot name="body">
@@ -87,7 +87,7 @@
               @foreach (session('log_data') as $log)
                 <tr>
                   <td>{{ $log->status }}</td>
-                  <td>{{ $log->created_user->person->name }}</td>
+                  <td>{{ $log->name }}</td>
                   <td>{{ $log->created_at }}</td>
                 </tr>
               @endforeach
@@ -126,21 +126,21 @@
             <tr>
               <td>{{ $activity->id }}</td>
               <td>
-                <a href="{{ url("admin/activities/$activity->id/edit") }}" class="badge bg-primary fs-6">
+                <a href="{{ route('admin.activity.edit', $activity->id) }}" class="badge bg-primary fs-6">
                   <i class="bi bi-pencil"></i>
                 </a>
-                <a href="{{ url("admin/activities/$activity->id") }}" class="badge bg-info fs-6">
+                <a href="{{ route('admin.activity.log', $activity->id) }}" class="badge bg-info fs-6">
                   <i class="bi bi-journal-text"></i>
                 </a>
               </td>
               <td>{{ $activity->departure_date }}</td>
-              <td>{{ $activity->driver->person->name }}</td>
-              <td>{{ $activity->vehicle->license_plate }}</td>
+              <td>{{ $activity->person_name }}</td>
+              <td>{{ $activity->license_plate }}</td>
               <td>{{ $activity->do_number }}</td>
-              <td>{{ $activity->departureLocation->name }}</td>
-              <td>{{ $activity->arrivalLocation->name }}</td>
+              <td>{{ $activity->departure_name }}</td>
+              <td>{{ $activity->arrival_name }}</td>
               <td>{{ $activity->type }}</td>
-              <td>{{ $activity->activityStatus->status }}</td>
+              <td>{{ $activity->status }}</td>
             </tr>
           @endforeach
         </tbody>

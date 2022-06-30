@@ -76,15 +76,15 @@
             <tr>
               <td>{{ $address->id }}</td>
               <td>
-                <a href="{{ url("/admin/addresses/$address->name/edit") }}" class="badge bg-primary fs-6">
+                <a href="{{ route('admin.address.edit', $address->name) }}" class="badge bg-primary fs-6">
                   <i class="bi bi-pencil"></i>
                 </a>
               </td>
               <td>{{ $address->name }}</td>
-              <td>{{ $address->addressType->name }}</td>
+              <td>{{ $address->address_types_name }}</td>
               <td class="text-truncate" style="max-width: 120px">{{ $address->full_address }}</td>
-              <td>{{ $address->subdistrict->district->city->name ?? null }}</td>
-              <td>{{ $address->subdistrict->district->city->province->name ?? null }}</td>
+              <td>{{ $address->cities_name }}</td>
+              <td>{{ $address->provinces_name }}</td>
             </tr>
           @endforeach
         </tbody>

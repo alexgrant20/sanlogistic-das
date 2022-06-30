@@ -16,7 +16,6 @@ return new class extends Migration
     Schema::table('users', function (Blueprint $table) {
       $table->foreignId('created_by')->nullable()->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
       $table->foreignId('updated_by')->nullable()->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
-      $table->foreignId('last_activity_id')->unique()->nullable()->references('id')->on('activities')->restrictOnDelete()->cascadeOnUpdate();
     });
   }
 

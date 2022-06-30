@@ -16,6 +16,7 @@ return new class extends Migration
     Schema::create('drivers', function (Blueprint $table) {
       $table->id();
       $table->foreignId('user_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      $table->foreignId('last_activity_id')->unique()->nullable()->references('id')->on('activities')->restrictOnDelete()->cascadeOnUpdate();
       $table->smallInteger('total_cust_trip')->default(0);
       $table->timestamp('created_at')->useCurrent();
       $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();

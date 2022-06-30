@@ -24,12 +24,12 @@ class VehicleFactory extends Factory
   public function definition()
   {
     return [
-      'project_id' => Project::factory(),
-      'area_id' => Area::factory(),
-      'vehicle_variety_id' => VehicleVariety::factory(),
-      'address_id' => Address::factory(),
-      'owner_id' => Company::factory(),
-      'vehicle_towing_id' => VehicleTowing::factory(),
+      'project_id' => rand(1, 20),
+      'area_id' => rand(1, 30),
+      'vehicle_variety_id' => rand(1, 20),
+      'address_id' => rand(1, 20),
+      'owner_id' => rand(1, 20),
+      'vehicle_towing_id' => rand(1, 10),
       'vehicle_license_plate_color_id' => random_int(1, 2),
       'license_plate' => $this->faker->unique()->name(),
       'frame_number' => $this->faker->randomNumber(9, true),

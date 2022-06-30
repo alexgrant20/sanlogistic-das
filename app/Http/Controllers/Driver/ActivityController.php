@@ -8,26 +8,50 @@ use App\Models\ActivityStatus;
 use App\Models\AddressProject;
 use App\Models\User;
 use App\Models\Vehicle;
-use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Driver\StoreActivityRequest;
 use App\Http\Requests\Driver\UpdateActivityRequest;
 use App\Models\ActivityPayment;
 use App\Models\Address;
+use App\Models\Driver;
+use App\Transaction\Constants\NotifactionTypeConstant;
+use Exception;
 use Illuminate\Support\Arr;
 
 class ActivityController extends Controller
 {
   public function index()
   {
-    //
+    $activities = DB::table('activities')
+      ->leftJoin('activity_statuses', 'activities.activity_status_id', '=', 'activity_statuses.id')
+      ->leftJoin('activity_payments', 'activity_statuses.id', '=', 'activity_payments.activity_status_id')
+      ->leftJoin(DB::raw('addresses dep'), 'activities.departure_location_id', '=', 'dep.id')
+      ->leftJoin(DB::raw('addresses arr'), 'activities.arrival_location_id', '=', 'arr.id')
+      ->where('user_id', '=', auth()->user()->id)
+      ->orderByDesc('activities.created_at')
+      ->selectRaw(
+        'bbm_amount + toll_amount + parking_amount + retribution_amount AS total_cost, arrival_odo - departure_odo AS distance,
+        status, do_number, departure_date, arrival_date, dep.name AS departure_name, arr.name AS arrival_name'
+      )
+      ->paginate(3);
+
+    return view('driver.activities.index', [
+      'title' => __('Activity History'),
+      'activities' => $activities
+    ]);
   }
 
   public function create()
   {
+    $projectId = auth()->user()->person->project_id;
+
+    $vehicles = Vehicle::where('project_id', $projectId)->orderBy('license_plate')->get();
+
     return view('driver.activities.create', [
-      'title' => 'Create Activity'
+      'title' => 'Create Activity',
+      'vehicles' => $vehicles,
+      'projectId' => $projectId
     ]);
   }
 
@@ -35,10 +59,13 @@ class ActivityController extends Controller
   {
     $timestamp = now()->timestamp;
     $images = collect($request->allFiles());
-    $vehicle = Vehicle::where('id', $request->vehicle_id)->first();
+    $vehicle = Vehicle::find($request->vehicle_id);
+
     ['lat' => $lat, 'lon' => $lon, 'loc' => $loc] = get_location_ngt(str_replace(' ', '', $vehicle->license_plate));
 
-    $data = $request->safe()->merge(
+    $listOfPath = uploadImages($images, $request->do_number, $timestamp);
+    $data = array_merge(
+      $request->safe()->except(['do_image', 'departure_odo_image']),
       [
         'do_date' => now(),
         'user_id' => auth()->user()->id,
@@ -46,22 +73,26 @@ class ActivityController extends Controller
         'start_lat' => $lat,
         'start_lon' => $lon,
         'start_loc' => $loc,
-      ]
-    )->except(['do_image', 'departure_odo_image']);
+      ],
+      $listOfPath
+    );
 
-    $listOfPath = uploadImages($images, $request->do_number, $timestamp);
-    $data = array_merge($data, $listOfPath);
+    try {
+      DB::transaction(function () use ($data, $request) {
+        $activity = Activity::create($data);
+        $activity->vehicle->update([
+          'last_do_number' => $request->do_number,
+          'last_do_date' => now(),
+        ]);
+        ActivityStatus::create(['status' => 'draft', 'activity_id' => $activity->id]);
+        $request->session()->put('activity_id', $activity->id);
+      });
+    } catch (Exception $e) {
+      return to_route('driver.activity.create')->withInput();
+    }
 
-    return DB::transaction(function () use ($data, $request) {
-      $activity = Activity::create($data);
-      $activity->vehicle->update([
-        'last_do_number' => $request->do_number,
-        'last_do_date' => now(),
-      ]);
-      ActivityStatus::create(['status' => 'draft', 'activity_id' => $activity->id]);
-      $request->session()->put('activity_id', $activity->id);
-      return to_route('index');
-    });
+    return to_route('index')
+      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'created'));
   }
 
   public function show(Activity $activity)
@@ -81,105 +112,117 @@ class ActivityController extends Controller
   public function update(UpdateActivityRequest $request, Activity $activity)
   {
     $vehicle = Vehicle::where('id', $activity->vehicle_id)->first();
-    $user = User::find(auth()->user()->id);
     $totalCustTrip = auth()->user()->total_cust_trip;
 
-    $a_name = $activity->arrivalLocation->addressType->name;
-    $d_name = $activity->departureLocation->addressType->name;
+    $a_name =  strtoupper($activity->arrivalLocation->addressType->name);
+    $d_name = strtoupper($activity->departureLocation->addressType->name);
 
     $activityType = null;
 
-    switch ($a_name) {
-      case "Tujuan Pengiriman":
-        $totalCustTrip += 1;
+    DB::beginTransaction();
+    try {
+      switch ($a_name) {
+        case "TUJUAN PENGIRIMAN":
+          $totalCustTrip += 1;
 
-        DB::transaction(function () use ($user, $totalCustTrip, $activity) {
-          $user->update([
+          Driver::where('user_id', auth()->user()->id)->update([
             'total_cust_trip' => $totalCustTrip + 1,
             'last_activity_id' => $activity->id
           ]);
-        });
 
-        $activityType = "mdp-" . $totalCustTrip;
-        break;
+          $activityType = "mdp-" . $totalCustTrip;
+          break;
 
-      case "Kantor Utama":
-      case "Pool":
-        $activityType = "pool";
-        break;
+        case "KANTOR UTAMA":
+        case "POOL":
+          $activityType = "pool";
+          break;
 
-      case "Station":
-        if ($d_name == "Station") {
-          $activityType = 'manuver';
-        } else {
-          $type = $totalCustTrip > 1 ? 'mdp-e' : 'sdp';
+        case "STATION":
+          if ($d_name == "Station") {
+            $activityType = 'manuver';
+          } else {
 
-          DB::transaction(function () use ($type, $user) {
-            $user->lastActivity->update([
+            $activityType = 'return';
+
+            if ($totalCustTrip == 0) {
+              break;
+            }
+
+            $type = $totalCustTrip > 1 ? 'mdp-e' : 'sdp';
+
+            $driver = Driver::where('user_id', auth()->user()->id);
+
+            $driver->lastActivity->update([
               'type' => $type
             ]);
-            $user->update([
+
+            $driver->update([
               'total_cust_trip' => 0,
               'last_activity_id' => NULL
             ]);
-          });
+          }
+          break;
 
-          $activityType = 'return';
-        }
-        break;
+        case "WORKSHOP":
+          $activityType = "maintenance";
+          break;
 
-      case "WORKSHOP":
-        $activityType = "maintenance";
-        break;
+        case "PKB/SAMSAT":
+          $activityType = "kir";
+          break;
+      }
 
-      case "PKB/SAMSAT":
-        $activityType = "kir";
-        break;
+      ['lat' => $lat, 'lon' => $lon, 'loc' => $loc] = get_location_ngt(str_replace(' ', '', $vehicle->license_plate));
+      $data = $request->safe()->merge(
+        [
+          'end_lat' => $lat,
+          'end_lon' => $lon,
+          'end_loc' => $loc,
+          'type' => $activityType,
+          'arrival_date' => now()
+        ]
+      )->except(
+        ['bbm_image', 'toll_image', 'parking_image', 'arrival_odo_image', 'bbm_amount', 'toll_amount', 'parking_amount']
+      );
+      $images = collect($request->allFiles());
+      $timestamp = now()->timestamp;
+
+      $listOfPath = uploadImages($images, $activity->do_number, $timestamp);
+      $data = array_merge($data, $listOfPath);
+
+      DB::transaction(function () use ($activity, $data, $request) {
+        $activity->update($data);
+
+        $activityStatus = ActivityStatus::create([
+          'status' => 'pending',
+          'activity_id' => $activity->id
+        ]);
+
+        $activity->vehicle->update([
+          'odo' => $request->arrival_odo,
+          'address_id' => $request->arrival_id,
+          // 'last_do_number' => NULL,
+          // 'last_do_date' => NULL,
+        ]);
+
+        ActivityPayment::create([
+          'activity_status_id' => $activityStatus->id,
+          'bbm_amount' => $request->bbm_amount,
+          'toll_amount' => $request->toll_amount,
+          'parking_amount' => $request->parking_amount,
+        ]);
+      });
+    } catch (Exception $e) {
+      DB::rollBack();
+      return to_route('driver.activity.edit')->withInput();
     }
-
-    ['lat' => $lat, 'lon' => $lon, 'loc' => $loc] = get_location_ngt(str_replace(' ', '', $vehicle->license_plate));
-    $data = $request->safe()->merge(
-      [
-        'end_lat' => $lat,
-        'end_lon' => $lon,
-        'end_loc' => $loc,
-        'type' => $activityType,
-        'arrival_date' => now()
-      ]
-    )->except(
-      ['bbm_image', 'toll_image', 'parking_image', 'arrival_odo_image', 'bbm_amount', 'toll_amount', 'parking_amount']
-    );
-    $images = collect($request->allFiles());
-    $timestamp = now()->timestamp;
-
-    $listOfPath = uploadImages($images, $activity->do_number, $timestamp);
-    $data = array_merge($data, $listOfPath);
-
-    DB::transaction(function () use ($activity, $data, $request) {
-      $activity->update($data);
-
-      $activityStatus = ActivityStatus::create([
-        'status' => 'pending',
-        'activity_id' => $activity->id
-      ]);
-
-      $activity->vehicle->update([
-        'odo' => $request->arrival_odo,
-        'address_id' => $request->arrival_id,
-        // 'last_do_number' => NULL,
-        // 'last_do_date' => NULL,
-      ]);
-
-      ActivityPayment::create([
-        'activity_status_id' => $activityStatus->id,
-        'bbm_amount' => $request->bbm_amount,
-        'toll_amount' => $request->toll_amount,
-        'parking_amount' => $request->parking_amount,
-      ]);
-    });
+    DB::commit();
 
     $request->session()->forget('activity_id');
-    return to_route('index');
+
+    return to_route('index')
+      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'finished'));;
   }
 
   public function destroy(Activity $activity)

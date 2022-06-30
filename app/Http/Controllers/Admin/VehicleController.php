@@ -18,35 +18,52 @@ use App\Models\VehicleType;
 use App\Models\VehicleVariety;
 use Illuminate\Support\Facades\DB;
 use App\Models\VehicleLicensePlateColor;
-use App\Http\Requests\StoreVehicleRequest;
-use App\Http\Requests\UpdateVehicleRequest;
+use App\Http\Requests\Admin\StoreVehicleRequest;
+use App\Http\Requests\Admin\UpdateVehicleRequest;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\VehicleImport;
+use App\Transaction\Constants\NotifactionTypeConstant;
+use App\Transaction\Constants\VehicleDTConstant;
 
 class VehicleController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
+
   public function index()
   {
-    $vehicles =  Vehicle::with('owner', 'project', 'vehiclesDocuments', 'area', 'vehicleVariety', 'address', 'vehicleTowing')->latest()->get();
+    $kirQuery = DB::table('vehicle_documents AS kir')->where('type', 'kir')->select(['vehicle_id', 'type', 'expire']);
+    $stnkQuery = DB::table('vehicle_documents AS stnk')->where('type', 'stnk')->select(['vehicle_id', 'type', 'expire']);
 
-    $vehiclesDocuments = ['stnk', 'kir'];
-    $vehiclesImages = ['front', 'left', 'right', 'back'];
-
-    $totalVehicleImage = VehicleImage::all()->count();
-    $totalVehicleDocument = VehicleDocument::all()->count();
-    $totalVehicle = $vehicles->count();
-
-    if (
-      $totalVehicle * count($vehiclesDocuments) !== $totalVehicleDocument ||
-      $totalVehicle * count($vehiclesImages) !== $totalVehicleImage
-    ) return to_route('admin.vehicle.migrate_image');
-
+    $vehicles = DB::table('vehicles')
+      ->leftJoin('companies', 'vehicles.owner_id', '=', 'companies.id')
+      ->leftJoin('projects', 'vehicles.project_id', '=', 'projects.id')
+      ->leftJoin('areas', 'vehicles.area_id', '=', 'areas.id')
+      ->leftJoin('vehicle_varieties', 'vehicles.vehicle_variety_id', '=', 'vehicle_varieties.id')
+      ->leftJoin('vehicle_types', 'vehicle_varieties.vehicle_type_id', '=', 'vehicle_types.id')
+      ->leftJoin('vehicle_brands', 'vehicle_types.vehicle_brand_id', '=', 'vehicle_brands.id')
+      ->leftJoin('addresses', 'vehicles.address_id', '=', 'addresses.id')
+      ->leftJoin('vehicle_towings', 'vehicles.vehicle_towing_id', '=', 'vehicle_towings.id')
+      ->leftJoinSub($kirQuery, 'kir', function ($join) {
+        $join->on('vehicles.id', '=', 'kir.vehicle_id');
+      })
+      ->leftJoinSub($stnkQuery, 'stnk', function ($join) {
+        $join->on('vehicles.id', '=', 'stnk.vehicle_id');
+      })
+      ->select(
+        [
+          'vehicles.id',
+          'license_plate',
+          'companies.name AS company_name',
+          'projects.name AS project_name',
+          'vehicles.status AS status',
+          'vehicle_brands.name AS vehicle_brand',
+          'vehicle_types.name AS vehicle_type',
+          'odo',
+          'kir.expire AS kir_expire',
+          'stnk.expire AS stnk_expire',
+        ]
+      )
+      ->get();
 
     return view('admin.vehicles.index', [
       'vehicles' => $vehicles,
@@ -55,86 +72,58 @@ class VehicleController extends Controller
     ]);
   }
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
   public function create()
   {
     return view('admin.vehicles.create', [
-      'vehiclesBrands' => VehicleBrand::all(),
-      'areas' => Area::all(),
-      'projects' => Project::all(),
-      'companies' => Company::all(),
-      'addresses' => Address::all(),
-      'vehiclesTowings' => VehicleTowing::all(),
-      'vehiclesLPColors' => VehicleLicensePlateColor::all(),
+      'vehicle' => new Vehicle(),
+      'vehiclesBrands' => VehicleBrand::orderBy('name')->get(),
+      'areas' => Area::orderBy('name')->get(),
+      'projects' => Project::orderBy('name')->get(),
+      'companies' => Company::orderBy('name')->get(),
+      'addresses' => Address::orderBy('name')->get(),
+      'vehiclesTowings' => VehicleTowing::orderBy('name')->get(),
+      'vehiclesLPColors' => VehicleLicensePlateColor::orderBy('name')->get(),
       'title' => 'Create Vehicle',
     ]);
   }
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @param  \App\Http\Requests\StoreVehicleRequest  $request
-   * @return \Illuminate\Http\Response
-   */
   public function store(StoreVehicleRequest $request)
   {
+    $timestamp = now()->timestamp;
+    $imagesQuery = [];
+    $documentsQuery = [];
 
+    DB::beginTransaction();
     try {
-      // Init Configuration
-      $otherTable = [
-        'kir_number',
-        'kir_expire',
-        'kir_image',
-        'stnk_number',
-        'stnk_expire',
-        'stnk_image',
-        'front_image',
-        'left_image',
-        'right_image',
-        'back_image',
-      ];
-      $timestamp = now()->timestamp;
-      $documents = ['kir', 'stnk'];
-      $images = ['front', 'left', 'right', 'back'];
-      $imagesQuery = [];
-      $documentsQuery = [];
 
-      DB::beginTransaction();
+      $vehicle = Vehicle::create($request->safe()->except(VehicleDTConstant::DOCUMENT_TYPE_INPUT));
+      $vehicleLP = str_replace(' ', '', $vehicle->license_plate);
 
-      $newVehicle = Vehicle::create($request->safe()->except($otherTable));
-      $vehicleID = $newVehicle['id'];
-      $vehicleLP = str_replace(' ', '', $newVehicle['license_plate']);
-
-      foreach ($documents as $doc) {
-
-        if ($request->file("{$doc}_image")) {
-          $fileName = "{$doc}-{$vehicleLP}-{$timestamp}.{$request->file("{$doc}_image")->extension()}";
-          $imagePath = $request->file("{$doc}_image")->storeAs("{$doc}-images", $fileName, 'public');
-        }
+      foreach (VehicleDTConstant::DOCUMENT_TYPE as $docType) {
+        $imageKey = "{$docType}_image";
+        $imagePath = $request->hasFile($imageKey)
+          ? uploadImage($request->file($imageKey), $docType, $vehicleLP, $timestamp)
+          : "";
 
         array_push($documentsQuery, [
-          'vehicle_id' => $vehicleID,
-          'type' => $doc,
-          'number' => $request["${doc}_number"],
+          'vehicle_id' => $vehicle->id,
+          'type' => $docType,
+          'number' => $request->get("{$docType}_number"),
           'image' => $imagePath,
-          'expire' => $request["${doc}_expire"],
-          'active' => $request["{$doc}_expire"] > now() ? 1 : 0,
+          'expire' => $request->get("{$docType}_expire"),
+          'active' => $request->get("{$docType}_expire") > now() ? 1 : 0,
         ]);
       }
 
-      foreach ($images as $img) {
+      foreach (VehicleDTConstant::IMAGE_TYPE as $img) {
 
-        if ($request->file("{$img}_image")) {
-          $fileName = "{$img}-{$vehicleLP}-{$timestamp}.{$request->file("{$img}_image")->extension()}";
-          $imagePath = $request->file("{$img}_image")->storeAs("{$img}-images", $fileName, 'public');
-        }
+        $imageKey = "{$img}_image";
+        $imagePath = $request->hasFile($imageKey)
+          ? uploadImage($request->file($imageKey), $docType, $vehicleLP, $timestamp)
+          : "";
 
         array_push($imagesQuery, [
-          'vehicle_id' => $vehicleID,
+          'vehicle_id' => $vehicle->id,
           'type' => $img,
           'image' => $imagePath,
         ]);
@@ -142,41 +131,19 @@ class VehicleController extends Controller
 
       VehicleDocument::insert($documentsQuery);
       VehicleImage::insert($imagesQuery);
-
-      DB::commit();
-
-      $notification = array(
-        'message' => 'Vehicle successfully created!',
-        'alert-type' => 'success',
-      );
-
-      return to_route('admin.vehicle.index')->with($notification);
     } catch (Exception $e) {
       DB::rollback();
-      $notification = array(
-        'message' => 'Vehicle failed to create!',
-        'alert-type' => 'error',
-      );
-      return to_route('admin.vehicle.create')->withInput()->with($notification);
+
+      return to_route('admin.vehicle.create')->withInput()
+        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'vehicle', 'create'));
     }
+
+    DB::commit();
+
+    return to_route('admin.vehicle.index')
+      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'vehicle', 'created'));
   }
 
-  /**
-   * Display the specified resource.
-   *
-   * @param  \App\Models\Vehicle  $vehicle
-   * @return \Illuminate\Http\Response
-   */
-  public function show(Vehicle $vehicle)
-  {
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  \App\Models\Vehicle  $vehicle
-   * @return \Illuminate\Http\Response
-   */
   public function edit(Vehicle $vehicle)
   {
     $kir = $vehicle->vehiclesDocuments->where('type', 'kir')->first();
@@ -187,219 +154,92 @@ class VehicleController extends Controller
     $right = $vehicle->vehicleImages->where('type', 'right')->first();
 
     return view('admin.vehicles.edit', [
-      'vehiclesBrands' => VehicleBrand::all(),
-      'areas' => Area::all(),
-      'projects' => Project::all(),
-      'companies' => Company::all(),
-      'addresses' => Address::all(),
-      'vehiclesTowings' => VehicleTowing::all(),
-      'vehiclesLPColors' => VehicleLicensePlateColor::all(),
+      'vehiclesBrands' => VehicleBrand::orderBy('name')->get(),
+      'areas' => Area::orderBy('name')->get(),
+      'projects' => Project::orderBy('name')->get(),
+      'companies' => Company::orderBy('name')->get(),
+      'addresses' => Address::orderBy('name')->get(),
+      'vehiclesTowings' => VehicleTowing::orderBy('name')->get(),
+      'vehiclesLPColors' => VehicleLicensePlateColor::orderBy('name')->get(),
       'vehicle' => $vehicle,
-      'stnk' => is_null($stnk) ? [] : $stnk,
-      'kir' => is_null($kir) ? [] : $kir,
-      'front' => $front,
-      'back' => $back,
-      'left' => $left,
-      'right' => $right,
+      'stnk' => $stnk ?? new VehicleDocument(),
+      'kir' => $kir ?? new VehicleDocument(),
+      'front' => $front ?? new VehicleImage(),
+      'back' => $back ?? new VehicleImage(),
+      'left' => $left ?? new VehicleImage(),
+      'right' => $right ?? new VehicleImage(),
       'title' => "Update Vehicle {$vehicle->license_plate}"
     ]);
   }
 
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \App\Http\Requests\UpdateVehicleRequest  $request
-   * @param  \App\Models\Vehicle  $vehicle
-   * @return \Illuminate\Http\Response
-   */
   public function update(UpdateVehicleRequest $request, Vehicle $vehicle)
   {
+    $timestamp = now()->timestamp;
+    $vehicleLP = str_replace(' ', '', $request->license_plate);
+    $documents = collect($vehicle->vehiclesDocuments->all());
+    $images = collect($vehicle->vehicleImages->all());
+
+    DB::beginTransaction();
+
     try {
-      // Init Configuration
-      $otherTable = [
-        'kir_number',
-        'kir_expire',
-        'kir_image',
-        'stnk_number',
-        'stnk_expire',
-        'stnk_image',
-        'front_image',
-        'left_image',
-        'right_image',
-        'back_image',
-        'vehicle_type_id',
-        'vehicle_brand_id'
-      ];
-      $timestamp = now()->timestamp;
-      $documents = ['kir', 'stnk'];
-      $images = ['front', 'left', 'right', 'back'];
+      $vehicle->update($request->safe()->except(VehicleDTConstant::DOCUMENT_TYPE_INPUT));
 
+      foreach (VehicleDTConstant::DOCUMENT_TYPE as $docType) {
+        $document = $documents->firstWhere('type', $docType);
 
-      $vehicleLP = str_replace(' ', '', $request->license_plate);
+        $imageKey = "{$docType}_image";
+        $imagePath = $request->hasFile($imageKey)
+          ? uploadImage($request->file($imageKey), $docType, $vehicleLP, $timestamp)
+          : $document->image ?? null;
 
-      DB::beginTransaction();
-
-      $vehicle->update($request->safe()->except($otherTable));
-
-      foreach ($documents as $doc) {
-
-        $document = $vehicle->vehiclesDocuments->where('type', $doc)->first();
-        $imagePath = $document->image;
-
-        if ($request->file("{$doc}_image")) {
-          $fileName = "{$doc}-{$vehicleLP}-{$timestamp}.{$request->file("{$doc}_image")->extension()}";
-          $imagePath = $request->file("{$doc}_image")->storeAs("{$doc}-images", $fileName, 'public');
-        }
-
-        $document->update([
-          'number' => $request["${doc}_number"],
-          'image' => $imagePath,
-          'expire' => $request["${doc}_expire"],
-          'active' => $request["{$doc}_expire"] > now() ? 1 : 0,
-        ]);
+        VehicleDocument::updateOrCreate(
+          [
+            'id' => $document->id ?? null,
+            'vehicle_id' => $vehicle->id,
+            'type' => $docType,
+          ],
+          [
+            'number' => $request->get("{$docType}_number"),
+            'expire' => $request->get("{$docType}_expire"),
+            'active' => $request->get("{$docType}_expire") > now() ? 1 : 0,
+            'image' => $imagePath,
+          ]
+        );
       }
 
-      foreach ($images as $imgType) {
+      foreach (VehicleDTConstant::IMAGE_TYPE as $imgType) {
+        $imageOld = $images->firstWhere('type', $imgType);
 
-        $vehicleImage = $vehicle->vehicleImages->where('type', $imgType)->first();
-        $imagePath = $vehicleImage->image;
+        $imageKey = "{$imgType}_image";
+        $imagePath = $request->hasFile($imageKey)
+          ? uploadImage($request->file($imageKey), $docType, $vehicleLP, $timestamp)
+          : $imageOld->image ?? null;
 
-        if ($request->file("{$imgType}_image")) {
-          $fileName = "{$imgType}-{$vehicleLP}-{$timestamp}.{$request->file("{$imgType}_image")->extension()}";
-          $imagePath = $request->file("{$imgType}_image")->storeAs("{$imgType}-images", $fileName, 'public');
-        }
-
-        $vehicleImage->update([
-          'image' => $imagePath,
-        ]);
+        VehicleImage::updateOrCreate(
+          [
+            'id' => $imageOld->id ?? null,
+            'vehicle_id' => $vehicle->id,
+            'type' => $imgType,
+          ],
+          [
+            'image' => $imagePath
+          ]
+        );
       }
-
-      DB::commit();
-
-      $notification = array(
-        'message' => 'Vehicle successfully updated!',
-        'alert-type' => 'success',
-      );
-
-      return to_route('admin.vehicle.index')->with($notification);
     } catch (Exception $e) {
 
+      dd($e->getMessage());
       DB::rollback();
 
-      $notification = array(
-        'message' => 'Vehicle failed to create!',
-        'alert-type' => 'error',
-      );
-      return redirect("/admin/vehicles/{$vehicle->license_plate}/edit")->withInput()->with($notification);
+      return redirect("/admin/vehicles/{$vehicle->license_plate}/edit")
+        ->withInput()
+        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'vehicle', 'updated'));
     }
-  }
 
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  \App\Models\Vehicle  $vehicle
-   * @return \Illuminate\Http\Response
-   */
-  public function destroy(Vehicle $vehicle)
-  {
-    //
-  }
+    DB::commit();
 
-  public function migrateImage()
-  {
-    try {
-      $vehicles = Vehicle::with('vehicleImages', 'vehiclesDocuments')->get();
-      $totalVehicles = $vehicles->count();
-      $vehiclesDocuments = VehicleDocument::all();
-      $vehiclesImages = VehicleImage::all();
-
-      $documentsTypes = ['kir', 'stnk'];
-      $imgTypes = ['front', 'left', 'right', 'back'];
-      $totalDocType = count($documentsTypes);
-      $totalImgType = count($imgTypes);
-      $docNeedMigrate = true;
-      $imgNeedMigrate = true;
-      $queryImages = [];
-      $queryDocuments = [];
-
-      // Vehicles Document Full
-      if ($totalVehicles * $totalDocType === $vehiclesDocuments->count()) {
-        $docNeedMigrate = false;
-      }
-
-      // Vehicles Images Full
-      if ($totalVehicles * $totalImgType === $vehiclesImages->count()) {
-        $imgNeedMigrate = false;
-      }
-
-      $notification = array(
-        'message' => 'Migration is not needed!',
-        'alert-type' => 'warning',
-      );
-
-
-      if (!$imgNeedMigrate && !$docNeedMigrate) {
-        return to_route('admin.vehicle.index')->with($notification);
-      }
-
-      foreach ($vehicles as $vehicle) {
-
-        if ($docNeedMigrate) {
-          foreach ($documentsTypes as $docType) {
-            if (!$vehicle->vehiclesDocuments->contains('type', $docType)) {
-              array_push($queryDocuments, [
-                'vehicle_id' => $vehicle->id,
-                'type' => $docType,
-                'number' => 0,
-                'image' => env('DEFAULT_IMAGE'),
-                'expire' => now(),
-                'active' => 0,
-              ]);
-            }
-          }
-        }
-
-        if ($imgNeedMigrate) {
-          foreach ($imgTypes as $imgType) {
-            if (!$vehicle->vehicleImages->contains('type', $imgType)) {
-              array_push($queryImages, [
-                'vehicle_id' => $vehicle->id,
-                'type' => $imgType,
-                'image' => env('DEFAULT_IMAGE'),
-              ]);
-            }
-          }
-        }
-      }
-
-      DB::beginTransaction();
-
-
-      if ($docNeedMigrate) {
-        VehicleDocument::insert($queryDocuments);
-      }
-
-      if ($imgNeedMigrate) {
-        VehicleImage::insert($queryImages);
-      }
-
-      DB::commit();
-
-      $notification = array(
-        'message' => 'Vehicle image successfully migrated!',
-        'alert-type' => 'success',
-      );
-
-      return to_route('admin.vehicle.index')->with($notification);
-    } catch (Exception $e) {
-      DB::rollBack();
-
-      $notification = array(
-        'message' => 'Vehicle image failed to migrate!',
-        'alert-type' => 'error',
-      );
-      return to_route('admin.vehicle.index')->with($notification);
-    }
+    return to_route('admin.vehicle.index')
+      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'vehicle', 'updated'));
   }
 
   public function exportExcel(Request $request)
@@ -412,35 +252,25 @@ class VehicleController extends Controller
 
   public function importExcel(Request $request)
   {
+    $request->validate([
+      'file' => 'required|mimes:csv,xls,xlsx'
+    ]);
+    $import = new VehicleImport;
+
     try {
-      $request->validate([
-        'file' => 'required|mimes:csv,xls,xlsx'
-      ]);
-
       $file = $request->file('file')->store('file-import/vehicle/');
-
-      $import = new VehicleImport;
       $import->import($file);
-
-      if ($import->failures()->isNotEmpty()) {
-        return back()->with('importErrorList', $import->failures());
-      }
-
-      $notification = array(
-        'message' => 'Vehicle successfully imported!',
-        'alert-type' => 'success',
-      );
-
-      return to_route('admin.vehicle.index')->with($notification);
     } catch (Exception $e) {
-
-      $notification = array(
-        'message' => 'Vehicle failed to import!',
-        'alert-type' => 'error',
-      );
-
-      return to_route('admin.vehicle.index')->with($notification);
+      return to_route('admin.vehicle.index')
+        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'vehicle', 'import'));
     }
+
+    if ($import->failures()->isNotEmpty()) {
+      return back()->with('importErrorList', $import->failures());
+    }
+
+    return to_route('admin.vehicle.index')
+      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'vehicle', 'imported'));
   }
 
   // Api Route

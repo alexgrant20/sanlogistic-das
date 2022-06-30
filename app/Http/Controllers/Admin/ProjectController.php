@@ -6,26 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Exports\ProjectExport;
 use App\Models\Company;
 use App\Models\Project;
-use App\Http\Requests\StoreProjectRequest;
-use App\Http\Requests\UpdateProjectRequest;
+use App\Http\Requests\Admin\StoreProjectRequest;
+use App\Http\Requests\Admin\UpdateProjectRequest;
 use App\Imports\ProjectImport;
 use App\Models\Address;
 use App\Models\AddressProject;
 use App\Models\Person;
 use App\Models\Vehicle;
+use App\Transaction\Constants\NotifactionTypeConstant;
 use Exception;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProjectController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
   public function index()
   {
     return view('admin.projects.index', [
@@ -35,159 +30,61 @@ class ProjectController extends Controller
     ]);
   }
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
   public function create()
   {
     return view('admin.projects.create', [
-      'customers' => Company::all(),
+      'customers' => Company::latest()->get(),
       'title' => 'Create Project',
     ]);
   }
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @param  \App\Http\Requests\StoreProjectRequest  $request
-   * @return \Illuminate\Http\Response
-   */
   public function store(StoreProjectRequest $request)
   {
-    try {
-      $validatedData = $request->safe()->all();
+    Project::create($request->safe()->toArray());
 
-      DB::beginTransaction();
-
-      Project::create($validatedData);
-
-      DB::commit();
-
-      $notification = array(
-        'message' => 'Project successfully created!',
-        'alert-type' => 'success',
-      );
-
-      return to_route('admin.project.index')->with($notification);
-    } catch (Exception $e) {
-      DB::rollBack();
-
-      $notification = array(
-        'message' => 'Project failed to create!',
-        'alert-type' => 'error',
-      );
-
-      return to_route('admin.project.create')->withInput()->with($notification);
-    }
+    return to_route('admin.project.index')
+      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'project', 'created'));
   }
 
-  /**
-   * Display the specified resource.
-   *
-   * @param  \App\Models\Project  $project
-   * @return \Illuminate\Http\Response
-   */
-  public function show(Project $project)
-  {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  \App\Models\Project  $project
-   * @return \Illuminate\Http\Response
-   */
   public function edit(Project $project)
   {
     return view('admin.projects.edit', [
       'project' => $project,
-      'customers' => Company::all(),
+      'customers' => Company::orderBy('name')->get(),
       'title' => "Update Project : {$project->name}"
     ]);
   }
 
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \App\Http\Requests\UpdateProjectRequest  $request
-   * @param  \App\Models\Project  $project
-   * @return \Illuminate\Http\Response
-   */
   public function update(UpdateProjectRequest $request, Project $project)
   {
-    try {
+    $project->update($request->safe()->toArray());
 
-      $validatedData = $request->safe()->all();
-
-      DB::beginTransaction();
-
-      Project::where('id', $project->id)->update($validatedData);
-
-      DB::commit();
-
-      $notification = array(
-        'message' => 'Project successfully updated!',
-        'alert-type' => 'success',
-      );
-
-      return to_route('admin.project.index')->with($notification);
-    } catch (Exception $e) {
-      DB::rollBack();
-
-      $notification = array(
-        'message' => 'Project failed to update!',
-        'alert-type' => 'error',
-      );
-
-      return redirect("/admin/projects/$project->id")->withInput()->with($notification);
-    }
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  \App\Models\Project  $project
-   * @return \Illuminate\Http\Response
-   */
-  public function destroy(Project $project)
-  {
-    //
+    return to_route('admin.project.index')
+      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'project', 'updated'));
   }
 
   public function importExcel(Request $request)
   {
-    try {
-      $request->validate([
-        'file' => 'required|mimes:csv,xls,xlsx'
-      ]);
+    $request->validate([
+      'file' => 'required|mimes:csv,xls,xlsx'
+    ]);
+    $import = new ProjectImport;
 
+    try {
       $file = $request->file('file')->store('file-import/project/');
 
-      $import = new ProjectImport;
       $import->import($file);
-
-      if ($import->failures()->isNotEmpty()) {
-        return back()->with('importErrorList', $import->failures());
-      }
-
-      $notification = array(
-        'message' => 'Project successfully imported!',
-        'alert-type' => 'success',
-      );
-
-      return to_route('admin.project.index')->with($notification);
     } catch (Exception $e) {
-
-      $notification = array(
-        'message' => 'Project failed to import!',
-        'alert-type' => 'error',
-      );
-
-      return to_route('admin.project.index')->with($notification);
+      return to_route('admin.project.index')
+        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'project', 'import'));
     }
+
+    if ($import->failures()->isNotEmpty()) {
+      return back()->with('importErrorList', $import->failures());
+    }
+
+    return to_route('admin.project.index')
+      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'project', 'imported'));
   }
 
   public function exportExcel(Request $request)
@@ -239,47 +136,27 @@ class ProjectController extends Controller
 
   public function assignVehicle(Request $request)
   {
+    $request->validate([
+      'vehicle_id' => 'required',
+      'project_id' => 'required',
+      'action' => 'required'
+    ]);
+
+    $action = $request->action;
+    $vehicle = Vehicle::find($request->vehicle_id);
+    $actionMsg = $action == 'assign' ? 'Assigned' : 'Removed';
+
     try {
-      $data = $request->validate([
-        'vehicle_id' => 'required',
-        'project_id' => 'required',
-        'action' => 'required'
-      ]);
+      $vehicle->update(['project_id' => $action == 'assign' ?  $request->project_id : null]);
 
-      $action = $data['action'];
-      $vehicle_id = $data['vehicle_id'];
-      $project_id = $data['project_id'];
-
-      if (!$action || !$vehicle_id || !$project_id) {
-        throw new Exception('Input Invalid', 500);
-      }
-
-      $vehicle = Vehicle::where('id', $vehicle_id);
-
-      if ($action == 'assign') {
-
-        $vehicle->update(['project_id' => $project_id]);
-
-        exit(json_encode(
-          array(
-            'status' => true,
-            'message' => "{$vehicle->first()->license_plate} Assigned!",
-            'action' => $action
-          )
-        ));
-      } else {
-        $vehicle->update(['project_id' => null]);
-
-        exit(json_encode(
-          array(
-            'status' => true,
-            'message' => "{$vehicle->first()->license_plate} Removed!",
-            'action' => $action
-          )
-        ));
-      }
+      exit(json_encode(
+        array(
+          'status' => true,
+          'message' => "{$vehicle->license_plate} {$actionMsg}!",
+          'action' => $action
+        )
+      ));
     } catch (Exception $e) {
-
       echo json_encode(
         array(
           'status' => false,
@@ -295,45 +172,27 @@ class ProjectController extends Controller
 
   public function assignPerson(Request $request)
   {
+    $request->validate([
+      'person_id' => 'required',
+      'project_id' => 'required',
+      'action' => 'required'
+    ]);
+
+    $action = $request->action;
+    $person = Person::find($request->person_id);
+    $actionMsg = $action == 'assign' ? 'Assigned' : 'Removed';
+
     try {
+      $person->update(['project_id' =>  $action == 'assign' ? $request->project_id : null]);
 
-      $data = $request->validate([
-        'person_id' => 'required',
-        'project_id' => 'required',
-        'action' => 'required'
-      ]);
-
-      $action = $data['action'];
-      $person_id = $data['person_id'];
-      $project_id = $data['project_id'];
-
-      $person = Person::where('id', $person_id);
-
-      if ($action == 'assign') {
-
-        $person->update(['project_id' => $project_id]);
-
-        exit(json_encode(
-          array(
-            'status' => true,
-            'message' => "{$person->first()->name} Assigned!",
-            'action' => $action
-          )
-        ));
-      } else {
-
-        $person->update(['project_id' => null]);
-
-        exit(json_encode(
-          array(
-            'status' => true,
-            'message' => "{$person->first()->name} Removed!",
-            'action' => $action
-          )
-        ));
-      }
+      exit(json_encode(
+        array(
+          'status' => true,
+          'message' => "{$person->name} {$actionMsg}!",
+          'action' => $action
+        )
+      ));
     } catch (Exception $e) {
-
       echo json_encode(
         array(
           'status' => false,
@@ -349,22 +208,20 @@ class ProjectController extends Controller
 
   public function assignAddress(Request $request)
   {
+    $request->validate([
+      'address_id' => 'required',
+      'project_id' => 'required',
+      'action' => 'required'
+    ]);
+
+    $action = $request->action;
+    $address_id = $request->address_id;
+    $project_id = $request->project_id;
+
     try {
-
-      $data = $request->validate([
-        'address_id' => 'required',
-        'project_id' => 'required',
-        'action' => 'required'
-      ]);
-
-      $action = $data['action'];
-      $address_id = $data['address_id'];
-      $project_id = $data['project_id'];
-
       $addressName = Address::find($address_id)->name;
 
       if ($action == 'assign') {
-
         AddressProject::create([
           'address_id' => $address_id,
           'project_id' => $project_id,
@@ -378,7 +235,6 @@ class ProjectController extends Controller
           )
         ));
       } else {
-
         AddressProject::where(['project_id' => $project_id, 'address_id' => $address_id])->delete();
 
         exit(json_encode(

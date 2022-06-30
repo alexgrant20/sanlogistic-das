@@ -2,7 +2,7 @@ let request;
 let vehiclesData;
 
 $(document).ready(function () {
-  $("#pageSpinner").hide();
+  // $("#pageSpinner").hide();
 
   const projectId = $("#project_id").val();
 
@@ -10,7 +10,7 @@ $(document).ready(function () {
     url: "/driver/vehicles/get?projectId=" + projectId,
     type: "get",
     beforeSend: function () {
-      $("#pageSpinner").show();
+      // $("#pageSpinner").show();
     },
   });
 
@@ -25,7 +25,7 @@ $(document).ready(function () {
   });
 
   request.always(function () {
-    $("#pageSpinner").hide();
+    // $("#pageSpinner").hide();
   });
 
   $("#vehicle_id").on("change", (value) => {
@@ -37,7 +37,7 @@ $(document).ready(function () {
       url: "/driver/vehicles/get?vehicleId=" + vehicleId,
       type: "get",
       beforeSend: function () {
-        $("#pageSpinner").show();
+        // $("#pageSpinner").show();
       },
     });
 
@@ -75,11 +75,11 @@ $(document).ready(function () {
       });
 
       req.always(function () {
-        $("#pageSpinner").hide();
+        // $("#pageSpinner").hide();
       });
 
-      const cnt = $("#userInput").contents();
-      $("#userInput").replaceWith(cnt);
+      // const cnt = $("#userInput").contents();
+      // $("#userInput").replaceWith(cnt);
       $("#vehicle_id").prop("disabled", false);
     });
   });

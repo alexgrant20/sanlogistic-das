@@ -6,36 +6,19 @@ use App\Blameable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Schema;
 
 class User extends Authenticatable
 {
   use HasFactory, Blameable;
 
-  /**
-   * The attributes that are mass assignable.
-   *
-   * @var array<int, string>
-   */
-
   protected $guarded = [
     'id'
   ];
 
-  /**
-   * The attributes that should be hidden for serialization.
-   *
-   * @var array<int, string>
-   */
   protected $hidden = [
     'password',
   ];
-
-  /**
-   * The attributes that should be cast.
-   *
-   * @var array<string, string>
-   */
-  protected $casts = [];
 
   protected $with = ['role'];
 
@@ -49,14 +32,14 @@ class User extends Authenticatable
     return $this->belongsTo(Role::class);
   }
 
-  public function lastActivity()
-  {
-    return $this->belongsTo(Activity::class, 'last_activity_id');
-  }
-
   public function activities()
   {
     return $this->hasMany(Activity::class);
+  }
+
+  public function Driver()
+  {
+    return $this->hasOne(Driver::class);
   }
 
   public function hasRole(String $role)

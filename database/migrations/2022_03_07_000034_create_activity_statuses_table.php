@@ -17,10 +17,10 @@ return new class extends Migration
       $table->id();
       $table->foreignId('activity_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->string('status');
-      $table->foreignId('created_by')->nullable()->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
-      $table->foreignId('updated_by')->nullable()->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
       $table->timestamp('created_at')->useCurrent();
       $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+      $table->foreignId('created_by')->nullable()->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
+      $table->foreignId('updated_by')->nullable()->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
     });
   }
 

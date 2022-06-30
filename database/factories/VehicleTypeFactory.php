@@ -18,7 +18,7 @@ class VehicleTypeFactory extends Factory
   public function definition()
   {
     return [
-      'vehicle_brand_id' => VehicleBrand::factory(),
+      'vehicle_brand_id' => rand(1, 10),
       'name' => $this->faker->unique()->name(),
     ];
   }

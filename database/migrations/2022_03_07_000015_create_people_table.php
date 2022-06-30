@@ -20,7 +20,7 @@ return new class extends Migration
       $table->foreignId('area_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->foreignId('city_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->string('name');
-      $table->string('image');
+      $table->string('image')->nullable();
       $table->string('place_of_birth');
       $table->date('date_of_birth');
       $table->string('phone_number');

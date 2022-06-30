@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class Admin
 {
@@ -17,13 +18,7 @@ class Admin
    */
   public function handle(Request $request, Closure $next)
   {
-    if (!auth()->check()) {
-      return redirect()->route('login');
-    }
-
-    $userID = auth()->user()->id;
-
-    if (!User::find($userID)->hasRole('driver')) {
+    if ($request->session()->get('user_role') !== 'driver') {
       return $next($request);
     }
 

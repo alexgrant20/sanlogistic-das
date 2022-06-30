@@ -6,156 +6,153 @@ use App\Http\Controllers\Admin\PersonController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AddressController;
-use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\VehicleController;
 use App\Http\Controllers\Admin\CompanyController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::prefix('/admin')->group(function () {
-  // Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard')->middleware('auth.admin');
+Route::prefix('/admin')->name('admin.')->middleware('auth', 'admin')->group(function () {
 
   Route::resource('/users', UserController::class, [
     'names' => [
-      'index' => 'admin.user.index',
-      'create' => 'admin.user.create',
-      'store' => 'admin.user.store',
-      'edit' => 'admin.user.edit',
-      'update' => 'admin.user.update',
-      'destroy' => 'admin.user.destroy'
+      'create' => 'user.create',
+      'store' => 'user.store',
+      'edit' => 'user.edit',
+      'update' => 'user.update',
+      // 'destroy' => 'user.destroy'
     ]
-  ])->middleware('auth.admin');
+  ])->except(['index', 'destroy', 'show']);
 
-  Route::middleware('auth.admin')->controller(AddressController::class)->group(function () {
+  Route::controller(AddressController::class)->name('address.')->group(function () {
     Route::prefix('/addresses')->group(function () {
-      Route::get('/export/excel', 'exportExcel')->name('export.address');
-      Route::post('/import/excel', 'importExcel')->name('import.address');
-      Route::get('/city/{id}', 'city');
-      Route::get('/district/{id}', 'district');
-      Route::get('/sub_district/{id}', 'subDistrict');
-      Route::get('/location', 'location');
+      Route::get('/export/excel', 'exportExcel')->name('export.excel');
+      Route::post('/import/excel', 'importExcel')->name('import.excel');
+      Route::get('/city/{id}', 'city')->name('city');
+      Route::get('/district/{id}', 'district')->name('district');
+      Route::get('/sub_district/{id}', 'subDistrict')->name('sub-district');
+      Route::get('/location', 'location')->name('location');
     });
     Route::resource('/addresses', AddressController::class, [
       'names' => [
-        'index' => 'admin.address.index',
-        'create' => 'admin.address.create',
-        'store' => 'admin.address.store',
-        'edit' => 'admin.address.edit',
-        'update' => 'admin.address.update',
-        'destroy' => 'admin.address.destroy'
+        'index' => 'index',
+        'create' => 'create',
+        'store' => 'store',
+        'edit' => 'edit',
+        'update' => 'update',
+        'destroy' => 'destroy'
       ]
     ])->except(['show']);
   });
 
-  Route::middleware('auth.admin')->controller(ActivityController::class)->group(function () {
+  Route::controller(ActivityController::class)->name('activity.')->group(function () {
     Route::prefix('/activities')->group(function () {
-      Route::get('/export/excel', 'exportExcel');
-      Route::post('/import/excel', 'importExcel');
+      Route::get('/export/excel', 'exportExcel')->name('export.excel');
+      Route::post('/import/excel', 'importExcel')->name('import.excel');
+      Route::get('/showLog/{activity:id}', 'showLog')->name('log');
     });
     Route::resource('/activities', ActivityController::class, [
       'names' => [
-        'index' => 'admin.activity.index',
-        'create' => 'admin.activity.create',
-        'store' => 'admin.activity.store',
-        'edit' => 'admin.activity.edit',
-        'update' => 'admin.activity.update',
-        'destroy' => 'admin.activity.destroy'
+        'index' => 'index',
+        'create' => 'create',
+        'store' => 'store',
+        'edit' => 'edit',
+        'update' => 'update',
+        'destroy' => 'destroy'
       ],
-    ]);
+    ])->except('show', 'destory');
   });
 
-  Route::middleware('auth.admin')->controller(PersonController::class)->group(function () {
+  Route::controller(PersonController::class)->name('person.')->group(function () {
     Route::prefix('/people')->group(function () {
-      Route::get('/export/excel', 'exportExcel');
-      Route::post('/import/excel', 'importExcel');
+      Route::get('/export/excel', 'exportExcel')->name('export.excel');
+      Route::post('/import/excel', 'importExcel')->name('import.excel');
     });
     Route::resource('/people', PersonController::class, [
       'names' => [
-        'index' => 'admin.person.index',
-        'create' => 'admin.person.create',
-        'store' => 'admin.person.store',
-        'edit' => 'admin.person.edit',
-        'update' => 'admin.person.update',
-        'destroy' => 'admin.person.destroy'
+        'index' => 'index',
+        'create' => 'create',
+        'store' => 'store',
+        'edit' => 'edit',
+        'update' => 'update',
+        'destroy' => 'destroy'
       ],
     ]);
   });
 
-  Route::middleware('auth.admin')->controller(VehicleController::class)->group(function () {
+  Route::controller(VehicleController::class)->name('vehicle.')->group(function () {
     Route::prefix('/vehicles')->group(function () {
-      Route::get('/export/excel', 'exportExcel');
-      Route::post('/import/excel', 'importExcel');
-      Route::get('/migrate/image', 'migrateImage')->name('admin.vehicle.migrate_image');
-      Route::get('/vehicle_type/{id}', 'vehicleType');
-      Route::get('/vehicle_variety/{id}', 'vehicleVariety');
-      // Option
+      Route::get('/export/excel', 'exportExcel')->name('export.excel');
+      Route::post('/import/excel', 'importExcel')->name('import.excel');
+      Route::get('/migrate/image', 'migrateImage')->name('migrate.image');
+      Route::get('/vehicle_type/{id}', 'vehicleType')->name('type');
+      Route::get('/vehicle_variety/{id}', 'vehicleVariety')->name('variety');
     });
     Route::resource('/vehicles', VehicleController::class, [
       'names' => [
-        'index' => 'admin.vehicle.index',
-        'create' => 'admin.vehicle.create',
-        'store' => 'admin.vehicle.store',
-        'edit' => 'admin.vehicle.edit',
-        'update' => 'admin.vehicle.update',
-        'destroy' => 'admin.vehicle.destroy'
+        'index' => 'index',
+        'create' => 'create',
+        'store' => 'store',
+        'edit' => 'edit',
+        'update' => 'update',
+        'destroy' => 'destroy'
       ],
     ]);
   });
 
-  Route::middleware('auth.admin')->controller(CompanyController::class)->group(function () {
+  Route::controller(CompanyController::class)->name('company.')->group(function () {
     Route::prefix('/companies')->group(function () {
-      Route::get('/export/excel', 'exportExcel');
-      Route::post('/import/excel', 'importExcel');
-      Route::get('/migrate/image', 'migrateImage')->name('admin.company.migrate_image');
+      Route::get('/export/excel', 'exportExcel')->name('export.excel');
+      Route::post('/import/excel', 'importExcel')->name('import.excel');
+      // Route::get('/migrate/image', 'migrateImage')->name('admin.company.migrate_image');
     });
     Route::resource('/companies', CompanyController::class, [
       'names' => [
-        'index' => 'admin.company.index',
-        'create' => 'admin.company.create',
-        'store' => 'admin.company.store',
-        'edit' => 'admin.company.edit',
-        'update' => 'admin.company.update',
-        'destroy' => 'admin.company.destroy'
+        'index' => 'index',
+        'create' => 'create',
+        'store' => 'store',
+        'edit' => 'edit',
+        'update' => 'update',
+        'destroy' => 'destroy'
       ],
     ]);
   });
 
-  Route::middleware('auth.admin')->controller(ProjectController::class)->group(function () {
-    Route::get('/assign/vehicle/{project:name}', 'indexAssignVehicle');
-    Route::get('/assign/person/{project:name}', 'indexAssignPerson');
-    Route::get('/assign/address/{project:name}', 'indexAssignAddress');
-    Route::post('/assign/vehicle', 'assignVehicle');
-    Route::post('/assign/person', 'assignPerson');
-    Route::post('/assign/address', 'assignAddress');
-    Route::get('/project/vehicle', 'vehicles');
-    Route::get('/project/address', 'address');
-    Route::get('/project/person', 'people');
+  Route::controller(ProjectController::class)->name('project.')->group(function () {
+    Route::get('/assign/vehicle/{project:name}', 'indexAssignVehicle')->name('index.assign.vehicle');
+    Route::get('/assign/person/{project:name}', 'indexAssignPerson')->name('index.assign.person');
+    Route::get('/assign/address/{project:name}', 'indexAssignAddress')->name('index.assign.address');
+    Route::post('/assign/vehicle', 'assignVehicle')->name('store.assign.vehicle');
+    Route::post('/assign/person', 'assignPerson')->name('store.assign.person');
+    Route::post('/assign/address', 'assignAddress')->name('store.assign.address');
+    Route::get('/project/vehicle', 'vehicles')->name('vehicle');
+    Route::get('/project/address', 'address')->name('address');
+    Route::get('/project/person', 'people')->name('person');
     Route::prefix('/projects')->group(function () {
-      Route::get('/export/excel', 'exportExcel');
-      Route::post('/import/excel', 'importExcel');
+      Route::get('/export/excel', 'exportExcel')->name('export.excel');
+      Route::post('/import/excel', 'importExcel')->name('import.excel');
     });
     Route::resource('/projects', ProjectController::class, [
       'names' => [
-        'index' => 'admin.project.index',
-        'create' => 'admin.project.create',
-        'store' => 'admin.project.store',
-        'edit' => 'admin.project.edit',
-        'update' => 'admin.project.update',
-        'destroy' => 'admin.project.destroy'
+        'index' => 'index',
+        'create' => 'create',
+        'store' => 'store',
+        'edit' => 'edit',
+        'update' => 'update',
+        'destroy' => 'destroy'
       ],
     ]);
   });
 
-  Route::middleware('auth.admin')->controller(FinanceController::class)->group(function () {
+  Route::controller(FinanceController::class)->name('finance.')->group(function () {
     Route::prefix('/finances')->group(function () {
-      Route::get('/acceptance', 'acceptance')->name('admin.finance.acceptance');
-      Route::get('/payment', 'payment')->name('admin.finance.payment');
-      Route::post('/approve', 'approve')->name('admin.finance.approve');
-      Route::post('/reject', 'reject')->name('admin.finance.reject');
-      Route::post('/pay', 'pay')->name('admin.finance.pay');
-      Route::get('/acceptance/{activity:id}/edit', 'edit');
-      Route::put('/acceptance/{activity:id}', 'audit');
+      Route::get('/acceptance', 'acceptance')->name('acceptance');
+      Route::get('/payment', 'payment')->name('payment');
+      Route::post('/approve', 'approve')->name('approve');
+      Route::post('/reject', 'reject')->name('reject');
+      Route::post('/pay', 'pay')->name('pay');
+      Route::get('/acceptance/{activity:id}/edit', 'edit')->name('acceptance.edit');
+      Route::put('/acceptance/{activity:id}', 'audit')->name('audit');
     });
-    Route::post('/activity/accepted/export/excel', 'exportExcel')->name('admin.finance.export.accepted.excel');
+    Route::post('/activity/accepted/export/excel', 'exportExcel')->name('export.excel.accepted');
   });
 });

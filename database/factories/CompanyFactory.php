@@ -20,7 +20,7 @@ class CompanyFactory extends Factory
   public function definition()
   {
     return [
-      'company_type_id' => CompanyType::factory(),
+      'company_type_id' => rand(1, 5),
       'name' => $this->faker->unique()->company(),
       'phone_number' =>  $this->faker->randomNumber(6),
       'email' => $this->faker->email(),
@@ -29,7 +29,7 @@ class CompanyFactory extends Factory
       'director' => $this->faker->name(),
       'npwp' => $this->faker->randomNumber(6),
       'fax' =>  $this->faker->randomNumber(6),
-      'city_id' => City::factory(),
+      'city_id' => rand(1, 20),
       'full_address' => $this->faker->address(),
     ];
   }

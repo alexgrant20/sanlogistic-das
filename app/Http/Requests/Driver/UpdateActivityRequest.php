@@ -9,21 +9,11 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateActivityRequest extends FormRequest
 {
-  /**
-   * Determine if the user is authorized to make this request.
-   *
-   * @return bool
-   */
+
   public function authorize()
   {
     return true;
   }
-
-  // Too return json error
-  // protected function failedValidation(Validator $validator)
-  // {
-  //   throw new HttpResponseException(response()->json($validator->errors(), 422));
-  // }
 
   public function getValidatorInstance()
   {
@@ -45,7 +35,7 @@ class UpdateActivityRequest extends FormRequest
   {
     return [
       'arrival_id' => 'required|integer',
-      'arrival_odo' => 'required|integer',
+      'arrival_odo' => 'required|integer|gt:' . $this->activity->departure_odo,
       'arrival_odo_image' => 'required|image|mimes:png,jpg,jpeg',
       'bbm_amount' => 'nullable|integer',
       'toll_amount' => 'nullable|integer',

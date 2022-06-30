@@ -18,7 +18,7 @@ class SubdistrictFactory extends Factory
   public function definition()
   {
     return [
-      'district_id' => District::factory(),
+      'district_id' => rand(1, 20),
       'name' => $this->faker->citySuffix(),
     ];
   }

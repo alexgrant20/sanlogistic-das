@@ -18,7 +18,7 @@ class AreaFactory extends Factory
   public function definition()
   {
     return [
-      'regional_id' => Regional::factory(),
+      'regional_id' => rand(1, 20),
       'name' => $this->faker->unique()->streetName(),
       'description' => $this->faker->paragraph(),
     ];
