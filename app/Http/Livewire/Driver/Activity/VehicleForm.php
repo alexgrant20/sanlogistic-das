@@ -17,6 +17,15 @@ class VehicleForm extends Component
   public $projectId;
   public $vehicles;
 
+  public function mount()
+  {
+    $this->vehicleId = old('vehicle_id', null);
+
+    if ($this->vehicleId) {
+      $this->updatedVehicleId($this->vehicleId);
+    }
+  }
+
   public function render()
   {
     return view('livewire.driver.activity.vehicle-form');
@@ -33,6 +42,6 @@ class VehicleForm extends Component
       ->get();;
     $this->odo = $vehicle->odo;
     $this->departureAddress = $departureAddress;
-    $this->doNumber = $vehicle->last_do_number;
+    $this->doNumber = old('do_number') ?? $vehicle->last_do_number;
   }
 }

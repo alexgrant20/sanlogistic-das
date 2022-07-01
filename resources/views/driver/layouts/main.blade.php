@@ -21,6 +21,8 @@
   {{-- Favicon --}}
   <link rel="shortcut icon" href="{{ asset('/img/favicon.ico') }}">
 
+  <script src="https://kit.fontawesome.com/2d78a8b052.js" crossorigin="anonymous"></script>
+
   {{-- Jquery --}}
   <script type='text/javascript' src="{{ asset('/vendor/jquery/jquery-3.6.0.min.js') }}"></script>
 

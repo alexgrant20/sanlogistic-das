@@ -6,21 +6,25 @@ namespace App\Http\Controllers\Driver;
 use App\Models\Activity;
 use App\Models\ActivityStatus;
 use App\Models\AddressProject;
-use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Driver\StoreActivityRequest;
 use App\Http\Requests\Driver\UpdateActivityRequest;
 use App\Models\ActivityPayment;
-use App\Models\Address;
 use App\Models\Driver;
 use App\Transaction\Constants\NotifactionTypeConstant;
 use Exception;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Session;
 
+// TO-DO Make Gate
 class ActivityController extends Controller
 {
+  public function __construct()
+  {
+    $this->authorizeResource(Activity::class, 'activity');
+  }
+
   public function index()
   {
     $activities = DB::table('activities')
@@ -28,17 +32,25 @@ class ActivityController extends Controller
       ->leftJoin('activity_payments', 'activity_statuses.id', '=', 'activity_payments.activity_status_id')
       ->leftJoin(DB::raw('addresses dep'), 'activities.departure_location_id', '=', 'dep.id')
       ->leftJoin(DB::raw('addresses arr'), 'activities.arrival_location_id', '=', 'arr.id')
+      ->leftJoin('vehicles', 'activities.vehicle_id', '=', 'vehicles.id')
       ->where('user_id', '=', auth()->user()->id)
       ->orderByDesc('activities.created_at')
       ->selectRaw(
         'bbm_amount + toll_amount + parking_amount + retribution_amount AS total_cost, arrival_odo - departure_odo AS distance,
-        status, do_number, departure_date, arrival_date, dep.name AS departure_name, arr.name AS arrival_name'
+        activity_statuses.status, do_number, departure_date, arrival_date, dep.name AS departure_name, arr.name AS arrival_name, license_plate,
+        (CASE
+          WHEN activity_statuses.status = "draft" THEN "bg-warning"
+          WHEN activity_statuses.status = "pending" THEN "bg-warning"
+          WHEN activity_statuses.status = "approved" THEN "bg-info"
+          WHEN activity_statuses.status = "paid" THEN "bg-success"
+          WHEN activity_statuses.status = "rejected" THEN "bg-primary"
+          END) AS activityStatusColor'
       )
       ->paginate(3);
 
     return view('driver.activities.index', [
       'title' => __('Activity History'),
-      'activities' => $activities
+      'activities' => $activities,
     ]);
   }
 

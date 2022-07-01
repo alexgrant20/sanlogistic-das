@@ -22,6 +22,4 @@ Route::prefix('driver')->name('driver.')->middleware('auth', 'driver')->group(fu
   ]);
 
   Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
-  Route::get('/vehicles/get/', [VehicleController::class, 'get'])->name('vehicle.get');
-  Route::get('/addresses/get/', [AddressController::class, 'get'])->name('address.get');
 });

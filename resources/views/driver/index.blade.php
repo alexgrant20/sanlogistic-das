@@ -25,12 +25,13 @@
         <x-slot name="text">Perjalanan</x-slot>
         <x-slot name="link">{{ route('driver.activity.index') }}</x-slot>
       </x-menu-item>
-      <x-menu-item>
+      {{-- TO-DO --}}
+      {{-- <x-menu-item>
         <x-slot name="backgroundColor">bg-darkGreen</x-slot>
         <x-slot name="icon">bi-cash-coin</x-slot>
         <x-slot name="text">Keuangan</x-slot>
         <x-slot name="link">#</x-slot>
-      </x-menu-item>
+      </x-menu-item> --}}
     </div>
   </div>
 @endsection

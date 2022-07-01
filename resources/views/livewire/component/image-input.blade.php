@@ -1,6 +1,6 @@
 <div class="d-flex flex-column">
   <div class="mb-3">
-    <label for="{{ $name }}" class="form-label fs-5">{{ $label }}</label>
+    <label for="{{ $name }}" class="form-label fs-5 text-primary">{{ $label }}</label>
     <input name="{{ $name }}" class="form-control form-dark form-control-lg @error($name) is-invalid @enderror"
       id="{{ $name }}" type="file" accept=".png, .jpeg, .jpg" wire:model="image">
 

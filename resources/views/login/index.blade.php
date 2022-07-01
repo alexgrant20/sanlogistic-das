@@ -53,8 +53,8 @@
                   </span>
                 </div>
               </div>
-              <div class="col-xxl-12">
-                <input type="submit" id="submitBtn" value="Login" class="btn btn-primary w-100 py-2 fs-5 fw-bold" />
+              <div class="col-xxl-12 d-grid">
+                <button type="submit" id="submitBtn" value="Login" class="btn btn-success fw-bold">Login</button>
               </div>
             </div>
           </form>
@@ -69,9 +69,12 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
-  $('#loginForm').on('submit', () => {
-    $('#submitBtn').attr('disabled', true);
-  })
+  $("form").on("submit", () => {
+    $("button").attr("disabled", true);
+    $("input, textarea").attr("readonly", true);
+    return true;
+  });
+
   @if (Session::has('message'))
     var type = "{{ Session::get('alert-type', 'info') }}"
     switch (type) {
