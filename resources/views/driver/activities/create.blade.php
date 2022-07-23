@@ -11,11 +11,17 @@
         <hr>
         <div class="row g-3">
           <div class="col-md-6">
-            @livewire('component.image-input', ['name' => 'do_image', 'label' => 'Do Image'])
+            <x-input-image>
+              <x-slot name="id">do_image</x-slot>
+              <x-slot name="label">{{ __('DO Image') }}</x-slot>
+            </x-input-image>
           </div>
 
           <div class="col-md-6">
-            @livewire('component.image-input', ['name' => 'departure_odo_image', 'label' => 'ODO Image'])
+            <x-input-image>
+              <x-slot name="id">departure_odo_image</x-slot>
+              <x-slot name="label">{{ __('ODO Image') }}</x-slot>
+            </x-input-image>
           </div>
         </div>
       </div>

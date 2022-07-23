@@ -74,7 +74,11 @@
           </div>
 
           <div class="col-md-12">
-            @livewire('component.image-input', ['name' => 'arrival_odo_image', 'label' => 'ODO Image'])
+            <x-input-image>
+              <x-slot name="id">arrival_odo_image</x-slot>
+              <x-slot name="label">{{ __('ODO Image') }}</x-slot>
+              <x-slot name="required"></x-slot>
+            </x-input-image>
           </div>
         </div>
       </div>
@@ -96,7 +100,10 @@
             @enderror
           </div>
           <div class="col-md-12">
-            @livewire('component.image-input', ['name' => 'bbm_image', 'label' => 'Foto Pembelian BBM'])
+            <x-input-image>
+              <x-slot name="id">bbm_image</x-slot>
+              <x-slot name="label">{{ __('BBM Image') }}</x-slot>
+            </x-input-image>
           </div>
         </div>
       </div>
@@ -119,7 +126,10 @@
           </div>
 
           <div class="col-md-12">
-            @livewire('component.image-input', ['name' => 'toll_image', 'label' => 'Foto Pembayaran Toll'])
+            <x-input-image>
+              <x-slot name="id">toll_image</x-slot>
+              <x-slot name="label">{{ __('Toll Image') }}</x-slot>
+            </x-input-image>
           </div>
         </div>
       </div>
@@ -142,7 +152,10 @@
           </div>
 
           <div class="col-md-12">
-            @livewire('component.image-input', ['name' => 'parking_image', 'label' => 'Foto Pembayaran Parkir'])
+            <x-input-image>
+              <x-slot name="id">parking_image</x-slot>
+              <x-slot name="label">{{ __('Parking Image') }}</x-slot>
+            </x-input-image>
           </div>
         </div>
       </div>
