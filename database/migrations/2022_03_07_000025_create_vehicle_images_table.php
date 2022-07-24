@@ -17,7 +17,7 @@ return new class extends Migration
       $table->id();
       $table->foreignId('vehicle_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->string('image')->nullable();
-      $table->string('type');
+      $table->string('type')->nullable();
       $table->timestamp('created_at')->useCurrent();
       $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
     });

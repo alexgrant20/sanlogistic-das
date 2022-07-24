@@ -23,7 +23,7 @@ return new class extends Migration
       $table->text('full_address');
       $table->double('longitude')->nullable();
       $table->double('latitude')->nullable();
-      $table->string('post_number');
+      $table->string('post_number')->nullable();
       $table->timestamp('created_at')->useCurrent();
       $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
       $table->softDeletes();

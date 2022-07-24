@@ -19,7 +19,7 @@ return new class extends Migration
       // For SIM (Not Constrained)
       $table->foreignId('specialID')->nullable();
       $table->string('type');
-      $table->string('number');
+      $table->string('number')->nullable();
       $table->string('address')->nullable();
       $table->string('image')->nullable();
       $table->date('expire')->nullable();

@@ -17,9 +17,9 @@ return new class extends Migration
       $table->id();
       $table->foreignId('vehicle_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->foreignId('maintenance_type_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
-      $table->date('request_date');
-      $table->string('description');
-      $table->dateTime('work_order_date');
+      $table->date('request_date')->nullable();
+      $table->string('description')->nullable();
+      $table->dateTime('work_order_date')->nullable();
       $table->dateTime('finish_date')->nullable();
       $table->boolean('finish')->default(false);
       $table->text('note')->nullable();

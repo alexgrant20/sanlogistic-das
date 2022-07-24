@@ -17,10 +17,10 @@ return new class extends Migration
       $table->id();
       $table->foreignId('vehicle_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
       $table->string('type');
-      $table->string('number');
+      $table->string('number')->nullable();
       $table->string('image')->nullable();
-      $table->date('expire');
-      $table->boolean('active');
+      $table->date('expire')->nullable();
+      $table->boolean('active')->nullable()->default(0);
       $table->timestamp('created_at')->useCurrent();
       $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
     });

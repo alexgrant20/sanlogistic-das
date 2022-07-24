@@ -15,17 +15,17 @@ return new class extends Migration
   {
     Schema::create('people', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('project_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
-      $table->foreignId('department_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
-      $table->foreignId('area_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
-      $table->foreignId('city_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+      $table->foreignId('project_id')->constrained()->restrictOnDelete()->cascadeOnUpdate()->nullable();
+      $table->foreignId('department_id')->constrained()->restrictOnDelete()->cascadeOnUpdate()->nullable();
+      $table->foreignId('area_id')->constrained()->restrictOnDelete()->cascadeOnUpdate()->nullable();
+      $table->foreignId('city_id')->constrained()->restrictOnDelete()->cascadeOnUpdate()->nullable();
       $table->string('name');
       $table->string('image')->nullable();
-      $table->string('place_of_birth');
-      $table->date('date_of_birth');
-      $table->string('phone_number');
-      $table->date('joined_at');
-      $table->string('full_address');
+      $table->string('place_of_birth')->nullable();
+      $table->date('date_of_birth')->nullable();
+      $table->string('phone_number')->nullable();
+      $table->date('joined_at')->nullable();
+      $table->string('full_address')->nullable();
       $table->text('note')->nullable();
       $table->tinyInteger('active')->default(1);
       $table->timestamp('created_at')->useCurrent();
