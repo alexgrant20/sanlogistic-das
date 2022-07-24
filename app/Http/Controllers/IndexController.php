@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class IndexController extends Controller
@@ -15,6 +17,10 @@ class IndexController extends Controller
     ];
 
     if ($isUserDriver) {
+      $activities = Activity::with(['departureLocation', 'arrivalLocation'])->limit(3)->paginate(1);
+
+      $params['activities'] = $activities;
+
       return view('driver.index', $params);
     } else {
       return view('admin.index', $params);
