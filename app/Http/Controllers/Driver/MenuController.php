@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Driver;
 
 use App\Http\Controllers\Controller;
+use App\Models\Address;
 use App\Models\PersonDocument;
 use Illuminate\Http\Request;
 
-class ProfileController extends Controller
+class MenuController extends Controller
 {
-  public function index()
+  public function profile()
   {
     $sim = PersonDocument::where('person_id', auth()->user()->person_id)
       ->where('type', '=', 'sim')
@@ -17,10 +18,23 @@ class ProfileController extends Controller
 
     $personImage = auth()->user()->person->image;
 
-    return view('driver.profile.index', [
+    return view('driver.menu.profile', [
       'title' => 'Profile',
       'sim' => $sim,
       'personImage' => $personImage
+    ]);
+  }
+
+  public function location(int $id = null)
+  {
+
+    $addresses = Address::all();
+
+
+    return view('driver.menu.location', [
+      'addresses' => $addresses,
+      'title' => 'Location',
+      'addressData' => $id ? $addresses->find($id) : null,
     ]);
   }
 }

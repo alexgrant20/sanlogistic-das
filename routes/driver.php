@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Driver\ActivityController;
 use App\Http\Controllers\Driver\AddressController;
-use App\Http\Controllers\Driver\ProfileController;
+use App\Http\Controllers\Driver\MenuController;
 use App\Http\Controllers\Driver\VehicleController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,5 +21,6 @@ Route::prefix('driver')->name('driver.')->middleware('auth', 'driver')->group(fu
     ],
   ]);
 
-  Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+  Route::get('/profile', [MenuController::class, 'profile'])->name('menu.profile');
+  Route::get('/location/{id?}', [MenuController::class, 'location'])->name('menu.location');
 });

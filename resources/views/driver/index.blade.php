@@ -32,6 +32,12 @@
         <x-slot name="text">Keuangan</x-slot>
         <x-slot name="link">#</x-slot>
       </x-menu-item> --}}
+      <x-menu-item>
+        <x-slot name="backgroundColor">bg-green</x-slot>
+        <x-slot name="icon">bi-map</x-slot>
+        <x-slot name="text">{{ __('All Location') }}</x-slot>
+        <x-slot name="link">{{ route('driver.menu.location') }}</x-slot>
+      </x-menu-item>
     </div>
   </div>
 @endsection
