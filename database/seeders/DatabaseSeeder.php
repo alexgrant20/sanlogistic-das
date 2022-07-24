@@ -27,7 +27,6 @@ use App\Models\VehicleTowing;
 use App\Models\VehicleType;
 use App\Models\VehicleVariety;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DatabaseSeeder extends Seeder
 {
@@ -39,6 +38,12 @@ class DatabaseSeeder extends Seeder
   public function run()
   {
 
+    $this->call([
+      ProvinceSeeder::class,
+      CitySeeder::class,
+      DistrictSeeder::class,
+      SubdistrictSeeder::class,
+    ]);
 
     Role::create([
       'name' => 'admin'
