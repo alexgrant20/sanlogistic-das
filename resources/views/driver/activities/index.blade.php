@@ -14,7 +14,7 @@
               <div class="col-6 text-truncate">
                 {{ $activity->departure_date }}
               </div>
-              <div class="col-6 text-end text-truncate @if (!$activity->arrival_date) text-danger @endif">
+              <div class="col-6 text-end text-truncate @if (!$activity->arrival_date) text-primary @endif">
                 {{ $activity->arrival_date ?? 'On Going' }}
               </div>
             </div>
@@ -51,7 +51,7 @@
                 <i class="bi bi-geo-alt fs-1"></i>
                 <div class="ms-2 text-truncate">
                   <div class="text-muted text-truncate">Total Distance</div>
-                  <div class="fw-bold text-truncate @if (!$activity->distance) text-danger @endif">
+                  <div class="fw-bold text-truncate @if (!$activity->distance) text-primary @endif">
                     {{ $activity->distance ? number_format($activity->distance, 0, ',', '.') . ' Km' : 'On Going' }}
                   </div>
                 </div>

@@ -15,7 +15,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
   {{-- theme stylesheet --}}
-  <link rel="stylesheet" href="{{ asset('/css/style.default.css') }}" id="theme-stylesheet">
+  <link rel="stylesheet" href="{{ asset('/css/style.sea.css') }}" id="theme-stylesheet">
   {{-- Custom Stylesheet --}}
   <link rel="stylesheet" type="text/css" href="{{ asset('/css/driver/global.css') }}" />
   {{-- Favicon --}}
@@ -40,12 +40,11 @@
 
 <body class="min-vh-100 min-vw-100 bg-main">
   @include('driver.partials.header')
-  <div class="p-5" style="padding-bottom: 120px !important;">
+  <div class="px-3 py-5">
 
     @yield('content')
 
   </div>
-  @include('driver.partials.footer')
 
   <script src="{{ asset('/vendor/currency/currency.js') }}"></script>
 

@@ -1,8 +1,7 @@
 @extends('driver.layouts.main')
 
 @section('content')
-  <form action="{{ url('/driver/activities/' . $activity->id) }}" method="POST" enctype="multipart/form-data"
-    id="form">
+  <form action="{{ url('/driver/activities/' . $activity->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 

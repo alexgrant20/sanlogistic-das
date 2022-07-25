@@ -9,8 +9,10 @@ body::-webkit-scrollbar {
 }
 
 body {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 * {
@@ -58,7 +60,7 @@ a:hover {
 }
 
 .bg-purplish {
-  background-color: #1e2021;
+  background-color: #272129;
 }
 
 .bg-darkGreen {

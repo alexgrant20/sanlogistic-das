@@ -17,9 +17,9 @@ class IndexController extends Controller
     ];
 
     if ($isUserDriver) {
-      $activities = Activity::with(['departureLocation', 'arrivalLocation'])->limit(3)->paginate(1);
+      $activity = Activity::with(['departureLocation', 'arrivalLocation'])->first();
 
-      $params['activities'] = $activities;
+      $params['activity'] = $activity;
 
       return view('driver.index', $params);
     } else {
