@@ -16,7 +16,7 @@
 
   @if (isset($addressData))
     <iframe
-      src="https://maps.google.com/maps?q={{ $addressData->longitude }},{{ $addressData->latitude }}&hl=id;z=14&amp;output=embed"
+      src="https://maps.google.com/maps?q={{ $addressData->latitude }},{{ $addressData->longitude }}&hl=id;z=14&amp;output=embed"
       frameborder="0" width="100%" height="500"></iframe>
   @endif
 @endsection
