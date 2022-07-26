@@ -16,7 +16,8 @@
     @if (Request::is('/'))
       <form action="/logout" method="POST">
         @csrf
-        <button class="btn text-white fs-4" type="submit"><i class="bi bi-box-arrow-right"></i></button>
+        <button class="text-white fs-4" type="submit" style="background: transparent; border: none"><i
+            class="bi bi-box-arrow-right"></i></button>
       </form>
     @endif
   </div>
