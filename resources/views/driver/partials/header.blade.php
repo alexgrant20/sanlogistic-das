@@ -14,7 +14,7 @@
       {{ $title }}
     </span>
     @if (Request::is('/'))
-      <form action="/logout" method="POST">
+      <form action="{{ route('logout') }}" method="POST">
         @csrf
         <button class="text-white fs-4" type="submit" style="background: transparent; border: none"><i
             class="bi bi-box-arrow-right"></i></button>
