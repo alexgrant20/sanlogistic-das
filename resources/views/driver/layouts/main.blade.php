@@ -6,7 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Sanlogistic | {{ $title }}</title>
   <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=0.8, shrink-to-fit=no,maximum-scale=0.8, user-scalable=0">
   <meta name="robots" content="all,follow">
 
   @livewireStyles
