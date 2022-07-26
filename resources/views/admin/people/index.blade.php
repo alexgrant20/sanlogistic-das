@@ -49,9 +49,9 @@
                 </a>
               </td>
               <td>{{ $person->name }}</td>
-              <td>{{ $person->project->name }}</td>
+              <td>{{ $person->project->name ?? null }}</td>
               <td>{{ $person->phone_number }}</td>
-              <td>{{ $person->department->name }}</td>
+              <td>{{ $person->department->name ?? null }}</td>
               @if (isset($person->user->username))
                 <td>
                   <a href="{{ url("/admin/users/{$person->user->id}/edit") }}" class="btn badge bg-warning fs-6">
