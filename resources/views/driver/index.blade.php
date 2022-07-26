@@ -67,7 +67,7 @@
         </div>
 
       </div>
-      <a href="{{ route('driver.activity.index') }}" class="w-100 btn btn-info"
+      <a href="{{ route('driver.activity.index') }}" class="w-100 btn btn-primary"
         style="border-top-left-radius: 0; border-top-right-radius: 0;">
         <span class="fw-bold">See All Activity</span>
       </a>

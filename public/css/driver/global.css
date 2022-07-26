@@ -39,8 +39,16 @@ a:hover {
   color: inherit;
 }
 
-.bg-main {
-  background-color: #0d0d0d;
+.background {
+  background: #121212;
+}
+
+.bg-primary {
+  background: #BB86FC;
+}
+
+.bg-surface {
+  background: #000;
 }
 
 .bg-transparent {

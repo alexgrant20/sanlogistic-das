@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Driver;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Models\Address;
 use App\Models\PersonDocument;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class MenuController extends Controller
 {
@@ -28,14 +30,13 @@ class MenuController extends Controller
 
   public function location(int $id = null)
   {
-
     $addresses = Address::all();
-
 
     return view('driver.menu.location', [
       'addresses' => $addresses,
       'title' => 'Location',
-      'addressData' => $id ? $addresses->find($id) : null,
+      'addressData' => $id ? $addresses->find($id) :
+        Activity::find(Session::get('activity_id'))->arrivalLocation ?? null,
     ]);
   }
 
