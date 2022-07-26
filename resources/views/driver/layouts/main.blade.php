@@ -40,11 +40,12 @@
 
 <body class="min-vh-100 min-vw-100 bg-main">
   @include('driver.partials.header')
-  <div class="px-3 py-5">
+  <div class="px-3 pt-5" style="padding-bottom: 120px">
 
     @yield('content')
 
   </div>
+  @include('driver.partials.footer')
 
   <script src="{{ asset('/vendor/currency/currency.js') }}"></script>
 

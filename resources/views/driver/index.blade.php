@@ -23,7 +23,7 @@
         <x-slot name="backgroundColor">bg-brown</x-slot>
         <x-slot name="icon">bi-clipboard2-check-fill</x-slot>
         <x-slot name="text">{{ __('Checklist') }}</x-slot>
-        <x-slot name="link">#</x-slot>
+        <x-slot name="link">{{ route('driver.menu.checklist') }}</x-slot>
       </x-menu-item>
       {{-- TO-DO --}}
       <x-menu-item>

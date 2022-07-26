@@ -1,24 +1,29 @@
 <header class="d-flex flex-column justify-content-between align-items-center bg-dash-dark-3">
   <div class="d-flex justify-content-between align-items-center w-100 p-3">
-    @if (!Request::is('/'))
-      <a href="{{ url()->previous() }}" style="cursor: pointer;">
+    {{-- @if (!Request::is('/'))
+      <a href="{{ route('index') }}" style="cursor: pointer;">
         <i class='bi bi-caret-left-fill fs-3'></i>
       </a>
-    @endif
+    @else --}}
+    <a data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
+      <i class="bi bi-list fs-3"></i>
+    </a>
+    @include('driver.partials.sidebar')
+    {{-- @endif --}}
     <span class="fs-4 fw-bold {{ Request::is('/') ? 'text-center' : 'ms-3' }}" style="flex: 1">
       {{ $title }}
     </span>
     @if (Request::is('/'))
       <form action="/logout" method="POST">
         @csrf
-        <button class="btn text-white fs-3" type="submit"><i class="bi bi-box-arrow-right"></i></button>
+        <button class="btn text-white fs-4" type="submit"><i class="bi bi-box-arrow-right"></i></button>
       </form>
     @endif
   </div>
-  <div class="w-100">
+  {{-- <div class="w-100">
     <div class="row">
       <a href="{{ route('index') }}"
-        class="col {{ Request::is('/') ? 'border-primary' : '' }} d-flex flex-column border-3 border-bottom justify-content-center align-items-center p-2 text-decoration-none text-white">
+        class="col {{ Request::is('/') ? 'border-primary' : '' }} d-flex flex-column border-bottom border-3 justify-content-center align-items-center p-2 text-decoration-none text-white">
         <i class="bi {{ Request::is('/') ? 'bi-house-door-fill text-primary' : 'bi-house-door' }} mb-2 fs-3"></i>
       </a>
       <a href="{{ route('driver.menu.profile') }}"
@@ -30,6 +35,6 @@
         <i
           class="fa-solid fa-clock-rotate-left {{ Request::is('driver/activities') ? 'text-primary' : '' }} mb-2 fs-3"></i>
       </a>
-    </div>
+    </div> --}}
   </div>
 </header>

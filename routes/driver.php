@@ -21,6 +21,9 @@ Route::prefix('driver')->name('driver.')->middleware('auth', 'driver')->group(fu
     ],
   ]);
 
-  Route::get('/profile', [MenuController::class, 'profile'])->name('menu.profile');
-  Route::get('/location/{id?}', [MenuController::class, 'location'])->name('menu.location');
+  Route::controller(MenuController::class)->name('menu.')->group(function () {
+    Route::get('/profile', 'profile')->name('profile');
+    Route::get('/checklist', 'checklist')->name('checklist');
+    Route::get('/location/{id?}', 'location')->name('location');
+  });
 });

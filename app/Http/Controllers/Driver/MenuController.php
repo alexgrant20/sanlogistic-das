@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Driver;
 use App\Http\Controllers\Controller;
 use App\Models\Address;
 use App\Models\PersonDocument;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
@@ -35,6 +36,14 @@ class MenuController extends Controller
       'addresses' => $addresses,
       'title' => 'Location',
       'addressData' => $id ? $addresses->find($id) : null,
+    ]);
+  }
+
+  public function checklist()
+  {
+    return view('driver.menu.checklist', [
+      'title' => 'Checklist',
+      'vehicles' => Vehicle::all()
     ]);
   }
 }
