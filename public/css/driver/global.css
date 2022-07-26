@@ -89,6 +89,10 @@ a:hover {
   color: #d9d8d7 !important;
 }
 
+.border-top-3 {
+  border-top: 3px solid #aaa;
+}
+
 input[readonly],
 input[readonly]:focus,
 input[disabled],
