@@ -3,13 +3,16 @@
 @section('content')
   <div class="container-fluid">
     <div class="row row-cols-2 row-cols-xxl-4 g-5 mb-5">
+      @php
+        $activityId = is_null(session()->get('activity_id'));
+      @endphp
       <x-menu-item>
         <x-slot name="backgroundColor">{{ is_null(session()->get('activity_id')) ? 'bg-blue' : 'bg-green' }}</x-slot>
-        <x-slot name="icon">{{ is_null(session()->get('activity_id')) ? 'bi-clipboard-plus-fill' : 'bi-flag' }}
+        <x-slot name="icon">{{ $activityId ? 'bi-clipboard-plus-fill' : 'bi-flag' }}
         </x-slot>
         <x-slot name="text">Activity</x-slot>
         <x-slot name="link">
-          {{ is_null(session()->get('activity_id')) ? '/driver/activities/create' : '/driver/activities/' . session()->get('activity_id') . '/edit' }}
+          {{ $activityId ? route('driver.activity.create') : route('driver.activity.edit', session()->get('activity_id')) }}
         </x-slot>
       </x-menu-item>
       <x-menu-item>
