@@ -17,7 +17,10 @@ class IndexController extends Controller
     ];
 
     if ($isUserDriver) {
-      $activity = Activity::with(['departureLocation', 'arrivalLocation'])->first();
+      $activity = Activity::where('user_id', auth()->user()->id)
+        ->with(['departureLocation', 'arrivalLocation'])
+        ->latest()
+        ->first();
 
       $params['activity'] = $activity;
 
