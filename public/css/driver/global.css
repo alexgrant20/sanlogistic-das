@@ -1,5 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Heebo:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
+:root {
+  --white: #e8e9ed;
+  --gray: #434257;
+  --blue: #18172c;
+  --green: #00d084;
+  --pink: #ff4b77;
+}
+
 body {
   color: #d9d8d7;
 }
@@ -124,7 +132,75 @@ input:focus {
   color: #1b52c8;
 }
 
+.disable-div {
+  position: relative;
+  pointer-events: none;
+  background-color: rgb(49, 49, 49);
+  opacity: 0.25;
+  /* z-index: 5; */
+}
+
 .flip-icon {
   transition: all 1s ease-in-out;
   transform: scale(1, -1);
+}
+
+.switches span {
+  position: relative;
+  width: 50px;
+  height: 26px;
+  border-radius: 15px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.4);
+  background: var(--gray);
+  transition: all 0.3s;
+}
+
+.switches span::before,
+.switches span::after {
+  content: "";
+  position: absolute;
+}
+
+.switches span::before {
+  left: 1px;
+  top: 1px;
+  width: 24px;
+  height: 24px;
+  background: var(--white);
+  border-radius: 50%;
+  z-index: 1;
+  transition: transform 0.3s;
+}
+
+.switches span::after {
+  top: 50%;
+  right: 8px;
+  width: 12px;
+  height: 12px;
+  transform: translateY(-50%);
+  background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/uncheck-switcher.svg);
+  background-size: 12px 12px;
+}
+
+.switches [type="checkbox"]:checked+label span {
+  background: var(--green);
+}
+
+.switches [type="checkbox"]:checked+label span::before {
+  transform: translateX(24px);
+}
+
+.switches [type="checkbox"]:checked+label span::after {
+  width: 14px;
+  height: 14px;
+  /*right: auto;*/
+  left: 8px;
+  background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/checkmark-switcher.svg);
+  background-size: 14px 14px;
+}
+
+
+[type="checkbox"] {
+  position: absolute;
+  left: -9999px;
 }

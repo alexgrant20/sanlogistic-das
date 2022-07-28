@@ -9,6 +9,8 @@ class VehicleLastStatus extends Model
 {
   use HasFactory;
 
+  public $guarded = ['id'];
+
   public function vehicle()
   {
     return $this->belongsTo(Vehicle::class);

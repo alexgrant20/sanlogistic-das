@@ -24,6 +24,8 @@ Route::prefix('driver')->name('driver.')->middleware('auth', 'driver')->group(fu
   Route::controller(MenuController::class)->name('menu.')->group(function () {
     Route::get('/profile', 'profile')->name('profile');
     Route::get('/checklist', 'checklist')->name('checklist');
+    Route::post('/checklist', 'checklistStore')->name('checklist.store');
     Route::get('/location/{id?}', 'location')->name('location');
+    Route::get('/last-status/{vehicleId}', 'getChecklistLastStatus')->name('lastStatus.get');
   });
 });
