@@ -6,23 +6,21 @@ use Illuminate\View\Component;
 
 class InputImage extends Component
 {
-    /**
-     * Create a new component instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
+  public string $id;
+  public string $label;
+  public bool $required;
+  public string $imagePath;
 
-    /**
-     * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\Contracts\View\View|\Closure|string
-     */
-    public function render()
-    {
-        return view('components.input-image');
-    }
+  public function __construct(string $id, string $label, bool $required = false, string $imagePath = "")
+  {
+    $this->id = $id;
+    $this->label = $label;
+    $this->required = $required;
+    $this->imagePath = $imagePath;
+  }
+
+  public function render()
+  {
+    return view('components.input-image');
+  }
 }

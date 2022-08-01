@@ -1,7 +1,7 @@
 @extends('driver.layouts.main')
 
 @section('content')
-  <form method="POST" action="{{ route('driver.activity.store') }}" enctype="multipart/form-data" onsubmit="">
+  <form method="POST" action="{{ route('driver.activity.store') }}" enctype="multipart/form-data">
     @csrf
 
     <div class="row gy-5">
@@ -11,17 +11,11 @@
         <hr>
         <div class="row g-3">
           <div class="col-md-6">
-            <x-input-image>
-              <x-slot name="id">do_image</x-slot>
-              <x-slot name="label">{{ __('DO Image') }}</x-slot>
-            </x-input-image>
+            <x-input-image id="do_image" :label="__('DO Image')" :required="true" />
           </div>
 
           <div class="col-md-6">
-            <x-input-image>
-              <x-slot name="id">departure_odo_image</x-slot>
-              <x-slot name="label">{{ __('ODO Image') }}</x-slot>
-            </x-input-image>
+            <x-input-image id="departure_odo_image" :label="__('ODO Image')" :required="true" />
           </div>
         </div>
       </div>

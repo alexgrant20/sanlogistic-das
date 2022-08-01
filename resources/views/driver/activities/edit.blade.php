@@ -73,11 +73,7 @@
           </div>
 
           <div class="col-md-12">
-            <x-input-image>
-              <x-slot name="id">arrival_odo_image</x-slot>
-              <x-slot name="label">{{ __('ODO Image') }}</x-slot>
-              <x-slot name="required"></x-slot>
-            </x-input-image>
+            <x-input-image id="arrival_odo_image" :label="__('ODO Image')" :required="true" />
           </div>
         </div>
       </div>
@@ -99,10 +95,7 @@
             @enderror
           </div>
           <div class="col-md-12">
-            <x-input-image>
-              <x-slot name="id">bbm_image</x-slot>
-              <x-slot name="label">{{ __('BBM Image') }}</x-slot>
-            </x-input-image>
+            <x-input-image id="bbm_image" :label="__('BBM Image')" />
           </div>
         </div>
       </div>
@@ -125,10 +118,7 @@
           </div>
 
           <div class="col-md-12">
-            <x-input-image>
-              <x-slot name="id">toll_image</x-slot>
-              <x-slot name="label">{{ __('Toll Image') }}</x-slot>
-            </x-input-image>
+            <x-input-image id="toll_image" :label="__('Toll Image')" />
           </div>
         </div>
       </div>
@@ -151,10 +141,7 @@
           </div>
 
           <div class="col-md-12">
-            <x-input-image>
-              <x-slot name="id">parking_image</x-slot>
-              <x-slot name="label">{{ __('Parking Image') }}</x-slot>
-            </x-input-image>
+            <x-input-image id="parking_image" :label="__('Parking Image')" />
           </div>
         </div>
       </div>
