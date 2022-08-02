@@ -8,6 +8,7 @@ use App\Models\Address;
 use App\Models\PersonDocument;
 use App\Models\Vehicle;
 use App\Models\VehicleChecklist;
+use App\Models\VehicleChecklistImage;
 use App\Models\VehicleLastStatus;
 use App\Transaction\Constants\NotifactionTypeConstant;
 use Illuminate\Http\Request;
@@ -59,6 +60,8 @@ class MenuController extends Controller
 
   public function checklistStore(Request $request)
   {
+    $timestamp = now()->timestamp;
+
     $basicData = $request->validate([
       'vehicle_id' => 'required|integer',
       'lamp_notes' => 'nullable|string',
@@ -67,6 +70,17 @@ class MenuController extends Controller
       'equipment_notes' => 'nullable|string',
       'gear_notes' => 'nullable|string',
       'other_notes' => 'nullable|string',
+    ]);
+
+    $imageData = $request->validate([
+      'image_1' => 'nullable|image',
+      'image_2' => 'nullable|image',
+      'image_3' => 'nullable|image',
+      'image_4' => 'nullable|image',
+      'image_1_description' => 'required_with:image_1|string',
+      'image_2_description' => 'required_with:image_2|string',
+      'image_3_description' => 'required_with:image_3|string',
+      'image_4_description' => 'required_with:image_4|string',
     ]);
 
     $vehicle = Vehicle::find($request->vehicle_id);
@@ -136,7 +150,7 @@ class MenuController extends Controller
 
     $payload = array_merge($basicData, $checklistData);
 
-    VehicleChecklist::create($payload);
+    $vehicleChecklist = VehicleChecklist::create($payload);
 
     VehicleLastStatus::updateOrCreate(
       ['vehicle_id' => $request->vehicle_id],
@@ -202,6 +216,15 @@ class MenuController extends Controller
         'odo' => intval($vehicle->odo),
       ]
     );
+
+    for ($i = 1; $i <= 4; $i++) {
+      if (!array_key_exists("image_$i", $imageData)) break;
+      $vehicleChecklistImage = new VehicleChecklistImage();
+      $vehicleChecklistImage->image = uploadImage($imageData["image_$i"], 'checklist', auth()->user()->person->name, $timestamp);
+      $vehicleChecklistImage->description = $imageData["image_" . $i . "_description"];
+      $vehicleChecklistImage->vehicle_checklist_id = $vehicleChecklist->id;
+      $vehicleChecklistImage->save();
+    }
 
     return to_route('index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'checlist', 'created'));
   }

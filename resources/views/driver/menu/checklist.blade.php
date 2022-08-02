@@ -42,8 +42,8 @@
               <x-input.checklist-switch id="lampu_senter" />
             </div>
             <hr>
-            <label for="lamp_notes" class="form-label">Catatan</label>
-            <textarea class="form-control form-dark" id="lamp_notes" name="lamp_notes" rows="3"></textarea>
+            <label for="lamp_notes" class="form-label fs-5 text-primary">Catatan</label>
+            <textarea class="form-control" id="lamp_notes" name="lamp_notes" rows="3"></textarea>
           </div>
         </div>
       </div>
@@ -66,8 +66,8 @@
               <x-input.checklist-switch id="kaca_belakang" />
             </div>
             <hr>
-            <label for="glass_notes" class="form-label">Catatan</label>
-            <textarea class="form-control form-dark" id="glass_notes" name="glass_notes" rows="3"></textarea>
+            <label for="glass_notes" class="form-label fs-5 text-primary">Catatan</label>
+            <textarea class="form-control" id="glass_notes" name="glass_notes" rows="3"></textarea>
           </div>
         </div>
       </div>
@@ -100,8 +100,8 @@
               <x-input.checklist-switch id="ganjal_ban" />
             </div>
             <hr>
-            <label for="tire_notes" class="form-label">Catatan</label>
-            <textarea class="form-control form-dark" id="tire_notes" name="tire_notes" rows="3"></textarea>
+            <label for="tire_notes" class="form-label fs-5 text-primary">Catatan</label>
+            <textarea class="form-control" id="tire_notes" name="tire_notes" rows="3"></textarea>
           </div>
         </div>
       </div>
@@ -129,8 +129,8 @@
               <x-input.checklist-switch id="tool_kit" />
             </div>
             <hr>
-            <label for="equipment_notes" class="form-label">Catatan</label>
-            <textarea class="form-control form-dark" id="equipment_notes" name="equipment_notes" rows="3"></textarea>
+            <label for="equipment_notes" class="form-label fs-5 text-primary">Catatan</label>
+            <textarea class="form-control" id="equipment_notes" name="equipment_notes" rows="3"></textarea>
           </div>
         </div>
       </div>
@@ -159,8 +159,8 @@
               <x-input.checklist-switch id="straples" />
             </div>
             <hr>
-            <label for="gear_notes" class="form-label">Catatan</label>
-            <textarea class="form-control form-dark" id="gear_notes" name="gear_notes" rows="3"></textarea>
+            <label for="gear_notes" class="form-label fs-5 text-primary">Catatan</label>
+            <textarea class="form-control" id="gear_notes" name="gear_notes" rows="3"></textarea>
           </div>
         </div>
       </div>
@@ -197,17 +197,66 @@
               <x-input.checklist-switch id="air_conditioner" />
             </div>
             <hr>
-            <label for="other_notes" class="form-label">Catatan</label>
-            <textarea class="form-control form-dark" id="other_notes" name="other_notes" rows="3"></textarea>
+            <label for="other_notes" class="form-label fs-5 text-primary">Catatan</label>
+            <textarea class="form-control" id="other_notes" name="other_notes" rows="3"></textarea>
           </div>
+        </div>
+      </div>
+
+      {{-- Image --}}
+      <div class="accordion-item mb-5">
+        <h2 class="accordion-header" id="image-header">
+          <button class="accordion-button d-flex justify-content-center" type="button" data-bs-toggle="collapse"
+            data-bs-target="#image" aria-expanded="true" aria-controls="image">
+            <i class="fa-solid fa-images fa-1x border-end border-secondary pe-3"></i>
+            <span class="fw-bold fs-5 ms-3">{{ __('Image') }}</span>
+          </button>
+        </h2>
+        <div id="image" class="accordion-collapse collapse show" aria-labelledby="image-header">
+          <div class="accordion-body" id="image-container">
+            <div class="mb-5">
+              <x-input-image id="image_1" :label="__('Image')" />
+              <div class="mt-5">
+                <label class="form-label fs-5 text-primary"
+                  for="image_1_description">{{ __('Image Description') }}</label>
+                <textarea class="form-control" name="image_1_description" id="image_1_description"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-grid">
+          <button type="button" id="add-image" class="btn btn-lg btn-outline-primary">
+            <i class="fa-solid fa-plus fa-1x me-2"></i>
+            {{ __('Add Image') }}
+          </button>
         </div>
       </div>
     </div>
 
     <div class="d-grid">
-      <button type="submit" id="submit" class="btn btn-lg btn-success">
+      <button type="button" id="submit" class="btn btn-lg btn-primary" data-bs-toggle="modal"
+        data-bs-target="#assure-modal">
         {{ __('Submit') }}
       </button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="assure-modal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="d-flex flex-column">
+              <div class="d-flex flex-column align-items-center mb-3">
+                <i class="bi bi-exclamation-circle display-1"></i>
+                <h3>{{ __('Are you want to create checklist?') }}</h3>
+              </div>
+              <button type="submit" class="btn btn-lg btn-primary mb-3">{{ __('Create Checklist') }}</button>
+              <button type="button" class="btn btn-lg btn-secondary"
+                data-bs-dismiss="modal">{{ __('Close') }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
   </form>
@@ -221,16 +270,39 @@
       $('#' + id + '-text').text(`[${numberOfChecked}/${totalCheckboxes}]`);
     }
 
-    $('input:checkbox').on('change', function(e) {
-      const checkboxMainID = $(this.parentNode.parentNode.parentNode).attr('id')
-      calculateCheckBox(checkboxMainID);
-    })
+    let totalImage = 1;
 
     $(document).ready(function() {
 
       $(".accordion-item").addClass("disable-div");
       $("input").attr("disabled", true);
       $("#submit").attr("disabled", true);
+
+      $('input:checkbox').on('change', function(e) {
+        const checkboxMainID = $(this.parentNode.parentNode.parentNode).attr('id')
+        calculateCheckBox(checkboxMainID);
+      })
+
+      $('#add-image').on('click', e => {
+        totalImage++;
+        $("#image-container").last().append(
+          `
+          <div class="mb-5">
+            <x-input-image id="image_${totalImage}" :label="__('Image')" />
+            <div class="mt-5">
+              <label class="form-label fs-5 text-primary" for="image_${totalImage}_description">{{ __('Image Description') }}</label>
+              <textarea class="form-control" name="image_${totalImage}_description" id="image_1_description"></textarea>
+            </div>
+          </div>
+          `
+        );
+
+        if (totalImage === 4) {
+          $('#add-image').remove();
+          return;
+        }
+      });
+
 
       // Use last checklist value
       $("#vehicle_id").on('change', async function(e) {
