@@ -20,7 +20,7 @@
       <x-menu-item backgroundColor="bg-brown" icon="bi bi-clipboard-check-fill" :label="__('Checklist')" :link="route('driver.menu.checklist')" />
 
       {{-- Finance(TODO) --}}
-      <x-menu-item backgroundColor="disable-div bg-darkGreen" icon="bi bi-cash-coin" :label="__('Finance')" link="#" />
+      {{-- <x-menu-item backgroundColor="bg-darkGreen" icon="bi bi-cash-coin" :label="__('Finance')" link="#" /> --}}
     </div>
     @if (!is_null($activity))
       <div class="bg-dash-dark-3 p-3 rounded">
