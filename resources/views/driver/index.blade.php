@@ -11,16 +11,16 @@
       @endphp
 
       {{-- Activity --}}
-      <x-menu-item :backgroundColor="$activityBg" :icon="$activityIcon" :label="__('Activity')" :link="$activityLink" />
+      <x-ui.menu-item :backgroundColor="$activityBg" :icon="$activityIcon" :label="__('Activity')" :link="$activityLink" />
 
       {{-- Location --}}
-      <x-menu-item backgroundColor="bg-purplish" icon="bi bi-map" :label="__('Location')" :link="route('driver.menu.location')" />
+      <x-ui.menu-item backgroundColor="bg-purplish" icon="bi bi-map" :label="__('Location')" :link="route('driver.menu.location')" />
 
       {{-- Checklist --}}
-      <x-menu-item backgroundColor="bg-brown" icon="bi bi-clipboard-check-fill" :label="__('Checklist')" :link="route('driver.menu.checklist')" />
+      <x-ui.menu-item backgroundColor="bg-brown" icon="bi bi-clipboard-check-fill" :label="__('Checklist')" :link="route('driver.menu.checklist')" />
 
       {{-- Finance(TODO) --}}
-      {{-- <x-menu-item backgroundColor="bg-darkGreen" icon="bi bi-cash-coin" :label="__('Finance')" link="#" /> --}}
+      {{-- <x-ui.menu-item backgroundColor="bg-darkGreen" icon="bi bi-cash-coin" :label="__('Finance')" link="#" /> --}}
     </div>
     @if (!is_null($activity))
       <div class="bg-dash-dark-3 p-3 rounded">

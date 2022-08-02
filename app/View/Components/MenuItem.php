@@ -22,6 +22,6 @@ class MenuItem extends Component
   }
   public function render()
   {
-    return view('components.menu-item');
+    return view('components.ui.menu-item');
   }
 }
