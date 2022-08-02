@@ -185,6 +185,7 @@ $(document).ready(function () {
   });
 
   $("#subdistrict_id").on("change", function (e) {
+    if (latInput.val() !== "" && lngInput.val() !== "") return;
     map.spin(true);
     const location = $("#subdistrict_id option:selected").text();
     const data = fetch(
@@ -196,8 +197,10 @@ $(document).ready(function () {
             lat: data[0].lat,
             lng: data[0].lon,
           });
+
           latInput.val(data[0].lat);
           lngInput.val(data[0].lon);
+
           map.spin(false);
         })
       )
