@@ -73,10 +73,10 @@ class MenuController extends Controller
     ]);
 
     $imageData = $request->validate([
-      'image_1' => 'nullable|image',
-      'image_2' => 'nullable|image',
-      'image_3' => 'nullable|image',
-      'image_4' => 'nullable|image',
+      'image_1' => 'nullable|image|mimes:png,jpg,jpeg',
+      'image_2' => 'nullable|image|mimes:png,jpg,jpeg',
+      'image_3' => 'nullable|image|mimes:png,jpg,jpeg',
+      'image_4' => 'nullable|image|mimes:png,jpg,jpeg',
       'image_1_description' => 'required_with:image_1|string',
       'image_2_description' => 'required_with:image_2|string',
       'image_3_description' => 'required_with:image_3|string',
