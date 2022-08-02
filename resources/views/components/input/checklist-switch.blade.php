@@ -1,5 +1,5 @@
 <div class="d-flex flex-column align-items-center">
-  <span class="mb-1 fs-5">{{ $label }}</span>
+  <span class="mb-1 fs-5 text-center">{{ $label }}</span>
   <div class="switches">
     <input type="checkbox" id="{{ $id }}" name="{{ $id }}" value="0">
     <label for="{{ $id }}">
