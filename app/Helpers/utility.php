@@ -1,6 +1,7 @@
 <?php
 
 use App\Transaction\Constants\NotifactionTypeConstant;
+use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Str;
 
@@ -32,6 +33,11 @@ function uploadImages($images, $mainIdentifier, $timestamp)
 
     [$filePath, $fullPath, $tempPath] = getAllPath($image, $mainIdentifier, $timestamp, $type);
 
+    // create folder if not exists
+    if (!File::isDirectory("storage/{$type}-images")) {
+      File::makeDirectory("storage/{$type}-images", 0777, true, true);
+    }
+
     // compress & saving image
     $img = Image::make($tempPath);
     $img->save($fullPath, env('IMG_COMPRESS_PERCENTAGE'));
@@ -49,6 +55,12 @@ function uploadImage($image, $type, $mainIdentifier, $timestamp)
 
   // compress & saving image
   $img = Image::make($tempPath);
+
+  // create folder if not exists
+  if (!File::isDirectory("storage/{$type}-images")) {
+    File::makeDirectory("storage/{$type}-images", 0777, true, true);
+  }
+
   $img->save($fullPath, env('IMG_COMPRESS_PERCENTAGE'));
 
   return $filePath;
