@@ -291,7 +291,7 @@
             <x-input-image id="image_${totalImage}" :label="__('Image')" />
             <div class="mt-5">
               <label class="form-label fs-5 text-primary" for="image_${totalImage}_description">{{ __('Image Description') }}</label>
-              <textarea class="form-control" name="image_${totalImage}_description" id="image_1_description"></textarea>
+              <textarea class="form-control" name="image_${totalImage}_description" id="image_${totalImage}_description"></textarea>
             </div>
           </div>
           `
