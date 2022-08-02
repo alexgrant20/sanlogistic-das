@@ -5,36 +5,22 @@
     <div class="row row-cols-2 row-cols-xxl-4 g-5 mb-5">
       @php
         $activityId = is_null(session()->get('activity_id'));
+        $activityBg = is_null(session()->get('activity_id')) ? 'bg-blue' : 'bg-green';
+        $activityIcon = 'bi' . $activityId ? 'bi-clipboard-plus-fill' : 'bi-flag';
+        $activityLink = $activityId ? route('driver.activity.create') : route('driver.activity.edit', session()->get('activity_id'));
       @endphp
-      <x-menu-item>
-        <x-slot name="backgroundColor">{{ is_null(session()->get('activity_id')) ? 'bg-blue' : 'bg-green' }}</x-slot>
-        <x-slot name="icon">{{ $activityId ? 'bi-clipboard-plus-fill' : 'bi-flag' }}
-        </x-slot>
-        <x-slot name="text">Activity</x-slot>
-        <x-slot name="link">
-          {{ $activityId ? route('driver.activity.create') : route('driver.activity.edit', session()->get('activity_id')) }}
-        </x-slot>
-      </x-menu-item>
-      <x-menu-item>
-        <x-slot name="backgroundColor">bg-purplish</x-slot>
-        <x-slot name="icon">bi-map</x-slot>
-        <x-slot name="text">{{ __('Location') }}</x-slot>
-        <x-slot name="link">{{ route('driver.menu.location') }}</x-slot>
-      </x-menu-item>
-      {{-- TO-DO --}}
-      <x-menu-item>
-        <x-slot name="backgroundColor">bg-brown</x-slot>
-        <x-slot name="icon">bi-clipboard2-check-fill</x-slot>
-        <x-slot name="text">{{ __('Checklist') }}</x-slot>
-        <x-slot name="link">{{ route('driver.menu.checklist') }}</x-slot>
-      </x-menu-item>
-      {{-- TO-DO --}}
-      <x-menu-item>
-        <x-slot name="backgroundColor">bg-darkGreen</x-slot>
-        <x-slot name="icon">bi-cash-coin</x-slot>
-        <x-slot name="text">{{ __('Finance') }}</x-slot>
-        <x-slot name="link">#</x-slot>
-      </x-menu-item>
+
+      {{-- Activity --}}
+      <x-menu-item :backgroundColor="$activityBg" :icon="$activityIcon" :label="__('Activity')" :link="$activityLink" />
+
+      {{-- Location --}}
+      <x-menu-item backgroundColor="bg-purplish" icon="bi bi-map" :label="__('Location')" :link="route('driver.menu.location')" />
+
+      {{-- Checklist --}}
+      <x-menu-item backgroundColor="bg-brown" icon="bi bi-clipboard-check-fill" :label="__('Checklist')" :link="route('driver.menu.checklist')" />
+
+      {{-- Finance(TODO) --}}
+      <x-menu-item backgroundColor="disable-div bg-darkGreen" icon="bi bi-cash-coin" :label="__('Finance')" link="#" />
     </div>
     @if (!is_null($activity))
       <div class="bg-dash-dark-3 p-3 rounded">
