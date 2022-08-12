@@ -92,6 +92,41 @@ function getCookie(cname) {
   return "";
 }
 
+function plateNumberHandler(value, type) {
+  switch (type) {
+    case "number":
+      $("#plateNumber").text(value);
+      break;
+
+    case "color":
+      let color;
+      // Referesh
+      $("#plate").removeClass("bg-dark").removeClass("bg-warning");
+      $("#plateNumber").removeClass("text-white").removeClass("text-dark");
+      $("#kirYear").removeClass("text-white").removeClass("text-dark");
+      $("#stnkYear").removeClass("text-white").removeClass("text-dark");
+      if (value === "1") {
+        $("#plate").addClass("bg-warning");
+        color = "text-dark";
+      } else {
+        $("#plate").addClass("bg-dark");
+        color = "text-white";
+      }
+      $("#plateNumber").addClass(color);
+      $("#kirYear").addClass(color);
+      $("#stnkYear").addClass(color);
+      break;
+
+    case "stnk":
+    case "kir":
+      const date = value.split("-");
+      const year = date[0].substr(2, 2);
+      const month = date[1];
+      $(`#${type}Year`).text(`${month}.${year}`);
+      break;
+  }
+}
+
 $("form").on("submit", () => {
   $("button").attr("disabled", true);
   $("input, textarea").attr("readonly", true);
