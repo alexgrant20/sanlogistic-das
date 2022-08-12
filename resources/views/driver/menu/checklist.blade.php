@@ -84,7 +84,7 @@
         </h2>
         <div id="tire-btn" class="accordion-collapse collapse show" aria-labelledby="tire-heading">
           <div class="accordion-body">
-            <div class="row row-cols-xxl-4 g-5" id="tire">
+            <div class="row row-cols-2 row-cols-xxl-4 g-5" id="tire">
               <x-input.checklist-switch id="ban_depan" />
               <x-input.checklist-switch id="ban_belakang_dalam" />
               <x-input.checklist-switch id="ban_belakang_luar" />
