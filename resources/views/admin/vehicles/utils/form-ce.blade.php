@@ -83,7 +83,8 @@
             name='vehicle_brand_id' id="vehicle_brand_id">
             <option hidden></option>
             @foreach ($vehiclesBrands as $vehicleBrand)
-              @if ($vehicleBrand->id == old('vehicle_brand_id', $vehicle->vehicleVariety->vehicleType->vehicleBrand->id ?? null))
+              @if ($vehicleBrand->id ==
+                  old('vehicle_brand_id', $vehicle->vehicleVariety->vehicleType->vehicleBrand->id ?? null))
                 <option value="{{ $vehicleBrand->id }}" selected>{{ $vehicleBrand->name }}</option>
               @else
                 <option value="{{ $vehicleBrand->id }}">{{ $vehicleBrand->name }}</option>

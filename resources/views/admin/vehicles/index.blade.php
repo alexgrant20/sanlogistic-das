@@ -23,12 +23,15 @@
           <tr class="header">
             <th>ID</th>
             <th>Action</th>
+            <th>License Plate</th>
             <th>Owner</th>
             <th>User</th>
             <th>Status</th>
             <th>Brand</th>
             <th>Model</th>
             <th>Odometer</th>
+            {{-- <th>Odometer Service</th>
+            <th>Service Expired</th> --}}
             <th>KIR Expired</th>
             <th>STNK Expired</th>
           </tr>
@@ -42,12 +45,15 @@
                   <i class="bi bi-pencil"></i>
                 </a>
               </td>
+              <td>{{ $vehicle->license_plate }}</td>
               <td>{{ $vehicle->company_name }}</td>
               <td>{{ $vehicle->project_name }}</td>
               <td>{{ $vehicle->status }}</td>
               <td>{{ $vehicle->vehicle_brand }}</td>
               <td>{{ $vehicle->vehicle_type }}</td>
               <td>{{ $vehicle->odo }}</td>
+              {{-- <td></td>
+              <td></td> --}}
               @if ($vehicle->kir_expire)
                 <td>{{ $vehicle->kir_expire }}</td>
               @else
