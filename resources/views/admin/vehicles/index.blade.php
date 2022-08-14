@@ -45,7 +45,12 @@
                   <i class="bi bi-pencil"></i>
                 </a>
               </td>
-              <td>{{ $vehicle->license_plate }}</td>
+              <td class="d-flex align-items-center justify-content-center ">
+                @php
+                  $licese_plate_color = intval($vehicle->vehicle_license_plate_color_id) === 2 ? 'bg-warning' : 'bg-white';
+                @endphp
+                <span class="text-dark {{ $licese_plate_color }}">{{ $vehicle->license_plate }}</span>
+              </td>
               <td>{{ $vehicle->company_name }}</td>
               <td>{{ $vehicle->project_name }}</td>
               <td>{{ $vehicle->status }}</td>

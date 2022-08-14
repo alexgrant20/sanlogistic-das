@@ -101,20 +101,12 @@ function plateNumberHandler(value, type) {
     case "color":
       let color;
       // Referesh
-      $("#plate").removeClass("bg-dark").removeClass("bg-warning");
-      $("#plateNumber").removeClass("text-white").removeClass("text-dark");
-      $("#kirYear").removeClass("text-white").removeClass("text-dark");
-      $("#stnkYear").removeClass("text-white").removeClass("text-dark");
+      $("#plate").removeClass("bg-white").removeClass("bg-warning");
       if (value === "1") {
-        $("#plate").addClass("bg-warning");
-        color = "text-dark";
+        $("#plate").addClass("bg-white");
       } else {
-        $("#plate").addClass("bg-dark");
-        color = "text-white";
+        $("#plate").addClass("bg-warning");
       }
-      $("#plateNumber").addClass(color);
-      $("#kirYear").addClass(color);
-      $("#stnkYear").addClass(color);
       break;
 
     case "stnk":

@@ -53,6 +53,7 @@ class VehicleController extends Controller
         [
           'vehicles.id',
           'license_plate',
+          'vehicle_license_plate_color_id',
           'companies.name AS company_name',
           'projects.name AS project_name',
           'vehicles.status AS status',

@@ -296,13 +296,13 @@
       </div>
     </div>
     <div class="col-xl-6 d-flex align-items-center justify-content-center">
-      <div class="card rounded bg-dark shadow-lg" id="plate">
+      <div class="card rounded bg-white shadow-lg" id="plate">
         <div class="card-body d-flex flex-column align-items-center mw-100 text-truncate p-2">
-          <h1 class="display-3 text-white fw-bold mb-1" id="plateNumber">X XXX XX</h1>
-          <hr class="w-100 border-white m-0 mb-1">
+          <h1 class="display-3 text-dark fw-bold mb-1" id="plateNumber">X XXX XX</h1>
+          <hr class="w-100 m-0 mb-1">
           <div class="d-flex justify-content-between w-100">
-            <h4 class="text-white" id="kirYear">XX.XX</h4>
-            <h4 class="text-white" id="stnkYear">XX.XX</h4>
+            <h4 class="text-dark" id="kirYear">XX.XX</h4>
+            <h4 class="text-dark" id="stnkYear">XX.XX</h4>
           </div>
         </div>
       </div>
