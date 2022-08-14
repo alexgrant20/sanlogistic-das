@@ -27,7 +27,6 @@ class UpdatePersonRequest extends FormRequest
       'project_id' => 'required|integer',
       'department_id' => 'required|integer',
       'area_id' => 'required|integer',
-      'city_id' => 'required|integer',
       'name' => 'required|string',
       'image' => 'nullable|image',
       'place_of_birth' => 'required|string',
@@ -38,7 +37,7 @@ class UpdatePersonRequest extends FormRequest
       'ktp' => 'required|alpha_num',
       'ktp_address' => 'required|string',
       'ktp_image' => 'nullable|image',
-      'sim' => 'required|alpha_num',
+      'sim' => 'required|string',
       'sim_type_id' => 'required|integer',
       'sim_expire' => 'required|date',
       'sim_address' => 'required|string',
@@ -51,7 +50,7 @@ class UpdatePersonRequest extends FormRequest
       'bpjs_ketenagakerjaan_image' => 'nullable|image',
       'npwp' => 'required|alpha_num',
       'npwp_image' => 'nullable|image',
-      'full_address' => 'required|string'
+      'nik' => 'required|string'
     ];
   }
 }

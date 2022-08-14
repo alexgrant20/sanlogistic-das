@@ -87,26 +87,6 @@
           @enderror
         </div>
 
-        <div class="col-xl-6">
-          <label for="city_id" class="form-label">Alamat</label>
-          <select class='form-select form-select-lg @error('city_id') is-invalid @enderror' name='city_id'
-            id="city_id">
-            <option value='' hidden></option>
-            @foreach ($cities as $city)
-              @if ($city->id == old('city_id', $person->city_id))
-                <option value="{{ $city->id }}" selected>{{ $city->name }}</option>
-              @else
-                <option value="{{ $city->id }}">{{ $city->name }}</option>
-              @endif
-            @endforeach
-          </select>
-          @error('city_id')
-            <div class="invalid-feedback">
-              {{ $message }}
-            </div>
-          @enderror
-        </div>
-
         <div class="col-xl-4">
           <label for="phone_number" class="form-label">Nomor Telepon</label>
           <input type="text" class="form-control form-control-lg @error('phone_number') is-invalid @enderror"
@@ -141,11 +121,10 @@
         </div>
 
         <div class="col-xl-12">
-          <label for="full_address" class="form-label">Alamat Lengkap</label>
-          <input class="form-control form-control-lg @error('full_address') is-invalid @enderror" type="text"
-            accept="full_address/*" name="full_address" value="{{ old('full_address', $person->full_address) }}"
-            id="full_address">
-          @error('full_address')
+          <label for="nik" class="form-label">NIK</label>
+          <input class="form-control form-control-lg @error('nik') is-invalid @enderror" type="text" name="nik"
+            value="{{ old('nik', $person->nik) }}" id="nik">
+          @error('nik')
             <div class="invalid-feedback">
               {{ $message }}
             </div>
@@ -224,9 +203,8 @@
     <div class="col-xl-6">
       <div class="w-100 h-100 d-flex justify-content-center align-items-center"
         style="background-color: transparent;">
-        <img src="{{ asset('storage/' . ($ktp->image ?? 'default/default.jpg')) }}"
-          class="img-fluid rounded mw-100" style="max-height: 200px" id="ktp_image-preview" alt=""
-          data-action="zoom">
+        <img src="{{ asset('storage/' . ($ktp->image ?? 'default/default.jpg')) }}" class="img-fluid rounded mw-100"
+          style="max-height: 200px" id="ktp_image-preview" alt="" data-action="zoom">
       </div>
     </div>
 
@@ -310,9 +288,8 @@
 
       <div class="w-100 h-100 d-flex justify-content-center align-items-center"
         style="background-color: transparent;">
-        <img src="{{ asset('storage/' . ($sim->image ?? 'default/default.jpg')) }}"
-          class="img-fluid rounded mw-100" style="max-height: 200px" id="sim_image-preview" alt=""
-          data-action="zoom">
+        <img src="{{ asset('storage/' . ($sim->image ?? 'default/default.jpg')) }}" class="img-fluid rounded mw-100"
+          style="max-height: 200px" id="sim_image-preview" alt="" data-action="zoom">
       </div>
 
     </div>

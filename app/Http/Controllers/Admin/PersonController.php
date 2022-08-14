@@ -43,7 +43,6 @@ class PersonController extends Controller
       'areas' => Area::orderBy('name')->get(),
       'departments' => Department::orderBy('name')->get(),
       'projects' => Project::orderBy('name')->get(),
-      'cities' => City::orderBy('name')->get(),
       'simTypes' => SimType::orderBy('name')->get(),
       'title' => 'Create Person',
     ]);
