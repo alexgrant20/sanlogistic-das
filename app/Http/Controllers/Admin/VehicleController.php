@@ -120,7 +120,7 @@ class VehicleController extends Controller
 
         $imageKey = "{$img}_image";
         $imagePath = $request->hasFile($imageKey)
-          ? uploadImage($request->file($imageKey), $docType, $vehicleLP, $timestamp)
+          ? uploadImage($request->file($imageKey), $img, $vehicleLP, $timestamp)
           : "";
 
         array_push($imagesQuery, [
@@ -129,7 +129,6 @@ class VehicleController extends Controller
           'image' => $imagePath,
         ]);
       }
-
       VehicleDocument::insert($documentsQuery);
       VehicleImage::insert($imagesQuery);
     } catch (Exception $e) {
@@ -213,7 +212,7 @@ class VehicleController extends Controller
 
         $imageKey = "{$imgType}_image";
         $imagePath = $request->hasFile($imageKey)
-          ? uploadImage($request->file($imageKey), $docType, $vehicleLP, $timestamp)
+          ? uploadImage($request->file($imageKey), $imgType, $vehicleLP, $timestamp)
           : $imageOld->image ?? null;
 
         VehicleImage::updateOrCreate(
