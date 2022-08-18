@@ -117,7 +117,11 @@ class ActivityController extends Controller
     return view('driver.activities.edit', [
       'title' => 'Update Activity',
       'activity' => $activity,
-      'arrival_addresses' => AddressProject::where('address_id', '!=', $activity->departure_location_id)->where('project_id', $activity->project_id)->with('address')->get()
+      'arrival_addresses' => AddressProject::where('address_id', '!=', $activity->departure_location_id)
+        ->where('project_id', $activity->project_id)
+        ->with('address')
+        ->get()
+        ->sortBy('address.name')
     ]);
   }
 

@@ -34,7 +34,7 @@ class MenuController extends Controller
 
   public function location(int $id = null)
   {
-    $addresses = Address::all();
+    $addresses = Address::orderBy('name')->get();
 
     return view('driver.menu.location', [
       'addresses' => $addresses,
@@ -46,9 +46,14 @@ class MenuController extends Controller
 
   public function checklist()
   {
+
+    $projectId = auth()->user()->person->project_id;
+
+    $vehicles = Vehicle::where('project_id', $projectId)->orderBy('license_plate')->get();
+
     return view('driver.menu.checklist', [
       'title' => 'Checklist',
-      'vehicles' => Vehicle::all()
+      'vehicles' => $vehicles
     ]);
   }
 
