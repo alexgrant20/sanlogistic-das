@@ -31,9 +31,6 @@ class VehicleController extends Controller
 
   public function index()
   {
-    $kirQuery = DB::table('vehicle_documents AS kir')->where('type', 'kir')->select(['vehicle_id', 'type', 'expire']);
-    $stnkQuery = DB::table('vehicle_documents AS stnk')->where('type', 'stnk')->select(['vehicle_id', 'type', 'expire']);
-
     $vehicles = DB::table('vehicles')
       ->leftJoin('companies', 'vehicles.owner_id', '=', 'companies.id')
       ->leftJoin('projects', 'vehicles.project_id', '=', 'projects.id')
@@ -43,28 +40,27 @@ class VehicleController extends Controller
       ->leftJoin('vehicle_brands', 'vehicle_types.vehicle_brand_id', '=', 'vehicle_brands.id')
       ->leftJoin('addresses', 'vehicles.address_id', '=', 'addresses.id')
       ->leftJoin('vehicle_towings', 'vehicles.vehicle_towing_id', '=', 'vehicle_towings.id')
-      ->leftJoinSub($kirQuery, 'kir', function ($join) {
-        $join->on('vehicles.id', '=', 'kir.vehicle_id');
+      ->leftJoin('vehicle_documents AS kir', function ($join) {
+        $join->on('kir.vehicle_id', '=', 'vehicles.id');
+        $join->where('kir.type', '=', 'kir');
       })
-      ->leftJoinSub($stnkQuery, 'stnk', function ($join) {
-        $join->on('vehicles.id', '=', 'stnk.vehicle_id');
+      ->leftJoin('vehicle_documents AS stnk', function ($join) {
+        $join->on('stnk.vehicle_id', '=', 'vehicles.id');
+        $join->where('stnk.type', '=', 'stnk');
       })
-      ->select(
-        [
-          'vehicles.id',
-          'license_plate',
-          'vehicle_license_plate_color_id',
-          'companies.name AS company_name',
-          'projects.name AS project_name',
-          'vehicles.status AS status',
-          'vehicle_brands.name AS vehicle_brand',
-          'vehicle_types.name AS vehicle_type',
-          'odo',
-          'kir.expire AS kir_expire',
-          'stnk.expire AS stnk_expire',
-        ]
-      )
-      ->get();
+      ->get([
+        'vehicles.id',
+        'license_plate',
+        'vehicle_license_plate_color_id',
+        'companies.name AS company_name',
+        'projects.name AS project_name',
+        'vehicles.status AS status',
+        'vehicle_brands.name AS vehicle_brand',
+        'vehicle_types.name AS vehicle_type',
+        'odo',
+        'kir.expire AS kir_expire',
+        'stnk.expire AS stnk_expire',
+      ]);
 
     return view('admin.vehicles.index', [
       'vehicles' => $vehicles,

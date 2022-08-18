@@ -30,7 +30,6 @@ class AddressController extends Controller
       abort(404);
     }
 
-    # QB
     $addresses = DB::table('addresses')
       ->leftJoin('address_types', 'addresses.address_type_id', '=', 'address_types.id')
       ->leftJoin('subdistricts', 'addresses.subdistrict_id', '=', 'subdistricts.id')

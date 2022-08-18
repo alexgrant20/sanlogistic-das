@@ -22,7 +22,6 @@ class CompanyController extends Controller
 {
   public function index()
   {
-    # EB
     $companies = Company::with('companyDocuments', 'city')->latest()->get();
 
     return view('admin.companies.index', [
