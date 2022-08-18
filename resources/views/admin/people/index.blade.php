@@ -33,7 +33,7 @@
             <th>ID</th>
             <th>Action</th>
             <th>Nama Orang</th>
-            <th>Nama Perusahaan</th>
+            <th>Nama Project</th>
             <th>Nomor HP</th>
             <th>Pekerjaan</th>
             <th>User</th>
