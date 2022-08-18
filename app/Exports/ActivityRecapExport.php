@@ -42,6 +42,14 @@ class ActivityRecapExport implements FromCollection, WithHeadings, ShouldAutoSiz
 
   public function headings(): array
   {
-    return ['project_name', 'person_name', 'total_bbm', 'total_toll', 'total_park', 'total_retribution', 'total'];
+    return [
+      'PROJECT NAME',
+      'PERSON NAME',
+      'TOTAL BBM',
+      'TOTAL TOLL',
+      'TOTAL PARK',
+      'TOTAL RETRIBUTION',
+      'TOTAL'
+    ];
   }
 }
