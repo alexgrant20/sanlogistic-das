@@ -10,12 +10,6 @@
     <div class="card-body border-top pt-5">
       <div class="row gy-4">
         <div class="col-xl-4">
-          <div class="fs-4 mb-2 fw-bold ">{{ __('Address') }}</div>
-          <div class="fs-4 text-truncate">
-            {{ auth()->user()->person->full_address }}
-          </div>
-        </div>
-        <div class="col-xl-4">
           <div class="fs-4 mb-2 fw-bold ">{{ __('Sim Number') }}</div>
           <div class="fs-4 text-truncate">
             @if ($sim)
