@@ -24,7 +24,6 @@ class PersonFactory extends Factory
       'project_id' => rand(1, 20),
       'department_id' => rand(1, 10),
       'area_id' => rand(1, 30),
-      'city_id' => rand(1, 20),
       'name' => $this->faker->name(),
       'image' => null,
       'place_of_birth' => $this->faker->address(),
@@ -32,7 +31,7 @@ class PersonFactory extends Factory
       'phone_number' => $this->faker->phoneNumber(),
       'joined_at' => $this->faker->date(),
       'note' => $this->faker->sentence(),
-      'full_address' => $this->faker->address()
+      'nik' => rand(1, 20),
     ];
   }
 }
