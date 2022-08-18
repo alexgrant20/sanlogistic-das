@@ -39,7 +39,8 @@ class VehicleForm extends Component
     $this->arrivalAddressLists = AddressProject::where('project_id', $this->projectId)
       ->where('address_id', '!=', $departureAddress->id)
       ->with('address')
-      ->get();;
+      ->get()
+      ->sortBy('address.name');
     $this->odo = $vehicle->odo;
     $this->departureAddress = $departureAddress;
     $this->doNumber = old('do_number') ?? $vehicle->last_do_number;
