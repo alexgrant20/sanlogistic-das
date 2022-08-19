@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Driver\StoreActivityRequest;
 use App\Http\Requests\Driver\UpdateActivityRequest;
 use App\Models\ActivityPayment;
+use App\Models\Address;
 use App\Models\Driver;
 use App\Transaction\Constants\NotifactionTypeConstant;
 use Exception;
@@ -128,9 +129,9 @@ class ActivityController extends Controller
   public function update(UpdateActivityRequest $request, Activity $activity)
   {
     $vehicle = Vehicle::where('id', $activity->vehicle_id)->first();
-    $totalCustTrip = auth()->user()->total_cust_trip;
+    $totalCustTrip = auth()->user()->driver->total_cust_trip;
 
-    $a_name =  strtoupper($activity->arrivalLocation->addressType->name);
+    $a_name =  strtoupper(Address::find($request->arrival_id)->addressType->name);
     $d_name = strtoupper($activity->departureLocation->addressType->name);
 
     $activityType = null;
@@ -142,7 +143,7 @@ class ActivityController extends Controller
           $totalCustTrip += 1;
 
           Driver::where('user_id', auth()->user()->id)->update([
-            'total_cust_trip' => $totalCustTrip + 1,
+            'total_cust_trip' => $totalCustTrip,
             'last_activity_id' => $activity->id
           ]);
 
@@ -167,7 +168,7 @@ class ActivityController extends Controller
 
             $type = $totalCustTrip > 1 ? 'mdp-e' : 'sdp';
 
-            $driver = Driver::where('user_id', auth()->user()->id);
+            $driver = Driver::where('user_id', auth()->user()->id)->first();
 
             $driver->lastActivity->update([
               'type' => $type
@@ -231,7 +232,9 @@ class ActivityController extends Controller
       });
     } catch (Exception $e) {
       DB::rollBack();
-      return to_route('driver.activity.edit')->withInput();
+
+      dd($e->getMessage());
+      return to_route('driver.activity.edit', $activity->id)->withInput();
     }
     DB::commit();
 
