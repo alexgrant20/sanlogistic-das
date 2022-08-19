@@ -85,7 +85,12 @@ function login_ngt()
   curl_close($curl);
 
   $value = json_decode($json_response, true);
-  $token = $value['body']['token'];
+
+  try {
+    $token = $value['body']['token'];
+  } catch (Exception $e) {
+    return "";
+  }
 
   return $token;
 }
@@ -99,6 +104,12 @@ function get_location_ngt($plate_number)
   $date_to = date("Y-m-d H:i:s");
 
   $token = login_ngt();
+
+  if (empty($token)) return [
+    "lat" => "No Data",
+    "lon" => "No Data",
+    "loc" => "No Data"
+  ];
 
   $auth = "Authorization: Bearer {$token}";
 
