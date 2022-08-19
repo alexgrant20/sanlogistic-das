@@ -141,9 +141,7 @@
                   className = 'btn-success'
                 }
 
-                const plateColor = item.vehicles_license_plate_color.name == 'black' ? "#000" : "#9b870c";
-                const textColor = item.vehicles_license_plate_color.name == 'black' ? "text-white" :
-                  "text-dark";
+                const plateColor = item.vehicles_license_plate_color.id == '1' ? "#fff" : "#9b870c";
 
                 const kir = item.vehicles_documents.find(e => e.type === 'kir');
                 const stnk = item.vehicles_documents.find(e => e.type === 'stnk');
@@ -173,11 +171,11 @@
                           <div class="card-body d-flex justify-content-between align-items-center">
                             <div class="w-50 rounded shadow-lg" style="background-color: ${plateColor}">
                               <a target="_blank" href="/admin/vehicles/${item.license_plate}/edit" class="d-flex flex-column align-items-center mw-100 text-truncate p-2">
-                                  <span class="${textColor} fw-bold mb-1 text-truncate text-center w-75" id="plateNumber">${item.license_plate}</span>
+                                  <span class="text-dark fs-4 fw-bold mb-1 text-truncate text-center w-75" id="plateNumber">${item.license_plate}</span>
                                   <hr class="w-100 border border-white border-5 m-0 mb-1">
                                   <div class="d-flex justify-content-between w-100">
-                                    <span class="${textColor}" id="kirYear">${kir_month}.${kir_year}</span>
-                                    <span class="${textColor}" id="stnkYear">${stnk_month}.${stnk_year}</span>
+                                    <span class="text-dark" id="kirYear">${kir_month}.${kir_year}</span>
+                                    <span class="text-dark" id="stnkYear">${stnk_month}.${stnk_year}</span>
                                   </div>
                               </a>
                             </div>
