@@ -45,7 +45,11 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
           'activities.do_number AS do_number',
           'dep.name AS departure_name',
           'arr.name AS arrival_name',
-          'activity_statuses.status AS status'
+          'activity_statuses.status AS status',
+          'do_date AS do_full_date',
+          DB::raw('MONTHNAME(do_date) AS do_month'),
+          DB::raw('YEAR(do_date) AS do_year'),
+          DB::raw('DAY(do_date) AS do_date'),
         ]
       );
 
@@ -55,7 +59,7 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
   public function headings(): array
   {
     return [
-      'ID',
+      'AKTIVITAS ID',
       'ACTIVITIES TYPE',
       'DEPARTURE DATE',
       'PERSON NAME',
@@ -64,6 +68,10 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
       'DEPARTURE NAME',
       'ARRIVAL NAME',
       'STATUS',
+      'DO FULL DATE',
+      'DO MONTH',
+      'DO YEAR',
+      'DO DATE',
     ];
   }
 }
