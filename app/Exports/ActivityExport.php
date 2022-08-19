@@ -29,6 +29,10 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
       ->leftJoin('vehicles', 'activities.vehicle_id', '=', 'vehicles.id')
       ->leftJoin(DB::raw('addresses dep'), 'activities.departure_location_id', '=', 'dep.id')
       ->leftJoin(DB::raw('addresses arr'), 'activities.arrival_location_id', '=', 'arr.id')
+      ->leftJoin('projects', 'activities.project_id', '=', 'projects.id')
+      ->leftJoin('companies', 'projects.company_id', '=', 'companies.id')
+      // nambah BBM Toll Sollar yang sudah di approve per activity blm tahu cara nya
+      ->leftJoin('activity_payments', 'activity_payments.activity_status_id', '=', 'activity_statuses.id')
       ->when($idsExists, function ($query, $idsExists) {
         if ($idsExists) {
           return $query->whereIn('activities.id', $this->ids);
@@ -37,19 +41,65 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
       ->orderByDesc('activities.created_at')
       ->get(
         [
-          'activities.id AS activities_id',
-          'activities.type AS activities_type',
-          'activities.departure_date AS activities_departure_date',
-          'people.name AS person_name',
-          'vehicles.license_plate AS license_plate',
           'activities.do_number AS do_number',
-          'dep.name AS departure_name',
-          'arr.name AS arrival_name',
-          'activity_statuses.status AS status',
-          'do_date AS do_full_date',
-          DB::raw('MONTHNAME(do_date) AS do_month'),
-          DB::raw('YEAR(do_date) AS do_year'),
           DB::raw('DAY(do_date) AS do_date'),
+          DB::raw('MONTHNAME(do_date) AS do_month'),
+          'dep.name AS departure_address',
+          DB::raw('DAY(departure_date) AS dep_date'),
+          DB::raw('MONTHNAME(departure_date) AS dep_month'),
+          DB::raw('CAST(departure_date AS time) AS dep_time'), // lupa pakai apa tadi untuk hh:mm
+          'activities.departure_odo As dep_odo',
+          'arr.name AS arrival_address',
+          DB::raw('DAY(arrival_date) AS arr_date'),
+          DB::raw('MONTHNAME(arrival_date) AS arr_month'),
+          DB::raw('CAST(arrival_date AS time) AS arr_time'), // lupa pakai apa tadi untuk hh:mm
+          'activities.arrival_odo AS arr_odo',
+          'vehicles.license_plate AS license_plate',
+          'people.name AS person_name',
+          'companies.name AS comp_name', //ambil nama companies untuk kolom Customer
+          //Null for 'FREIGHT',
+          DB::raw('"" AS FREIGHT'),
+          //'PRODUCT NAME',
+          DB::raw('"" AS PRODUCT'),
+          //'QUANTITY',
+          DB::raw('"" AS QUANTITY'),
+          //'FREIGHT RETURNED',
+          DB::raw('"" AS FREIGHT_RETURNED'),
+          //'FREIGHT LOST',
+          DB::raw('"" AS FREIGHT_LOST'),
+          //'VOLUMEPENGISIAN',
+          DB::raw('"" AS VOLUMEPENGISIAN'),
+          'activities.type AS act_type', //Delivery Category
+          // null for :
+          //'DELIVERY REMARKS I',
+          DB::raw('"" AS DELIVERY_REMARKS_I'),
+          //'DELIVERY REMARKS II',
+          DB::raw('"" AS DELIVERY_REMARKS_II'),
+          //'Fuel Note',
+          DB::raw('"" AS Fuel_Note'),
+          'activity_payments.bbm_amount AS bbm',
+          'activity_payments.toll_amount AS toll',
+          'activity_payments.parking_amount AS parking',
+          //'MAINTENANCE',
+          DB::raw('"" AS MAINTENANCE'),
+          //'LOADING EXPENSES',
+          DB::raw('"" AS LOADING_EXPENSES'),
+          //'UNLOADING EXPENSES',
+          DB::raw('"" AS UNLOADING_EXPENSES'),
+          //'Transport',
+          DB::raw('"" AS Transport'),
+          'activity_payments.retribution_amount AS retribution',
+          //'IFRETRIBUTION EXPENSES',
+          DB::raw('"" AS IFRETRIBUTION_EXPENSES'),
+          //'ZONE',
+          DB::raw('"" AS ZONE'),
+          //'DCODE',
+          DB::raw('"" AS DCODE'),
+          //'DISTANCE', // odo akhir - odo awal gimana caranya tuh
+          DB::raw('arrival_odo - departure_odo AS DISTANCE'),
+          //'TOTAL COST',
+          DB::raw('activity_payments.bbm_amount + activity_payments.toll_amount
+          + activity_payments.parking_amount + activity_payments.retribution_amount AS total_cost')
         ]
       );
 
@@ -59,19 +109,46 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
   public function headings(): array
   {
     return [
-      'AKTIVITAS ID',
-      'ACTIVITIES TYPE',
-      'DEPARTURE DATE',
-      'PERSON NAME',
-      'LICENSE PLATE',
-      'DO NUMBER',
-      'DEPARTURE NAME',
-      'ARRIVAL NAME',
-      'STATUS',
-      'DO FULL DATE',
-      'DO MONTH',
-      'DO YEAR',
-      'DO DATE',
+      'NO DO',
+      'DODATE',
+      'DOMONTH',
+      'ORIGIN',
+      'DDATE',
+      'DMONTH',
+      'DTIME',
+      'DODOMETER',
+      'DESTINATION',
+      'ADATE',
+      'AMONTH',
+      'ATIME',
+      'AODOMETER',
+      'VEHICLE REG',
+      'DRIVER',
+      'CUSTOMER',
+      'FREIGHT',
+      'PRODUCT NAME',
+      'QUANTITY',
+      'FREIGHT RETURNED',
+      'FREIGHT LOST',
+      'VOLUMEPENGISIAN',
+      'DELIVERY CATEGORY',
+      'DELIVERY REMARKS I',
+      'DELIVERY REMARKS II',
+      'Fuel Note',
+      'FUEL EXPENSES',
+      'TOLL ROAD EXPENSES',
+      'PARKING EXPENSES',
+      'MAINTENANCE',
+      'LOADING EXPENSES',
+      'UNLOADING EXPENSES',
+      'Transport',
+      'FRETRIBUTION EXPENSES',
+      'IFRETRIBUTION EXPENSES',
+      'ZONE',
+      'DCODE',
+      'DISTANCE',
+      'TOTAL COST',
+
     ];
   }
 }
