@@ -58,12 +58,13 @@ class DatabaseSeeder extends Seeder
     ]);
 
     VehicleLicensePlateColor::create([
-      'name' => 'yellow'
+      'name' => 'black'
     ]);
 
     VehicleLicensePlateColor::create([
-      'name' => 'black'
+      'name' => 'yellow'
     ]);
+
 
     AddressType::create([
       'name' => 'Kantor Utama'
