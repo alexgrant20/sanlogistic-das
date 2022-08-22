@@ -1,6 +1,16 @@
 @extends('driver.layouts.main')
 
 @section('content')
+  @if ($errors->any())
+    <div class="alert alert-danger">
+      <p><strong>Opps Something went wrong</strong></p>
+      <ul>
+        @foreach ($errors->all() as $error)
+          <li>{{ $error }}</li>
+        @endforeach
+      </ul>
+    </div>
+  @endif
   <form action="{{ route('driver.menu.checklist.store') }}" enctype="multipart/form-data" method="POST">
     @csrf
     <div class="mb-5">
