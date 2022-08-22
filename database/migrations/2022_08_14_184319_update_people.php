@@ -27,6 +27,9 @@ return new class extends Migration
    */
   public function down()
   {
-    // Schema::dropIfExists('people');
+    Schema::table('people', function (Blueprint $table) {
+      $table->renameColumn('nik', 'full_address');
+      $table->foreignId('city_id')->constrained()->restrictOnDelete()->cascadeOnUpdate()->nullable();
+    });
   }
 };
