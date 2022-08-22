@@ -302,7 +302,6 @@ class ProjectController extends Controller
         $result = Person::where('name', 'like', "%{$keyword}%")
           ->where('project_id', '!=', $project_id)
           ->orWhere('project_id', null)
-          ->orderBy('project_id')
           ->orderBy('name')
           ->get();
       } else {
