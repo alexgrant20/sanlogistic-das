@@ -97,7 +97,6 @@
       </div>
     </div>
 
-
     <!-- Import Modal -->
     <div class="modal fade" id="exportExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
       <form method="post" action="{{ route('admin.finance.export.excel.accepted') }}" enctype="multipart/form-data">
@@ -139,6 +138,10 @@
     </div>
 
     <section class="container-fluid">
+      <div class="row mb-4 g-3">
+        <x-summary-box summaryTitle="Approved" summaryTotal="{{ $activities->count() }}" icon="bi bi-journal-check"
+          id="total-approved-activity" disabled />
+      </div>
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
       <input type="hidden" name="_token" value="{{ csrf_token() }}">

@@ -137,3 +137,9 @@ input:-webkit-autofill:focus {
 input[data-autocompleted] {
   background-color: transparent !important;
 }
+
+.table,
+.table thead {
+  width: 100%;
+  vertical-align: middle;
+}

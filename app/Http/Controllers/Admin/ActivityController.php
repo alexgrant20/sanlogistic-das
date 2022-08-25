@@ -23,8 +23,10 @@ use Maatwebsite\Excel\Facades\Excel;
 class ActivityController extends Controller
 {
 
-  public function index()
+  public function index(Request $request)
   {
+    $q_status = $request->status;
+
     $activities = DB::table('activities')
       ->leftJoin('activity_statuses', 'activities.activity_status_id', '=', 'activity_statuses.id')
       ->leftJoin('users', 'activities.user_id', '=', 'users.id')
@@ -47,9 +49,13 @@ class ActivityController extends Controller
         ]
       );
 
+
+    $activities_filtered = empty($q_status) ? $activities : $activities->filter(fn ($item) => $item->status === $q_status);
+
     return view('admin.activities.index', [
       'title' => 'Activities',
       'activities' => $activities,
+      'activities_filtered' => $activities_filtered,
       'importPath' => '/admin/activities/import/excel',
     ]);
   }
@@ -255,8 +261,9 @@ class ActivityController extends Controller
     $activityStatus = DB::table('activity_statuses')
       ->leftJoin('users', 'activity_statuses.created_by', '=', 'users.id')
       ->leftJoin('people', 'users.person_id', '=', 'people.id')
+      ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
       ->where('activity_id', $activity->id)
-      ->get(['status', 'people.name', 'activity_statuses.created_at']);
+      ->get(['status', 'people.name', 'activity_statuses.created_at', 'roles.name AS role']);
 
     return to_route('admin.activity.index')->with('log_data', $activityStatus);
   }

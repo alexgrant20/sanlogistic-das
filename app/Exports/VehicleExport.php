@@ -20,7 +20,7 @@ class VehicleExport implements FromCollection, WithHeadings, ShouldAutoSize
 
   public function collection()
   {
-    $idsExists = count($this->ids) === 0;
+    $idsExists = count($this->ids) !== 0;
 
     $vehicles = DB::table('vehicles')
       ->leftJoin('companies', 'vehicles.owner_id', '=', 'companies.id')

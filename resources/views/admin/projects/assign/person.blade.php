@@ -3,88 +3,13 @@
 
 @section('container')
   <div class="page-content">
-    <!-- Page Header-->
-    <div class="bg-dash-dark-2 py-4">
-      <div class="container-fluid">
-        <h2 class="h5 mb-0">Create Project</h2>
-      </div>
-    </div>
-    <section class="container-fluid">
-      <div class="card">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-5">
-            <h3 class="fw-bold text-primary">Project <?= mb_convert_case($projectName, MB_CASE_TITLE, 'UTF-8') ?></h3>
-          </div>
-          <div class="row mb-4">
-            <x-summary-box>
-              <x-slot name="summaryTitle">Total Vehicle</x-slot>
-              <x-slot name="summaryTotal">{{ $totalVehicle }}</x-slot>
-              <x-slot name="icon">bi-truck</x-slot>
-              <x-slot name="id">total-vehicle</x-slot>
-              <x-slot name="summaryTotalColor">text-primary</x-slot>
-              <x-slot name="customCardClass">disabled</x-slot>
-              <x-slot name="link">/admin/assign/vehicle/{{ $projectName }}</x-slot>
-            </x-summary-box>
-            <x-summary-box>
-              <x-slot name="summaryTitle">Total Person</x-slot>
-              <x-slot name="summaryTotal">{{ $totalPerson }}</x-slot>
-              <x-slot name="icon">bi-person</x-slot>
-              <x-slot name="id">total-person</x-slot>
-              <x-slot name="summaryTotalColor">text-dash-color-1</x-slot>
-            </x-summary-box>
-            <x-summary-box>
-              <x-slot name="summaryTitle">Total Address</x-slot>
-              <x-slot name="summaryTotal">{{ $totalAddress }}</x-slot>
-              <x-slot name="icon">bi-house-door</x-slot>
-              <x-slot name="id">total-address</x-slot>
-              <x-slot name="summaryTotalColor">text-dash-color-2</x-slot>
-              <x-slot name="customCardClass">disabled</x-slot>
-              <x-slot name="link">/admin/assign/address/{{ $projectName }}</x-slot>
-            </x-summary-box>
-          </div>
-          <div class="pb-5">
-            <div class="d-flex align-items-center justify-content-between">
-              <h4 class="text-secondary fw-bold">In Project</h4>
-              <div class="input-group mb-3 w-25">
-                <span class="input-group-text" id="keywoardInProjectDesc"><i class="bi bi-search"></i></span>
-                <input type="text" name="keywordInProject" id="keywordInProject" class="form-control keywoard"
-                  placeholder="Search" aria-label="Search" aria-describedby="keywoardInProjectDesc">
-              </div>
-            </div>
-            <div class="card bg-dark" style="max-height: 530px; overflow-y:auto;">
-              <div class="card-body">
-                <div class="row g-2" id="listInProject"></div>
-              </div>
-            </div>
-          </div>
-          <div class="pt-5">
-            <div class="d-flex align-items-center justify-content-between">
-              <h4 class="text-secondary fw-bold">Assign</h4>
-              <div class="input-group mb-3 w-25">
-                <span class="input-group-text" id="keywoardNotInProject"><i class="bi bi-search"></i></span>
-                <input type="text" name="keywordNotInProject" id="keywordNotInProject" class="form-control keywoard"
-                  placeholder="Search" aria-label="Search" aria-describedby="keywoardNotInProject">
-              </div>
-            </div>
-            <div class="card bg-dark" style="max-height: 530px; overflow-y:auto;">
-              <div class="card-body">
-                <div class="row g-2" id="listNotInProject"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <x-basic-toast>
-        <x-slot name="id">person-project-toast</x-slot>
-      </x-basic-toast>
-
-    </section>
+    @include('admin.projects.assign.components.header')
+    @include('admin.projects.assign.components.main-section')
   </div>
   <script type="text/javascript" defer>
     $(document).ready(function() {
 
-      const toast = new bootstrap.Toast(document.getElementById('person-project-toast'))
+      const toast = new bootstrap.Toast(document.getElementById('toast'))
 
       $('#keywordNotInProject').on('keyup', function() {
         getData($(this).val() || "%", "listNotInProject", "notInProject");
@@ -114,7 +39,7 @@
               str = `
                     <div class="col-xl-16 m-auto">
                         <div class="card">
-                            <div class="card-body m-auto fw-bold text-danger fs-3">
+                            <div class="card-body m-auto text-uppercase fs-3">
                                 No Data
                             </div>
                         </div>
@@ -126,18 +51,22 @@
 
                 const value = inSameProject ? "Remove" : "Assign";
 
-                let className = "";
+                let btnIcon = 'fa-solid '.concat(inSameProject ? "fa-xmark" : "fa-add");
+
+                let className,
+                  labelName;
 
                 if (inSameProject) {
                   labelName = "Remove";
-                  className = 'btn-secondary';
+                  className = 'btn-danger';
                 } else if (item.project_id) {
                   labelName = "Assigned";
-                  className = 'btn-warning';
+                  className = 'btn-secondary';
                 } else {
                   labelName = "Assign";
-                  className = 'btn-primary'
+                  className = 'btn-success'
                 }
+
 
                 str +=
                   `
@@ -149,7 +78,9 @@
                             @csrf
                             <input type="hidden" name="person_id" value="${item.id}">
                             <input type="hidden" name="action" value="${value.toLowerCase()}">
-                            <input type="submit" value="${labelName}" class="btn btn-sm ${className}">
+                            <button type="submit" class="btn ${className} d-flex align-items-center justify-content-center" style="width:35px; height:35px;">
+                              <i class="${btnIcon}"></i>
+                            </button>
                           </form>
                         </div>
                       </div>
@@ -183,6 +114,7 @@
         serializedData += `&project_id=${projectId}`
 
         inputs.prop("disabled", true);
+        $('button').prop("disabled", true);
 
         request = $.ajax({
           url: "/admin/assign/person",
@@ -202,13 +134,20 @@
             const textValue = $('#total-person-value').text();
             $('#total-person-value').text((Number(textValue) + (res.action == 'assign' ? 1 : -1)))
           }
-          $('#toast-body-person-project-toast').text(res.message);
+          $('#toast-body-toast').text(res.message);
           toast.show();
         });
       }
 
       getData("%", "listNotInProject", "notInProject");
       getData("%", "listInProject", "inProject");
+
+      $('#project_name').on('change', function(e) {
+        const project_name = e.target.value;
+        let url = window.location.href;
+        url = url.replace(/\/[^\/]*$/, `/${project_name}`);
+        window.location.href = url;
+      });
     })
   </script>
 @endsection

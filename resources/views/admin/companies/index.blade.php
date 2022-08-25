@@ -10,14 +10,8 @@
     </div>
     <section class="container-fluid">
       <div class="row mb-4">
-        <x-summary-box>
-          <x-slot name="summaryTitle">Total Company</x-slot>
-          <x-slot name="summaryTotal">{{ $companies->count() }}</x-slot>
-          <x-slot name="icon">bi bi-building</x-slot>
-          <x-slot name="id">total-company</x-slot>
-          <x-slot name="summaryTotalColor">text-primary</x-slot>
-          <x-slot name="customCardClass">disabled</x-slot>
-        </x-summary-box>
+        <x-summary-box summaryTitle="Total Company" summaryTotal="{{ $companies->count() }}" icon="bi bi-building"
+          id="total-company" link="{{ route('admin.company.index') }}" disabled />
       </div>
 
       @include('admin.partials.import')
@@ -28,11 +22,11 @@
 
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>
-      <table class="table table-hover text-center  table-dark nowrap" style="width: 100%" data-display="datatables">
+      <table class="table table-striped table-dark text-center" data-display="datatables">
         <thead>
           <tr class="header">
             <th>ID</th>
-            <th>Action</th>
+            <th></th>
             <th>Company Name</th>
             <th>Status</th>
             <th>Director</th>
@@ -46,9 +40,18 @@
             <tr>
               <td>{{ $company->id }}</td>
               <td>
-                <a href="{{ route('admin.company.edit', $company->name) }}" class="badge bg-primary fs-6">
-                  <i class="bi bi-pencil"></i>
-                </a>
+                <div class="dropdown">
+                  <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-three-dots"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="{{ route('admin.company.edit', $company->name) }}" class="dropdown-item">
+                        Edit
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </td>
               <td>{{ $company->name }}</td>
               <td>Active</td>
@@ -58,13 +61,13 @@
               @if ($company->companyDocuments->contains('type', 'siup'))
                 <td>{{ $company->companyDocuments->where('type', 'siup')->first()->number }}</td>
               @else
-                <td class="text-primary">No Data</td>
+                <td>No Data</td>
               @endif
 
               @if ($company->companyDocuments->contains('type', 'sipa'))
                 <td>{{ $company->companyDocuments->where('type', 'sipa')->first()->number }}</td>
               @else
-                <td class="text-primary">No Data</td>
+                <td>No Data</td>
               @endif
 
             </tr>

@@ -20,7 +20,7 @@ class ProjectExport implements FromCollection, WithHeadings, ShouldAutoSize
 
   public function collection()
   {
-    $idsExists = count($this->ids) === 0;
+    $idsExists = count($this->ids) !== 0;
 
     $projects =  DB::table('projects')
       ->leftJoin('companies', 'projects.company_id', '=', 'companies.id')

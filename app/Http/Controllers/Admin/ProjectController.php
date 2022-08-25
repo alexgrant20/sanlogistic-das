@@ -101,7 +101,8 @@ class ProjectController extends Controller
     setcookie('project_id', $project->id);
     return view('admin.projects.assign.vehicle', [
       'title' => 'Assign Vehicle',
-      'projectName' => $project->name,
+      'project' => $project,
+      'projects' => Project::orderBy('name')->get(),
       'totalVehicle' => Vehicle::where('project_id', $project->id)->count(),
       'totalAddress' => AddressProject::where('project_id', $project->id)->count(),
       'totalPerson' => Person::where('project_id', $project->id)->count(),
@@ -114,7 +115,8 @@ class ProjectController extends Controller
     setcookie('project_id', $project->id);
     return view('admin.projects.assign.person', [
       'title' => 'Assign Person',
-      'projectName' => $project->name,
+      'project' => $project,
+      'projects' => Project::orderBy('name')->get(),
       'totalVehicle' => Vehicle::where('project_id', $project->id)->count(),
       'totalAddress' => AddressProject::where('project_id', $project->id)->count(),
       'totalPerson' => Person::where('project_id', $project->id)->count(),
@@ -127,7 +129,8 @@ class ProjectController extends Controller
     setcookie('project_id', $project->id);
     return view('admin.projects.assign.address', [
       'title' => 'Assign Address',
-      'projectName' => $project->name,
+      'project' => $project,
+      'projects' => Project::orderBy('name')->get(),
       'totalVehicle' => Vehicle::where('project_id', $project->id)->count(),
       'totalAddress' => AddressProject::where('project_id', $project->id)->count(),
       'totalPerson' => Person::where('project_id', $project->id)->count(),

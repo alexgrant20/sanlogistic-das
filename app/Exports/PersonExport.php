@@ -20,7 +20,7 @@ class PersonExport implements FromCollection, WithHeadings, ShouldAutoSize
 
   public function collection()
   {
-    $idsExists = count($this->ids) === 0;
+    $idsExists = count($this->ids) !== 0;
 
     $people =  DB::table('people')
       ->leftJoin('departments', 'people.department_id', '=', 'departments.id')

@@ -96,6 +96,14 @@
       </div>
     </div>
     <section class="container-fluid">
+      <div class="row mb-4 g-3">
+        <x-summary-box summaryTitle="Pending"
+          summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'pending')->count() }}"
+          icon="bi bi-journal-medical" id="total-pending-activity" disabled />
+        <x-summary-box summaryTitle="Rejected"
+          summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'rejected')->count() }}"
+          icon="bi bi-journal-x" id="total-rejected-activity" disabled />
+      </div>
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
       <input type="hidden" name="_token" value="{{ csrf_token() }}">

@@ -10,64 +10,33 @@
     </div>
     <section class="container-fluid">
       <div class="row mb-4 g-3">
-        <x-summary-box>
-          <x-slot name="summaryTitle">Total Activity</x-slot>
-          <x-slot name="summaryTotal">{{ $activities->count() }}</x-slot>
-          <x-slot name="icon">bi bi-journal-text</x-slot>
-          <x-slot name="id">total-activity</x-slot>
-          <x-slot name="summaryTotalColor">text-dash-color-1</x-slot>
-          <x-slot name="customCardClass">disabled</x-slot>
-        </x-summary-box>
-        <x-summary-box>
-          <x-slot name="summaryTitle">On Going</x-slot>
-          <x-slot name="summaryTotal">
-            {{ $activities->filter(fn($item) => $item->status === 'draft')->count() }}
-          </x-slot>
-          <x-slot name="icon">bi bi-journal-arrow-up</x-slot>
-          <x-slot name="id">total-ongoing-activity</x-slot>
-          <x-slot name="summaryTotalColor">text-info</x-slot>
-          <x-slot name="customCardClass">disabled</x-slot>
-        </x-summary-box>
-        <x-summary-box>
-          <x-slot name="summaryTitle">Pending</x-slot>
-          <x-slot name="summaryTotal">
-            {{ $activities->filter(fn($item) => $item->status === 'pending')->count() }}
-          </x-slot>
-          <x-slot name="icon">bi bi-journal-medical</x-slot>
-          <x-slot name="id">total-pending-activity</x-slot>
-          <x-slot name="summaryTotalColor">text-warning</x-slot>
-          <x-slot name="customCardClass">disabled</x-slot>
-        </x-summary-box>
-        <x-summary-box>
-          <x-slot name="summaryTitle">Approved</x-slot>
-          <x-slot name="summaryTotal">
-            {{ $activities->filter(fn($item) => $item->status === 'approved')->count() }}
-          </x-slot>
-          <x-slot name="icon">bi bi-journal-check</x-slot>
-          <x-slot name="id">total-approved-activity</x-slot>
-          <x-slot name="summaryTotalColor">text-success</x-slot>
-          <x-slot name="customCardClass">disabled</x-slot>
-        </x-summary-box>
-        <x-summary-box>
-          <x-slot name="summaryTitle">Rejected</x-slot>
-          <x-slot name="summaryTotal">
-            {{ $activities->filter(fn($item) => $item->status === 'rejected')->count() }}
-          </x-slot>
-          <x-slot name="icon">bi bi-journal-x</x-slot>
-          <x-slot name="id">total-rejected-activity</x-slot>
-          <x-slot name="summaryTotalColor">text-primary</x-slot>
-          <x-slot name="customCardClass">disabled</x-slot>
-        </x-summary-box>
-        <x-summary-box>
-          <x-slot name="summaryTitle">Paid</x-slot>
-          <x-slot name="summaryTotal">
-            {{ $activities->filter(fn($item) => $item->status === 'paid')->count() }}
-          </x-slot>
-          <x-slot name="icon">bi bi-wallet-fill</x-slot>
-          <x-slot name="id">total-paid-activity</x-slot>
-          <x-slot name="summaryTotalColor">text-dash-color-2</x-slot>
-          <x-slot name="customCardClass">disabled</x-slot>
-        </x-summary-box>
+        <x-summary-box summaryTitle="Total Activity" summaryTotal="{{ $activities->count() }}" icon="bi bi-journal-text"
+          id="total-activity" link="{{ route('admin.activity.index') }}" :active="empty(Request::getQueryString()) ? true : false" />
+
+        <x-summary-box summaryTitle="On Going"
+          summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'draft')->count() }}"
+          icon="bi bi-journal-arrow-up" id="total-ongoing-activity"
+          link="{{ route('admin.activity.index') . '?status=draft' }}" :active="Request::getQueryString() === 'status=draft' ? true : false" />
+
+        <x-summary-box summaryTitle="Pending"
+          summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'pending')->count() }}"
+          icon="bi bi-journal-medical" id="total-pending-activity"
+          link="{{ route('admin.activity.index') . '?status=pending' }}" :active="Request::getQueryString() === 'status=pending' ? true : false" />
+
+        <x-summary-box summaryTitle="Approved"
+          summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'approved')->count() }}"
+          icon="bi bi-journal-check" id="total-approved-activity"
+          link="{{ route('admin.activity.index') . '?status=approved' }}" :active="Request::getQueryString() === 'status=approved' ? true : false" />
+
+        <x-summary-box summaryTitle="Rejected"
+          summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'rejected')->count() }}"
+          icon="bi bi-journal-x" id="total-rejected-activity"
+          link="{{ route('admin.activity.index') . '?status=rejected' }}" :active="Request::getQueryString() === 'status=rejected' ? true : false" />
+
+        <x-summary-box summaryTitle="Paid"
+          summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'paid')->count() }}"
+          icon="bi bi-wallet-fill" id="total-paid-activity" link="{{ route('admin.activity.index') . '?status=paid' }}"
+          :active="Request::getQueryString() === 'status=paid' ? true : false" />
       </div>
 
       @include('admin.partials.import')
@@ -83,12 +52,14 @@
                 <th>Status</th>
                 <th>By</th>
                 <th>Time</th>
+                <th>Role</th>
               </tr>
               @foreach (session('log_data') as $log)
                 <tr>
                   <td>{{ $log->status }}</td>
                   <td>{{ $log->name }}</td>
                   <td>{{ $log->created_at }}</td>
+                  <td>{{ $log->role }}</td>
                 </tr>
               @endforeach
             </table>
@@ -106,11 +77,11 @@
 
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>
-      <table class="table table-hover text-center table-dark nowrap" style="width: 100%" data-display="datatables">
+      <table class="table table-striped table-dark text-center" data-display="datatables">
         <thead>
           <tr class="header">
             <th>ID</th>
-            <th>Action</th>
+            <th></th>
             <th>Tanggal</th>
             <th>Nama Pengendara</th>
             <th>Nomor Kendaraan</th>
@@ -122,16 +93,27 @@
           </tr>
         </thead>
         <tbody>
-          @foreach ($activities as $activity)
+          @foreach ($activities_filtered as $activity)
             <tr>
               <td>{{ $activity->id }}</td>
               <td>
-                <a href="{{ route('admin.activity.edit', $activity->id) }}" class="badge bg-primary fs-6">
-                  <i class="bi bi-pencil"></i>
-                </a>
-                <a href="{{ route('admin.activity.log', $activity->id) }}" class="badge bg-info fs-6">
-                  <i class="bi bi-journal-text"></i>
-                </a>
+                <div class="dropdown">
+                  <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-three-dots"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="{{ route('admin.activity.edit', $activity->id) }}" class="dropdown-item">
+                        Edit
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{ route('admin.activity.log', $activity->id) }}" class="dropdown-item">
+                        History Log
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </td>
               <td>{{ $activity->departure_date }}</td>
               <td>{{ $activity->person_name }}</td>

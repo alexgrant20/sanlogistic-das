@@ -10,14 +10,8 @@
     </div>
     <section class="container-fluid">
       <div class="row mb-4">
-        <x-summary-box>
-          <x-slot name="summaryTitle">Total Project</x-slot>
-          <x-slot name="summaryTotal">{{ $projects->count() }}</x-slot>
-          <x-slot name="icon">bi bi-kanban</x-slot>
-          <x-slot name="id">total-project</x-slot>
-          <x-slot name="summaryTotalColor">text-primary</x-slot>
-          <x-slot name="customCardClass">disabled</x-slot>
-        </x-summary-box>
+        <x-summary-box summaryTitle="Total Project" summaryTotal="{{ $projects->count() }}" icon="bi bi-kanban"
+          id="total-project" link="{{ route('admin.project.index') }}" disabled />
       </div>
 
       @include('admin.partials.import')
@@ -27,11 +21,11 @@
       <div class="d-flex mb-5" id="actionContainer"></div>
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>
-      <table class="table table-hover text-center table-dark nowrap" style="width: 100%" data-display="datatables">
+      <table class="table table-striped table-dark text-center" data-display="datatables">
         <thead>
-          <tr class="header">
+          <tr>
             <th>ID</th>
-            <th>Action</th>
+            <th></th>
             <th>Customer</th>
             <th>Project Name</th>
             <th>Location</th>
@@ -44,12 +38,33 @@
             <tr>
               <td>{{ $project->id }}</td>
               <td>
-                <a href="{{ url("/admin/projects/$project->name/edit") }}" class="btn badge bg-primary fs-6 me-2">
-                  <i class="bi bi-pencil"></i>
-                </a>
-                <a href="{{ url("/admin/assign/vehicle/$project->name") }}" class="btn badge bg-primary fs-6">
-                  <i class="bi bi-truck"></i>
-                </a>
+                <div class="dropdown">
+                  <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-three-dots"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="{{ url("/admin/projects/$project->name/edit") }}" class="dropdown-item">
+                        Edit
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{ url("/admin/assign/vehicle/$project->name") }}" class="dropdown-item">
+                        Assign Vehicle
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{ url("/admin/assign/address/$project->name") }}" class="dropdown-item">
+                        Assign Address
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{ url("/admin/assign/person/$project->name") }}" class="dropdown-item">
+                        Assign Person
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </td>
               <td>{{ $project->company->name }}</td>
               <td>{{ $project->name }}</td>

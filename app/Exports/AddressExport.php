@@ -20,7 +20,7 @@ class AddressExport implements FromCollection, WithHeadings, ShouldAutoSize
 
   public function collection()
   {
-    $idsExists = count($this->ids) === 0;
+    $idsExists = count($this->ids) !== 0;
 
     $addresses = DB::table('addresses')
       ->leftJoin('address_types', 'addresses.address_type_id', '=', 'address_types.id')

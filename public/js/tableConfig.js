@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
         display: $.fn.dataTable.Responsive.display.modal({
           header: function (row) {
             const data = row.data();
-            return "Details for " + data[1];
+            return "Details for " + data[2];
           },
         }),
         renderer: $.fn.dataTable.Responsive.renderer.tableAll({
@@ -21,6 +21,10 @@ document.addEventListener("DOMContentLoaded", function () {
         targets: [0],
         visible: false,
         searchable: false,
+      },
+      {
+        targets: [1],
+        orderable: false,
       },
     ],
   });

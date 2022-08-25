@@ -24,11 +24,8 @@
       <li class="list-inline-item logout px-lg-2">
         <form action="{{ route('logout') }}" method="POST">
           @csrf
-          <button type="submit" class="nav-link px-3 bg-dark border-0">
-            Logout
-            <i class="svg-icon svg-icon-xs svg-icon-heavy bi bi-box-arrow-right">
-              <use xlink:href="#logout" />
-            </i>
+          <button type="submit" class="btn">
+            <i class="fa-solid fa-right-from-bracket fs-4 text-light"></i>
           </button>
         </form>
       </li>

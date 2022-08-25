@@ -2,8 +2,8 @@
 
 @section('add_headJS')
   <script type='text/javascript' src="{{ asset('/vendor/leaflet/js/leaflet/leaflet.js') }}"></script>
-  <script type='text/javascript'
-    src="{{ asset('/vendor/leaflet/js/gestureHandling/leaflet-gesture-handling.min.js') }}"></script>
+  <script type='text/javascript' src="{{ asset('/vendor/leaflet/js/gestureHandling/leaflet-gesture-handling.min.js') }}">
+  </script>
   <script type='text/javascript' src="{{ asset('/vendor/leaflet/js/spin/spin.js') }}"></script>
   <script type='text/javascript' src="{{ asset('/vendor/leaflet/js/spin/leaflet.spin.js') }}"></script>
   <script type='text/javascript' src="{{ asset('/vendor/leaflet/js/esriLeaflet/esri-leaflet-old.js') }}"></script>
@@ -12,8 +12,7 @@
 @endsection
 
 @section('add_headCSS')
-  <link rel="stylesheet" type="text/css"
-    href="{{ asset('/vendor/leaflet/css/esriLeaflet/esri-leaflet-geocoder-old.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ asset('/vendor/leaflet/css/esriLeaflet/esri-leaflet-geocoder-old.css') }}">
   <link rel="stylesheet" href="{{ asset('/vendor/leaflet/css/gestureHandling/leaflet-gesture-handling.min.css') }}"
     type="text/css">
   <link rel="stylesheet" href="{{ asset('/vendor/leaflet/css/leaflet.css') }}" />
@@ -33,21 +32,14 @@
         <div class="col-xl-8">
           <h4 class="text-primary fw-bold">Address Location</h4>
           <hr>
-          <div id='map' class="w-100" style="height: 600px"></div>
+          <div id='map' class="w-100 rounded" style="height: 600px"></div>
         </div>
         <div class="col-xl-4">
           <h4 class="text-primary fw-bold">Address Summary</h4>
           <hr>
           <div class="row">
-            <x-summary-box>
-              <x-slot name="size">col-12</x-slot>
-              <x-slot name="summaryTitle">Total Addresses</x-slot>
-              <x-slot name="summaryTotal">{{ $addresses->count() }}</x-slot>
-              <x-slot name="icon">bi bi-building</x-slot>
-              <x-slot name="id">total-address</x-slot>
-              <x-slot name="summaryTotalColor">text-primary</x-slot>
-              <x-slot name="customCardClass">disabled</x-slot>
-            </x-summary-box>
+            <x-summary-box size="col-12" summaryTitle="Total Addresses" summaryTotal="{{ $addresses->count() }}"
+              icon="bi bi-building" id="total-address" link="{{ route('admin.address.index') }}" disabled />
           </div>
         </div>
       </div>
@@ -59,11 +51,11 @@
 
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>
-      <table class="table table-hover text-center table-dark nowrap" style="width: 100%" data-display="datatables">
+      <table class="table table-striped table-dark text-center" data-display="datatables">
         <thead>
           <tr class="header">
             <th>ID</th>
-            <th>Action</th>
+            <th></th>
             <th>Name</th>
             <th>Type</th>
             <th>Address</th>
@@ -76,9 +68,18 @@
             <tr>
               <td>{{ $address->id }}</td>
               <td>
-                <a href="{{ route('admin.address.edit', $address->name) }}" class="badge bg-primary fs-6">
-                  <i class="bi bi-pencil"></i>
-                </a>
+                <div class="dropdown">
+                  <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-three-dots"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="{{ route('admin.address.edit', $address->name) }}" class="dropdown-item">
+                        Edit
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </td>
               <td>{{ $address->name }}</td>
               <td>{{ $address->address_types_name }}</td>

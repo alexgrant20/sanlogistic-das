@@ -40,6 +40,7 @@ class VehicleController extends Controller
       ->leftJoin('vehicle_brands', 'vehicle_types.vehicle_brand_id', '=', 'vehicle_brands.id')
       ->leftJoin('addresses', 'vehicles.address_id', '=', 'addresses.id')
       ->leftJoin('vehicle_towings', 'vehicles.vehicle_towing_id', '=', 'vehicle_towings.id')
+      ->leftJoin('vehicle_last_statuses AS vls', 'vehicles.id', '=', 'vls.vehicle_id')
       ->leftJoin('vehicle_documents AS kir', function ($join) {
         $join->on('kir.vehicle_id', '=', 'vehicles.id');
         $join->where('kir.type', '=', 'kir');
@@ -57,9 +58,37 @@ class VehicleController extends Controller
         'vehicles.status AS status',
         'vehicle_brands.name AS vehicle_brand',
         'vehicle_types.name AS vehicle_type',
-        'odo',
+        'vehicles.odo',
         'kir.expire AS kir_expire',
         'stnk.expire AS stnk_expire',
+        DB::raw("IFNULL(SUM(lampu_besar + lampu_kota + lampu_rem + lampu_sein + lampu_mundur + lampu_kabin + lampu_senter), 0) AS total_broken_lamp"),
+        DB::raw("IFNULL(SUM(kaca_depan + kaca_samping + kaca_belakang), 0) AS total_broken_glass"),
+        DB::raw(
+          "IFNULL(SUM(ban_depan + ban_belakang_dalam + ban_belakang_luar + ban_serep +
+          tekanan_angin_ban_depan + tekanan_angin_ban_belakang_dalam + tekanan_angin_ban_belakang_luar +
+          tekanan_angin_ban_serep + velg_ban_depan + velg_ban_belakang_dalam + velg_ban_belakang_luar +
+          velg_ban_serep + ganjal_ban), 0) AS total_broken_tire"
+        ),
+        DB::raw(
+          "IFNULL(SUM(dongkrak + kunci_roda + stang_kunci_roda + pipa_bantu + kotak_p3k + apar +
+          emergency_triangle + tool_kit), 0) AS total_broken_equipment"
+        ),
+        DB::raw(
+          "IFNULL(SUM(seragam + safety_shoes + driver_license + kartu_keur + stnk + helmet +
+          tatakan_menulis + ballpoint + straples), 0) AS total_broken_gear"
+        ),
+        DB::raw(
+          "IFNULL(SUM(exhaust_brake + spion + wiper + tangki_bahan_bakar + tutup_tangki_bahan_bakar +
+          tutup_radiator + accu + oli_mesin + minyak_rem + minyak_kopling + oli_hidraulic +
+          klakson + panel_speedometer + panel_bahan_bakar + sunvisor + jok
+          + air_conditioner), 0) AS total_broken_other"
+        ),
+
+
+
+
+
+
       ]);
 
     return view('admin.vehicles.index', [

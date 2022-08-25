@@ -9,16 +9,9 @@
     </div>
     <section class="container-fluid">
       <div class="row mb-4">
-        <x-summary-box>
-          <x-slot name="summaryTitle">Total People</x-slot>
-          <x-slot name="summaryTotal">{{ $people->count() }}</x-slot>
-          <x-slot name="icon">bi bi-person</x-slot>
-          <x-slot name="id">total-people</x-slot>
-          <x-slot name="summaryTotalColor">text-primary</x-slot>
-          <x-slot name="customCardClass">disabled</x-slot>
-        </x-summary-box>
+        <x-summary-box summaryTitle="Total Person" summaryTotal="{{ $people->count() }}" icon="bi bi-person" id="total-person"
+          link="{{ route('admin.person.index') }}" disabled />
       </div>
-
       @include('admin.partials.import')
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
@@ -31,7 +24,7 @@
         <thead>
           <tr class="header">
             <th>ID</th>
-            <th>Action</th>
+            <th></th>
             <th>Nama Orang</th>
             <th>Nama Project</th>
             <th>Nomor HP</th>
@@ -44,9 +37,18 @@
             <tr>
               <td>{{ $person->id }}</td>
               <td>
-                <a href="{{ url("/admin/people/$person->id/edit") }}" class="badge bg-primary fs-6">
-                  <i class="bi bi-pencil"></i>
-                </a>
+                <div class="dropdown">
+                  <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-three-dots"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="{{ url("/admin/people/$person->id/edit") }}"class="dropdown-item"s>
+                        Edit
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </td>
               <td>{{ $person->name }}</td>
               <td>{{ $person->project->name ?? null }}</td>

@@ -20,7 +20,7 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
 
   public function collection()
   {
-    $idsExists = count($this->ids) === 0;
+    $idsExists = count($this->ids) !== 0;
 
     $activities = DB::table('activities')
       ->leftJoin('activity_statuses', 'activities.activity_status_id', '=', 'activity_statuses.id')
