@@ -21,6 +21,9 @@
   {{-- Jquery --}}
   <script type='text/javascript' src="{{ asset('/vendor/jquery/jquery-3.6.0.min.js') }}"></script>
 
+  {{-- Animation --}}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
   {{-- Zoom CSS --}}
   <link href="{{ asset('/vendor/zoom/zoom.css') }}" rel="stylesheet">
 

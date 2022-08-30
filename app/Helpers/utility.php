@@ -161,3 +161,13 @@ function genereateNotifaction(string $notifType, string $subject = "", string $a
     'alert-type' => $notifType,
   ];
 }
+
+function getPercentage(mixed $portion, mixed $total)
+{
+  return round(((int) $portion / (int) $total) * 100);
+}
+
+function filterArrayByLabel(array $original, array $labels)
+{
+  return array_intersect_key($original, array_flip($labels));
+}

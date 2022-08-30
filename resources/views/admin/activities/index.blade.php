@@ -42,11 +42,8 @@
       @include('admin.partials.import')
 
       @if (session()->has('log_data'))
-        <x-modal id="my-modal">
-          <x-slot name="title">Activity Log</x-slot>
-          <x-slot name="class">openModal</x-slot>
-          <x-slot name="size">modal-lg</x-slot>
-          <x-slot name="body">
+        <x-modal id="my-modal" title="Activity Log" class="openModal" size="modal-lg">
+          <x-slot:body>
             <table class="table table-hover table-dark text-center nowrap" style="widths: 100%">
               <tr>
                 <th>Status</th>
@@ -63,10 +60,10 @@
                 </tr>
               @endforeach
             </table>
-          </x-slot>
-          <x-slot name="footer">
+          </x-slot:body>
+          <x-slot:footer>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </x-slot>
+          </x-slot:footer>
         </x-modal>
       @endif
 
@@ -77,56 +74,60 @@
 
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>
-      <table class="table table-striped table-dark text-center" data-display="datatables">
-        <thead>
-          <tr class="header">
-            <th>ID</th>
-            <th></th>
-            <th>Tanggal</th>
-            <th>Nama Pengendara</th>
-            <th>Nomor Kendaraan</th>
-            <th>Nomor DO</th>
-            <th>Lokasi Keberangkatan</th>
-            <th>Lokasi Tujuan</th>
-            <th>Jenis Aktifitas</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($activities_filtered as $activity)
-            <tr>
-              <td>{{ $activity->id }}</td>
-              <td>
-                <div class="dropdown">
-                  <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots"></i>
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li>
-                      <a href="{{ route('admin.activity.edit', $activity->id) }}" class="dropdown-item">
-                        Edit
-                      </a>
-                    </li>
-                    <li>
-                      <a href="{{ route('admin.activity.log', $activity->id) }}" class="dropdown-item">
-                        History Log
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </td>
-              <td>{{ $activity->departure_date }}</td>
-              <td>{{ $activity->person_name }}</td>
-              <td>{{ $activity->license_plate }}</td>
-              <td>{{ $activity->do_number }}</td>
-              <td>{{ $activity->departure_name }}</td>
-              <td>{{ $activity->arrival_name }}</td>
-              <td>{{ $activity->type }}</td>
-              <td>{{ $activity->status }}</td>
+      <div class="table-responsive">
+        <table class="table table-striped table-dark text-center" data-display="datatables">
+          <thead>
+            <tr class="header">
+              <th>ID</th>
+              <th></th>
+              <th></th>
+              <th>Tanggal</th>
+              <th>Nama Pengendara</th>
+              <th>Nomor Kendaraan</th>
+              <th>Nomor DO</th>
+              <th>Lokasi Keberangkatan</th>
+              <th>Lokasi Tujuan</th>
+              <th>Jenis Aktifitas</th>
+              <th>Status</th>
             </tr>
-          @endforeach
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @foreach ($activities_filtered as $activity)
+              <tr>
+                <td>{{ $activity->id }}</td>
+                <td></td>
+                <td>
+                  <div class="dropdown">
+                    <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="bi bi-three-dots"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <a href="{{ route('admin.activity.edit', $activity->id) }}" class="dropdown-item">
+                          Edit
+                        </a>
+                      </li>
+                      <li>
+                        <a href="{{ route('admin.activity.log', $activity->id) }}" class="dropdown-item">
+                          History Log
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+                <td>{{ $activity->departure_date }}</td>
+                <td>{{ $activity->person_name }}</td>
+                <td>{{ $activity->license_plate }}</td>
+                <td>{{ $activity->do_number }}</td>
+                <td>{{ $activity->departure_name }}</td>
+                <td>{{ $activity->arrival_name }}</td>
+                <td>{{ $activity->type }}</td>
+                <td>{{ $activity->status }}</td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
     </section>
   </div>
 @endsection

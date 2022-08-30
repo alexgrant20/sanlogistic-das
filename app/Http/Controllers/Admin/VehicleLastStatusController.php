@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\VehicleChecklist;
 use App\Models\Vehicle;
+use App\Models\VehicleChecklist;
+use App\Models\VehicleLastStatus;
+use Illuminate\Http\Request;
 
-class VehicleChecklistController extends Controller
+class VehicleLastStatusController extends Controller
 {
-  public function show(VehicleChecklist $vehicleChecklist)
+  public function show(Vehicle $vehicle)
   {
     $lampLabel = ['lampu_besar', 'lampu_kota', 'lampu_rem', 'lampu_sein', 'lampu_mundur', 'lampu_kabin'];
     $oilLabel = ['oli_mesin', 'minyak_rem', 'minyak_kopling', 'oli_hidraulic', 'exhaust_brake'];
@@ -19,18 +21,40 @@ class VehicleChecklistController extends Controller
     $otherOutsideLabel = ['accu', 'tutup_radiator', 'tangki_bahan_bakar', 'tutup_tangki_bahan_bakar'];
     $otherInsideLabel = ['spion', 'wiper', 'klakson', 'panel_speedometer', 'panel_bahan_bakar', 'sunvisor', 'jok'];
 
-    $vehicle =  $vehicleChecklist->vehicle;
-    $vehicleChecklist = collect($vehicleChecklist);
-    $vehicleChecklists = VehicleChecklist::where('vehicle_id', $vehicle->id)->latest()->get();
+    $latestVehicleChecklist = collect(VehicleChecklist::where('vehicle_id', $vehicle->id)->latest()->first());
 
-    $lamp = $vehicleChecklist->only($lampLabel);
-    $oil = $vehicleChecklist->only($oilLabel);
-    $tire = $vehicleChecklist->only($tireLabel);
-    $velg = $vehicleChecklist->only($velgLabel);
-    $tirePreasure = $vehicleChecklist->only($tirePreasureLabel);
-    $glass = $vehicleChecklist->only($glassLabel);
-    $otherOutside = $vehicleChecklist->only($otherOutsideLabel);
-    $otherInside = $vehicleChecklist->only($otherInsideLabel);
+
+    $lamp__vc = $latestVehicleChecklist->only($lampLabel)->countBy();
+    $oil__vc = $latestVehicleChecklist->only($oilLabel)->countBy();
+    $tire__vc = $latestVehicleChecklist->only($tireLabel)->countBy();
+    $velg__vc = $latestVehicleChecklist->only($velgLabel)->countBy();
+    $tirePreasure__vc = $latestVehicleChecklist->only($tirePreasureLabel)->countBy();
+    $glass__vc = $latestVehicleChecklist->only($glassLabel)->countBy();
+    $otherOutside__vc = $latestVehicleChecklist->only($otherOutsideLabel)->countBy();
+    $otherInside__vc = $latestVehicleChecklist->only($otherInsideLabel)->countBy();
+
+    $oklatestChecklistSummary = [
+      'lamp' => getPercentage($lamp__vc->get(0), $lamp__vc->sum()),
+      'oil' => getPercentage($oil__vc->get(0), $oil__vc->sum()),
+      'tire' => getPercentage($tire__vc->get(0), $tire__vc->sum()),
+      'velg' => getPercentage($velg__vc->get(0), $velg__vc->sum()),
+      'tirePreasure' => getPercentage($tirePreasure__vc->get(0), $tirePreasure__vc->sum()),
+      'glass' => getPercentage($glass__vc->get(0), $glass__vc->sum()),
+      'otherOutside' => getPercentage($otherOutside__vc->get(0), $otherOutside__vc->sum()),
+      'otherInside' => getPercentage($otherInside__vc->get(0), $otherInside__vc->sum())
+    ];
+
+
+    $vehicleLastStatus = collect($vehicle->vehicleLastStatus);
+
+    $lamp = $vehicleLastStatus->only($lampLabel);
+    $oil = $vehicleLastStatus->only($oilLabel);
+    $tire = $vehicleLastStatus->only($tireLabel);
+    $velg = $vehicleLastStatus->only($velgLabel);
+    $tirePreasure = $vehicleLastStatus->only($tirePreasureLabel);
+    $glass = $vehicleLastStatus->only($glassLabel);
+    $otherOutside = $vehicleLastStatus->only($otherOutsideLabel);
+    $otherInside = $vehicleLastStatus->only($otherInsideLabel);
 
     $lampCount = $lamp->countBy();
     $oilCount = $oil->countBy();
@@ -41,7 +65,7 @@ class VehicleChecklistController extends Controller
     $otherOutsideCount = $otherOutside->countBy();
     $otherInsideCount = $otherInside->countBy();
 
-    $lastStatusSummary = $vehicleChecklist->only([
+    $lastStatusSummary = $vehicleLastStatus->only([
       ...$lampLabel,
       ...$oilLabel,
       ...$tireLabel,
@@ -58,7 +82,7 @@ class VehicleChecklistController extends Controller
 
     $okItemPercentage = round(($totalOk / $totalItem) * 100);
 
-    $vehicleChecklistData = [
+    $lastStatusesData = [
       'Lampu-Lampu' => [
         'config' => ['icon' => 'fa-solid fa-lightbulb'],
         'items' => $lamp,
@@ -133,15 +157,17 @@ class VehicleChecklistController extends Controller
       ],
     ];
 
-    return view('admin.vehicle_checklists.show', [
+
+    return view('admin.vehicle_last_status.show', [
       'title' => $vehicle->license_plate . ' Last Status',
+      'vehicleLastStatus' => $vehicle->vehicleLastStatus,
       'vehicle' => $vehicle,
       'okItemPercentage' => $okItemPercentage,
       'totalOk' => $totalOk,
       'totalBroken' => $totalBroken,
-      'vehicleChecklist' => $vehicleChecklistData,
-      'vehicleChecklists' => $vehicleChecklists,
-      'vehicleChecklist__ori' => $vehicleChecklist
+      'lastStatusesData' => $lastStatusesData,
+      'latestSummary' => $oklatestChecklistSummary,
+      'latestVehicleChecklist' => $latestVehicleChecklist
     ]);
   }
 }

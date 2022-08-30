@@ -3,19 +3,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   const table = $('table[data-display="datatables"]').DataTable({
     order: [],
-    responsive: {
-      details: {
-        display: $.fn.dataTable.Responsive.display.modal({
-          header: function (row) {
-            const data = row.data();
-            return "Details for " + data[2];
-          },
-        }),
-        renderer: $.fn.dataTable.Responsive.renderer.tableAll({
-          tableClass: "table",
-        }),
-      },
-    },
+    responsive: true,
     columnDefs: [
       {
         targets: [0],
@@ -23,8 +11,9 @@ document.addEventListener("DOMContentLoaded", function () {
         searchable: false,
       },
       {
-        targets: [1],
+        targets: [1, 2],
         orderable: false,
+        hidden: true,
       },
     ],
   });

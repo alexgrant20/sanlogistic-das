@@ -51,45 +51,49 @@
 
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>
-      <table class="table table-striped table-dark text-center" data-display="datatables">
-        <thead>
-          <tr class="header">
-            <th>ID</th>
-            <th></th>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Address</th>
-            <th>City</th>
-            <th>Province</th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($addresses as $address)
-            <tr>
-              <td>{{ $address->id }}</td>
-              <td>
-                <div class="dropdown">
-                  <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots"></i>
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li>
-                      <a href="{{ route('admin.address.edit', $address->name) }}" class="dropdown-item">
-                        Edit
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </td>
-              <td>{{ $address->name }}</td>
-              <td>{{ $address->address_types_name }}</td>
-              <td class="text-truncate" style="max-width: 120px">{{ $address->full_address }}</td>
-              <td>{{ $address->cities_name }}</td>
-              <td>{{ $address->provinces_name }}</td>
+      <div class="table-responsive">
+        <table class="table table-striped table-dark text-center" data-display="datatables">
+          <thead>
+            <tr class="header">
+              <th>ID</th>
+              <th></th>
+              <th></th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Address</th>
+              <th>City</th>
+              <th>Province</th>
             </tr>
-          @endforeach
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @foreach ($addresses as $address)
+              <tr>
+                <td>{{ $address->id }}</td>
+                <td></td>
+                <td>
+                  <div class="dropdown">
+                    <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="bi bi-three-dots"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <a href="{{ route('admin.address.edit', $address->name) }}" class="dropdown-item">
+                          Edit
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+                <td>{{ $address->name }}</td>
+                <td>{{ $address->address_types_name }}</td>
+                <td class="text-truncate" style="max-width: 120px">{{ $address->full_address }}</td>
+                <td>{{ $address->cities_name }}</td>
+                <td>{{ $address->provinces_name }}</td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
     </section>
   </div>
   <script>

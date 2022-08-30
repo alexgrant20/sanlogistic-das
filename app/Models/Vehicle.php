@@ -57,6 +57,16 @@ class Vehicle extends Model
     return $this->hasMany(VehicleImage::class);
   }
 
+  public function vehicleLastStatus()
+  {
+    return $this->hasOne(VehicleLastStatus::class);
+  }
+
+  public function vehicleChecklist()
+  {
+    return $this->hasMany(VehicleChecklist::class);
+  }
+
   public function getRouteKeyName()
   {
     return 'license_plate';

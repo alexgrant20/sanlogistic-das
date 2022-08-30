@@ -251,23 +251,21 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="assure-modal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-body">
-            <div class="d-flex flex-column">
-              <div class="d-flex flex-column align-items-center mb-3">
-                <i class="bi bi-exclamation-circle display-1"></i>
-                <h3>{{ __('Are you want to create checklist?') }}</h3>
-              </div>
-              <button type="submit" class="btn btn-lg btn-primary mb-3">{{ __('Create Checklist') }}</button>
-              <button type="button" class="btn btn-lg btn-secondary"
-                data-bs-dismiss="modal">{{ __('Close') }}</button>
-            </div>
-          </div>
+    <x-modal id="assure-modal" size="modal-lg">
+      <x-slot:body>
+        <div class="d-flex flex-column align-items-center mb-3">
+          <i class="bi bi-exclamation-circle display-1 text-warning"></i>
+          <p class="display-6 text-white mb-1 fw-bold">{{ __('Are you want to create checklist?') }}</p>
+          <p class="fs-3 text-gray-700">You will not able to recover it</p>
         </div>
-      </div>
-    </div>
+      </x-slot:body>
+      <x-slot:footer>
+        <div class="d-grid gap-2 w-100">
+          <button type="submit" class="btn btn-lg btn-primary">{{ __('Create Checklist') }}</button>
+          <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">{{ __('Close') }}</button>
+        </div>
+      </x-slot:footer>
+    </x-modal>
 
   </form>
 @endsection

@@ -17,8 +17,10 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class FinanceController extends Controller
 {
-  public function acceptance()
+  public function acceptance(Request $request)
   {
+    $q_status = $request->status;
+
     $activities = DB::table('activities')
       ->leftJoin('users', 'activities.user_id', '=', 'users.id')
       ->leftJoin('people', 'users.person_id', '=', 'people.id')
@@ -34,11 +36,15 @@ class FinanceController extends Controller
           'activity_payments.toll_amount',
           'activity_payments.parking_amount',
           'activity_payments.retribution_amount',
+          'activity_statuses.status as status',
         ]
       );
 
+    $activities_filtered = empty($q_status) ?  $activities : $activities->filter(fn ($item) => $item->status === $q_status);
+
     return view('admin.finance.acceptance.index', [
       'activities' => $activities,
+      'activities_filtered' => $activities_filtered,
       'title' => 'Acceptance'
     ]);
   }
@@ -76,8 +82,11 @@ class FinanceController extends Controller
           ]);
         });
       } catch (Exception $e) {
-        abort(500, $e->getMessage());
+        return to_route('admin.finance.acceptance')
+          ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'approve'));
       }
+      return to_route('admin.finance.acceptance')
+        ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'approved'));
     }
   }
 
@@ -114,8 +123,12 @@ class FinanceController extends Controller
           ]);
         });
       } catch (Exception $e) {
-        abort(500, $e->getMessage());
+        return to_route('admin.finance.payment')
+          ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'pay'));
       }
+
+      return to_route('admin.finance.payment')
+        ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'paid'));
     }
   }
 
@@ -157,13 +170,12 @@ class FinanceController extends Controller
           ]);
         });
       }
-
-      return to_route('admin.finance.payment')
-        ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'rejected'));
     } catch (Exception $e) {
       return to_route('admin.finance.payment')
         ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'reject'));
     }
+    return to_route('admin.finance.payment')
+      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'rejected'));
   }
 
   public function edit(Activity $activity)
@@ -216,7 +228,8 @@ class FinanceController extends Controller
       ->selectRaw("SUM(activity_payments.toll_amount) total_toll")
       ->selectRaw("SUM(activity_payments.parking_amount) total_park")
       ->selectRaw("SUM(activity_payments.retribution_amount) total_retribution")
-      ->selectRaw("projects.name as project_name, people.name as person_name, activities.user_id as user_id, activities.project_id as project_id")
+      ->selectRaw("projects.name as project_name, people.name as person_name, activities.user_id as user_id,
+      activities.project_id as project_id, activity_statuses.status as status")
       ->groupBy('activities.project_id')
       ->groupBy('user_id')
       ->orderByDesc('activity_payments.id')

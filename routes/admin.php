@@ -8,6 +8,9 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AddressController;
 use App\Http\Controllers\Admin\VehicleController;
 use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\VehicleChecklistController;
+use App\Http\Controllers\Admin\VehicleLastStatusController;
+
 use Illuminate\Support\Facades\Route;
 
 
@@ -154,5 +157,13 @@ Route::prefix('/admin')->name('admin.')->middleware('auth', 'admin')->group(func
       Route::put('/acceptance/{activity:id}', 'audit')->name('audit');
     });
     Route::post('/activity/accepted/export/excel', 'exportExcel')->name('export.excel.accepted');
+  });
+
+  Route::controller(VehicleChecklistController::class)->name('vehicleChecklist.')->group(function () {
+    Route::get('/vehicle-checklist/{vehicleChecklist}', 'show')->name('show');
+  });
+
+  Route::controller(VehicleLastStatusController::class)->name('vehicleLastStatus.')->group(function () {
+    Route::get('/vehicle-last-status/{vehicle}', 'show')->name('show');
   });
 });

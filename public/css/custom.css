@@ -140,6 +140,93 @@ input[data-autocompleted] {
 
 .table,
 .table thead {
-  width: 100%;
+  width: 100% !important;
+  border-collapse: collapse !important;
   vertical-align: middle;
+}
+
+.link:link,
+.link:visited {
+  display: inline-block;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+  transition: all 0.3s;
+}
+
+.link:hover,
+.link:active {
+  border-bottom: 1px solid transparent;
+}
+
+.text-green-100 {
+  color: #ebfbee !important;
+}
+
+.text-green-200 {
+  color: #d3f9d8 !important;
+}
+
+.text-green-300 {
+  color: #b2f2bb !important;
+}
+
+.text-green-400 {
+  color: #8ce99a !important;
+}
+
+.text-green-500 {
+  color: #69db7c !important;
+}
+
+.text-green-600 {
+  color: #51cf66 !important;
+}
+
+.text-green-700 {
+  color: #40c057 !important;
+}
+
+.text-green-800 {
+  color: #37b24d !important;
+}
+
+.text-green-900 {
+  color: #2f9e44 !important;
+}
+
+.text-red-100 {
+  color: #fff5f5 !important;
+}
+
+.text-red-200 {
+  color: #ffe3e3 !important;
+}
+
+.text-red-300 {
+  color: #ffc9c9 !important;
+}
+
+.text-red-400 {
+  color: #ffa8a8 !important;
+}
+
+.text-red-500 {
+  color: #ff8787 !important;
+}
+
+.text-red-600 {
+  color: #ff6b6b !important;
+}
+
+.text-red-700 {
+  color: #fa5252 !important;
+}
+
+.text-red-800 {
+  color: #f03e3e !important;
+}
+
+.text-red-900 {
+  color: #e03131 !important;
 }

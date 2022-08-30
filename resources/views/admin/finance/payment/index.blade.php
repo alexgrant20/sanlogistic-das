@@ -4,23 +4,14 @@
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       const table = $('table[data-display="datatables"]').DataTable({
-        responsive: {
-          details: {
-            display: $.fn.dataTable.Responsive.display.modal({
-              header: function(row) {
-                const data = row.data();
-                return "Details for " + data[1];
-              },
-            }),
-            renderer: $.fn.dataTable.Responsive.renderer.tableAll({
-              tableClass: "table",
-            }),
-          },
-        },
+        responsive: true,
         columnDefs: [{
           targets: [0],
           visible: false,
+        }, {
+          targets: [0, 1, 2],
           searchable: false,
+          orderable: false,
         }],
       });
 
@@ -31,59 +22,60 @@
 
       new $.fn.dataTable.Buttons(table, {
         buttons: [{
-            extend: "collection",
-            text: "Export",
-            className: "btn-outline-primary",
-            buttons: [{
-                text: "Excel",
-                action: function() {
-                  $("#exportExcel").modal("show");
-                }
+          extend: "collection",
+          text: "Export",
+          className: "btn-outline-primary",
+          buttons: [{
+              text: "Excel",
+              action: function() {
+                $("#exportExcel").modal("show");
+              }
+            },
+            {
+              extend: "pdfHtml5",
+              exportOptions: {
+                columns: [":visible"],
               },
-              {
-                extend: "pdfHtml5",
-                exportOptions: {
-                  columns: [":visible"],
-                },
-              },
-            ],
-          },
-          {
-            extend: "searchBuilder",
-            className: "btn-outline-primary",
-          },
-          {
-            extend: "colvis",
-            className: "btn-outline-primary",
-          },
-        ],
+            },
+          ],
+        }, ],
       });
 
       if (totalRow) {
         table.button().add(0, {
           text: "Pay Activity",
-          className: "btn-success",
-          action: async function(e, dt, button, config) {
-            const ids = [];
-            table.rows().data().map((e) => ids.push(e[0]));
-            const uniqueIds = [...new Set(ids)];
+          className: "btn-primary",
+          action: function(e, dt, button, config) {
+            $("#modal").modal("show");
 
-            const data = JSON.stringify(uniqueIds);
+            $('#modal button.ok').off().on('click', function() {
+              $('#modal').modal('hide');
 
-            await fetch("/admin/finances/pay", {
-              method: "post",
-              headers: {
-                "X-CSRF-Token": $("input[name=_token]").val(),
-              },
-              body: data,
+              paidHandler(e)
             });
-
-            location.reload();
           },
         })
       }
-
       table.buttons(0, null).containers().appendTo("#actionContainer");
+
+      async function paidHandler(e) {
+        const ids = [];
+        table.rows().data().map((e) => ids.push(e[0]));
+        const uniqueIds = [...new Set(ids)];
+
+        const data = JSON.stringify(uniqueIds);
+
+        await fetch("/admin/finances/pay", {
+          method: "post",
+          headers: {
+            "X-CSRF-Token": $("input[name=_token]").val(),
+          },
+          body: data,
+        });
+
+        location.reload();
+
+      }
     });
   </script>
 @endsection
@@ -93,49 +85,59 @@
     <!-- Page Header-->
     <div class="bg-dash-dark-2 py-4">
       <div class="container-fluid">
-        <h2 class="h5 mb-0">Activities</h2>
+        <h2 class="h5 mb-0">Pay Activity</h2>
       </div>
     </div>
 
-    <!-- Import Modal -->
-    <div class="modal fade" id="exportExcel" tabindex="-1" aria-labelledby="importExcelLabel" aria-hidden="true">
-      <form method="post" action="{{ route('admin.finance.export.excel.accepted') }}" enctype="multipart/form-data">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="importExcelLabel">Import</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              @csrf
+    {{-- MAKE SURE MODAL --}}
+    <x-modal id="modal" size="modal-lg">
+      <x-slot:body>
+        <div class="container-fluid text-center pt-3">
+          <div class="mb-4">
+            <i class="bi bi-exclamation-circle text-danger display-1"></i>
+          </div>
+          <p class="display-6 text-white mb-1 fw-bold">Paid Those Activity?</p>
+          <p class="fs-3 text-gray-700">You will not able to recover it</p>
+        </div>
+      </x-slot:body>
+      <x-slot:footer>
+        <button type="button" class="btn btn-success ok">Submit</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </x-slot:footer>
+    </x-modal>
 
-              <div class="mb-3">
-                <label class="form-label">Pilih Bulan</label>
-                <div class="form-group">
-                  <select class="form-select" name="month">
-                    <option value="{{ now()->format('m') }}">{{ now()->format('F') }}</option>
-                    <option value="{{ now()->submonth(1)->format('m') }}">{{ now()->submonth(1)->format('F') }}
-                    </option>
-                  </select>
-                </div>
-              </div>
+    {{-- EXCEL MODAL --}}
+    <x-modal id="exportExcel" size="modal-lg" title="Export">
+      <x-slot:body>
+        <form id="exportExcelForm" method="post" action="{{ route('admin.finance.export.excel.accepted') }}"
+          enctype="multipart/form-data">
+          @csrf
 
-              <label class="form-label">Pilih Project</label>
-              <div class="form-group">
-                <select class="form-select" name="project_id">
-                  @foreach ($projects as $project)
-                    <option value="{{ $project->id }}">{{ $project->name }}</option>
-                  @endforeach
-                </select>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Export</button>
+          <div class="mb-3">
+            <label class="form-label">Pilih Bulan</label>
+            <div class="form-group">
+              <select class="form-select" name="month">
+                <option value="{{ now()->format('m') }}">{{ now()->format('F') }}</option>
+                <option value="{{ now()->submonth(1)->format('m') }}">{{ now()->submonth(1)->format('F') }}
+                </option>
+              </select>
             </div>
           </div>
-        </div>
-      </form>
-    </div>
+
+          <label class="form-label">Pilih Project</label>
+          <div class="form-group">
+            <select class="form-select" name="project_id">
+              @foreach ($projects as $project)
+                <option value="{{ $project->id }}">{{ $project->name }}</option>
+              @endforeach
+            </select>
+          </div>
+        </form>
+      </x-slot:body>
+      <x-slot:footer>
+        <button type="button" class="btn btn-success" onclick="$('#exportExcelForm').submit()">Export</button>
+      </x-slot:footer>
+    </x-modal>
 
     <section class="container-fluid">
       <div class="row mb-4 g-3">
@@ -153,6 +155,7 @@
         <thead>
           <tr class="header">
             <th>User ID</th>
+            <th></th>
             <th>Action</th>
             <th>Project</th>
             <th>Nama Pengendara</th>
@@ -166,6 +169,7 @@
           @foreach ($activities as $activity)
             <tr>
               <td>{{ $activity->user_id }}</td>
+              <td></td>
               <td>
                 <form action="{{ route('admin.finance.reject') }}" method="POST">
                   @csrf

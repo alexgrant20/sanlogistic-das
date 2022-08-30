@@ -18,85 +18,92 @@
 
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>
-      <table class="table table-striped table-dark text-center" data-display="datatables">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th></th>
-            <th>License Plate</th>
-            <th>Owner</th>
-            <th>Project</th>
-            <th>Brand</th>
-            <th>Model</th>
-            <th>Odo</th>
-            <th>KIR Exp</th>
-            <th>STNK Exp</th>
-            <th>Lamp</th>
-            <th>Glass</th>
-            <th>Tire</th>
-            <th>Equipment</th>
-            <th>Gear</th>
-            <th>Other</th>
-            {{-- <th>Odometer Service</th>
-            <th>Service Expired</th> --}}
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($vehicles as $vehicle)
+      <div class="table-responsive">
+        <table class="table table-striped table-dark text-center" data-display="datatables">
+          <thead>
             <tr>
-              <td>{{ $vehicle->id }}</td>
-              <td>
-                <div class="dropdown">
-                  <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots"></i>
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li>
-                      <a href="{{ url("/admin/vehicles/$vehicle->license_plate/edit") }}" class="dropdown-item">
-                        Edit
-                      </a>
-                    </li>
-                    <li>
-                      <a href="{{ url("/admin/vehicles/$vehicle->license_plate/edit") }}" class="dropdown-item">
-                        Last Status
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </td>
-              <td>
-                @php
-                  $licese_plate_color = intval($vehicle->vehicle_license_plate_color_id) === 2 ? 'bg-warning' : 'bg-white';
-                @endphp
-                <span class="text-dark {{ $licese_plate_color }}">{{ $vehicle->license_plate }}</span>
-              </td>
-              <td>{{ $vehicle->company_name }}</td>
-              <td>{{ $vehicle->project_name }}</td>
-              <td>{{ $vehicle->vehicle_brand }}</td>
-              <td>{{ $vehicle->vehicle_type }}</td>
-              <td>{{ $vehicle->odo }}</td>
-              @if ($vehicle->kir_expire)
-                <td>{{ $vehicle->kir_expire }}</td>
-              @else
-                <td>No Data</td>
-              @endif
-              @if ($vehicle->kir_expire)
-                <td>{{ $vehicle->stnk_expire }}</td>
-              @else
-                <td>No Data</td>
-              @endif
-              <td>{{ $vehicle->total_broken_lamp }}</td>
-              <td>{{ $vehicle->total_broken_glass }}</td>
-              <td>{{ $vehicle->total_broken_tire }}</td>
-              <td>{{ $vehicle->total_broken_equipment }}</td>
-              <td>{{ $vehicle->total_broken_gear }}</td>
-              <td>{{ $vehicle->total_broken_other }}</td>
-              {{-- <td></td>
-              <td></td> --}}
+              <th>ID</th>
+              <th></th>
+              <th></th>
+              <th>License Plate</th>
+              <th>Owner</th>
+              <th>Project</th>
+              <th>Brand</th>
+              <th>Model</th>
+              <th>Odo</th>
+              <th>KIR Exp</th>
+              <th>STNK Exp</th>
+              <th>Lamp</th>
+              <th>Glass</th>
+              <th>Tire</th>
+              <th>Equipment</th>
+              <th>Gear</th>
+              <th>Other</th>
+              {{-- <th>Odometer Service</th>
+            <th>Service Expired</th> --}}
             </tr>
-          @endforeach
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @foreach ($vehicles as $vehicle)
+              <tr>
+                <td>{{ $vehicle->id }}</td>
+                <td></td>
+                <td>
+                  <div class="dropdown">
+                    <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="bi bi-three-dots"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <a href="{{ route('admin.vehicle.edit', $vehicle->license_plate) }}" class="dropdown-item">
+                          Edit
+                        </a>
+                      </li>
+                      @if (!empty($vehicle->vehicle_last_status_id))
+                        <li>
+                          <a href="{{ route('admin.vehicleLastStatus.show', $vehicle->license_plate) }}"
+                            class="dropdown-item">
+                            Last Status
+                          </a>
+                        </li>
+                      @endif
+                    </ul>
+                  </div>
+                </td>
+                <td>
+                  @php
+                    $licese_plate_color = intval($vehicle->vehicle_license_plate_color_id) === 2 ? 'bg-warning' : 'bg-white';
+                  @endphp
+                  <span class="text-dark {{ $licese_plate_color }}">{{ $vehicle->license_plate }}</span>
+                </td>
+                <td>{{ $vehicle->company_name }}</td>
+                <td>{{ $vehicle->project_name }}</td>
+                <td>{{ $vehicle->vehicle_brand }}</td>
+                <td>{{ $vehicle->vehicle_type }}</td>
+                <td>{{ $vehicle->odo }}</td>
+                @if ($vehicle->kir_expire)
+                  <td>{{ $vehicle->kir_expire }}</td>
+                @else
+                  <td>No Data</td>
+                @endif
+                @if ($vehicle->kir_expire)
+                  <td>{{ $vehicle->stnk_expire }}</td>
+                @else
+                  <td>No Data</td>
+                @endif
+                <td>{{ $vehicle->total_broken_lamp }}</td>
+                <td>{{ $vehicle->total_broken_glass }}</td>
+                <td>{{ $vehicle->total_broken_tire }}</td>
+                <td>{{ $vehicle->total_broken_equipment }}</td>
+                <td>{{ $vehicle->total_broken_gear }}</td>
+                <td>{{ $vehicle->total_broken_other }}</td>
+                {{-- <td></td>
+              <td></td> --}}
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
     </section>
   </div>
 @endsection
