@@ -20,7 +20,7 @@ function checkChecklist($checklist)
     <div class="bg-dash-dark-2 py-4">
       <div class="container-fluid">
         <h2 class="h5 mb-0">
-          Last Status
+          Vehicle Checklist
         </h2>
       </div>
     </div>
