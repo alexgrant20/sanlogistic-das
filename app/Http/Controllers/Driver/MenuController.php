@@ -226,7 +226,7 @@ class MenuController extends Controller
     for ($i = 1; $i <= 4; $i++) {
       if (!array_key_exists("image_$i", $imageData)) break;
       $vehicleChecklistImage = new VehicleChecklistImage();
-      $vehicleChecklistImage->image = uploadImage($imageData["image_$i"], 'checklist', auth()->user()->person->name, $timestamp);
+      $vehicleChecklistImage->image = uploadImage($imageData["image_$i"], 'checklist', auth()->user()->person->name . "-image_$i", $timestamp);
       $vehicleChecklistImage->description = $imageData["image_" . $i . "_description"];
       $vehicleChecklistImage->vehicle_checklist_id = $vehicleChecklist->id;
       $vehicleChecklistImage->save();

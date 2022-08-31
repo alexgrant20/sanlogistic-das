@@ -73,7 +73,7 @@ function checkChecklist($checklist)
                 </div>
               </div>
             </div>
-            <div class="col-12 flex-1">
+            <div class="col-12">
               <div class="card rounded h-100">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-3">
@@ -93,7 +93,7 @@ function checkChecklist($checklist)
           </div>
 
         </div>
-        <div class="col-xxl-8 flex-1">
+        <div class="col-xxl-8">
           <div class="card rounded h-100">
             <div class="card-body">
               <div class="table-responsive">
@@ -101,6 +101,9 @@ function checkChecklist($checklist)
                   <thead>
                     <tr>
                       <th>View</th>
+                      <th>ODO</th>
+                      <th>Location</th>
+                      <th>Vehicle Conditon</th>
                       <th>Created At</th>
                     </tr>
                   </thead>
@@ -111,9 +114,13 @@ function checkChecklist($checklist)
                       @endif
                       <tr>
                         <td>
-                          <a href="{{ route('admin.vehicleChecklist.show', $item->id) }}" class="btn btn-primary">See</a>
+                          <a href="{{ route('admin.vehicleChecklist.show', $item['id']) }}"
+                            class="btn btn-primary">See</a>
                         </td>
-                        <td>{{ $item->created_at->format('d/m/Y') }}</td>
+                        <td>{{ $item->get('odo') }}</td>
+                        <td>{{ $item->get('address')['name'] }}</td>
+                        <td>{{ $item->get('vehicle_condition') }}%</td>
+                        <td>{{ $item->get('created_at') }}</td>
                       </tr>
                     @endforeach
                   </tbody>
@@ -131,7 +138,7 @@ function checkChecklist($checklist)
             $summary = $checklistConf['summary'];
             $config = $checklistConf['config'];
           @endphp
-          <div class="col-sm-12 col-md-6 col-xl-6 col-xxl-4 flex-1" @class([
+          <div class="col-sm-12 col-md-6 col-xl-6 col-xxl-4" @class([
               'order-1' => $summary['broken'],
           ])>
             <div class="card rounded h-100">
@@ -172,52 +179,50 @@ function checkChecklist($checklist)
             </div>
           </div>
         @endforeach
-
-        <div class="col-12">
-          <div class="card rounded h-100">
-            <div class="card-header">
-              Other Desc
-            </div>
-            <div class="card-body">
-              <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-indicators">
-                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
-                    aria-current="true" aria-label="Slide 1"></button>
-                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
-                    aria-label="Slide 2"></button>
-                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
-                    aria-label="Slide 3"></button>
+        @if ($vehicleChecklist__ori->vehicleChecklistImage->isNotEmpty())
+          <div class="col-md-4">
+            <div class="card rounded h-100">
+              <div class="card-header">
+                Other Desc
+              </div>
+              <div class="card-body">
+                <div id="carousel" class="carousel slide" data-bs-ride="carousel">
+                  <div class="carousel-indicators">
+                    @foreach ($vehicleChecklist__ori->vehicleChecklistImage as $checklistImage)
+                      <button type="button" data-bs-target="#carousel" data-bs-slide-to="{{ $loop->index }}"
+                        @class(['active' => $loop->iteration == 1]) aria-current="{{ $loop->iteration == 1 }}"
+                        aria-label="Slide {{ $loop->iteration }}"></button>
+                    @endforeach
+                  </div>
+                  <div class="carousel-inner">
+                    @foreach ($vehicleChecklist__ori->vehicleChecklistImage as $checklistImage)
+                      <div @class(['carousel-item', 'active' => $loop->iteration == 1])>
+                        <div style="width: auto; height: 300px; max-height: 300px">
+                          <img src="{{ asset("storage/$checklistImage->image") }}" class="d-block m-auto w-100 h-100"
+                            alt="">
+                        </div>
+                        @if ($checklistImage->description)
+                          <div class="carousel-caption d-none d-md-block" style="background: rgba(0, 0, 0, 1)">
+                            <p class="d-inline">{{ $checklistImage->description }}</p>
+                          </div>
+                        @endif
+                      </div>
+                    @endforeach
+                  </div>
+                  <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                  </button>
                 </div>
-                <div class="carousel-inner">
-                  <div class="carousel-item active">
-                    <img src="{{ asset('img/brand/brand-1.svg') }}" class="d-block w-100" style="height: 300px"
-                      alt="...">
-                  </div>
-                  <div class="carousel-item">
-                    <img src="{{ asset('img/brand/brand-1.svg') }}" class="d-block w-100" style="height: 300px"
-                      alt="...">
-                  </div>
-                  <div class="carousel-item">
-                    <img src="{{ asset('img/brand/brand-1.svg') }}" class="d-block w-100" style="height: 300px"
-                      alt="...">
-                  </div>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
-                  data-bs-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
-                  data-bs-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Next</span>
-                </button>
               </div>
             </div>
           </div>
-        </div>
+        @endif
       </div>
-
     </section>
   </div>
 @endsection

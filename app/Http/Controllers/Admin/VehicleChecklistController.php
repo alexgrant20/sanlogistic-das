@@ -19,9 +19,36 @@ class VehicleChecklistController extends Controller
     $otherOutsideLabel = ['accu', 'tutup_radiator', 'tangki_bahan_bakar', 'tutup_tangki_bahan_bakar'];
     $otherInsideLabel = ['spion', 'wiper', 'klakson', 'panel_speedometer', 'panel_bahan_bakar', 'sunvisor', 'jok'];
 
+    $vehicleChecklist__ori = $vehicleChecklist;
     $vehicle =  $vehicleChecklist->vehicle;
     $vehicleChecklist = collect($vehicleChecklist);
-    $vehicleChecklists = VehicleChecklist::where('vehicle_id', $vehicle->id)->latest()->get();
+    $vehicleChecklists = VehicleChecklist::where('vehicle_id', $vehicle->id)->latest()->with('address')->get();
+
+    $vehicleCheclistsModif = collect();
+
+    foreach ($vehicleChecklists as $item) {
+
+      $uniqueVal = collect($item)->only([
+        ...$lampLabel,
+        ...$oilLabel,
+        ...$tireLabel,
+        ...$velgLabel,
+        ...$tirePreasureLabel,
+        ...$glassLabel,
+        ...$otherOutsideLabel,
+        ...$otherInsideLabel
+      ])->countBy();
+
+      $vehicleCondition = round(($uniqueVal->get(0) / ($uniqueVal->get(0) + $uniqueVal->get(1))) * 100);
+
+      $vehicleCheclistsModif->push(
+        collect([
+          ...$item->toArray(),
+          'vehicle_condition' => $vehicleCondition,
+          'created_at' => $item->created_at->format('Y-m-d')
+        ])
+      );
+    }
 
     $lamp = $vehicleChecklist->only($lampLabel);
     $oil = $vehicleChecklist->only($oilLabel);
@@ -133,6 +160,8 @@ class VehicleChecklistController extends Controller
       ],
     ];
 
+
+
     return view('admin.vehicle_checklists.show', [
       'title' => $vehicle->license_plate . ' Last Status',
       'vehicle' => $vehicle,
@@ -140,8 +169,8 @@ class VehicleChecklistController extends Controller
       'totalOk' => $totalOk,
       'totalBroken' => $totalBroken,
       'vehicleChecklist' => $vehicleChecklistData,
-      'vehicleChecklists' => $vehicleChecklists,
-      'vehicleChecklist__ori' => $vehicleChecklist
+      'vehicleChecklists' => $vehicleCheclistsModif,
+      'vehicleChecklist__ori' => $vehicleChecklist__ori
     ]);
   }
 }
