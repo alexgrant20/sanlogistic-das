@@ -96,8 +96,8 @@ function checkChecklist($checklist)
         <div class="col-xxl-8">
           <div class="card rounded h-100">
             <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-striped table-dark text-center" data-display="datatables">
+              <div class="w-100">
+                <table class="table table-striped table-dark text-center nowrap" data-display="datatables">
                   <thead>
                     <tr>
                       <th>View</th>
@@ -118,7 +118,8 @@ function checkChecklist($checklist)
                             class="btn btn-primary">See</a>
                         </td>
                         <td>{{ $item->get('odo') }}</td>
-                        <td>{{ $item->get('address')['name'] }}</td>
+                        <td style="max-width: 150px" class="text-truncate">
+                          {{ $item->get('address')['name'] }}</td>
                         <td>{{ $item->get('vehicle_condition') }}%</td>
                         <td>{{ $item->get('created_at') }}</td>
                       </tr>
@@ -213,7 +214,8 @@ function checkChecklist($checklist)
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
                   </button>
-                  <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                  <button class="carousel-control-next" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Next</span>
                   </button>
