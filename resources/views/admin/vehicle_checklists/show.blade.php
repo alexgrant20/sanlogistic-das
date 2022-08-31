@@ -103,7 +103,8 @@ function checkChecklist($checklist)
                       <th>View</th>
                       <th>ODO</th>
                       <th>Location</th>
-                      <th>Vehicle Conditon</th>
+                      <th>Conditon</th>
+                      <th>Created By</th>
                       <th>Created At</th>
                     </tr>
                   </thead>
@@ -121,6 +122,9 @@ function checkChecklist($checklist)
                         <td style="max-width: 150px" class="text-truncate">
                           {{ $item->get('address')['name'] }}</td>
                         <td>{{ $item->get('vehicle_condition') }}%</td>
+                        <td style="max-width: 150px" class="text-truncate">
+                          {{ $item->get('user')['person']['name'] }}
+                        </td>
                         <td>{{ $item->get('created_at') }}</td>
                       </tr>
                     @endforeach

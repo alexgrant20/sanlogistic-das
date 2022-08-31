@@ -22,7 +22,7 @@ class VehicleChecklistController extends Controller
     $vehicleChecklist__ori = $vehicleChecklist;
     $vehicle =  $vehicleChecklist->vehicle;
     $vehicleChecklist = collect($vehicleChecklist);
-    $vehicleChecklists = VehicleChecklist::where('vehicle_id', $vehicle->id)->latest()->with('address')->get();
+    $vehicleChecklists = VehicleChecklist::where('vehicle_id', $vehicle->id)->latest()->with('address', 'user', 'user.person')->get();
 
     $vehicleCheclistsModif = collect();
 
@@ -39,7 +39,7 @@ class VehicleChecklistController extends Controller
         ...$otherInsideLabel
       ])->countBy();
 
-      $vehicleCondition = round(($uniqueVal->get(0) / ($uniqueVal->get(0) + $uniqueVal->get(1))) * 100);
+      $vehicleCondition = round(((int)$uniqueVal->get(0) / ((int)$uniqueVal->get(0) + (int)$uniqueVal->get(1))) * 100);
 
       $vehicleCheclistsModif->push(
         collect([
