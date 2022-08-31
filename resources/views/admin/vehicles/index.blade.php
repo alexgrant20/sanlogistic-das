@@ -91,12 +91,29 @@
                 @else
                   <td>No Data</td>
                 @endif
-                <td>{{ $vehicle->total_broken_lamp }}</td>
-                <td>{{ $vehicle->total_broken_glass }}</td>
-                <td>{{ $vehicle->total_broken_tire }}</td>
-                <td>{{ $vehicle->total_broken_equipment }}</td>
-                <td>{{ $vehicle->total_broken_gear }}</td>
-                <td>{{ $vehicle->total_broken_other }}</td>
+
+                {{-- -------------Checklist--------- --}}
+                @php
+                  $errorClass = 'text-red-600';
+                @endphp
+                <td @class([$errorClass => $vehicle->total_broken_lamp > 0])>
+                  {{ $vehicle->total_broken_lamp }}
+                </td>
+                <td @class([$errorClass => $vehicle->total_broken_glass > 0])>
+                  {{ $vehicle->total_broken_glass }}
+                </td>
+                <td @class([$errorClass => $vehicle->total_broken_tire > 0])>
+                  {{ $vehicle->total_broken_tire }}
+                </td>
+                <td @class([$errorClass => $vehicle->total_broken_equipment > 0])>
+                  {{ $vehicle->total_broken_equipment }}
+                </td>
+                <td @class([$errorClass => $vehicle->total_broken_gear > 0])>
+                  {{ $vehicle->total_broken_gear }}
+                </td>
+                <td @class([$errorClass => $vehicle->total_broken_other > 0])>
+                  {{ $vehicle->total_broken_other }}
+                </td>
                 {{-- <td></td>
               <td></td> --}}
               </tr>
