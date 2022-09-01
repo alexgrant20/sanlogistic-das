@@ -178,34 +178,6 @@ function getVehicleLastStatus() {
   });
 }
 
-function createDynamicImage(buttonID, maxImage) {
-  // Assume page already have 1 default image
-  let totalImage = 1;
-
-  $("#" + buttonID).on("click", (e) => {
-    totalImage++;
-    $("#image-container")
-      .last()
-      .append(
-        `
-      <div class="mb-5">
-        <x-input-image id="image_${totalImage}" :label="__('Image')" />
-        <div class="mt-5">
-          <label class="form-label fs-5 text-primary" for="image_${totalImage}_description">{{ __('Image Description') }}</label>
-          <textarea class="form-control" name="image_${totalImage}_description" id="image_${totalImage}_description"></textarea>
-        </div>
-      </div>
-      `
-      );
-
-    // Check if exeeding
-    if (totalImage === maxImage) {
-      $("#" + buttonID).remove();
-      return;
-    }
-  });
-}
-
 $("form").on("submit", () => {
   $("button").attr("disabled", true);
   $("input, textarea").attr("readonly", true);
