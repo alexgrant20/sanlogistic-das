@@ -62,8 +62,6 @@ document.addEventListener("DOMContentLoaded", function () {
           },
         ],
       },
-      "searchBuilder",
-      "colvis",
     ],
   });
 

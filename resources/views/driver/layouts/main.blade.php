@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="{{ asset('/css/style.sea.css') }}" id="theme-stylesheet">
   {{-- Custom Stylesheet --}}
   <link rel="stylesheet" type="text/css" href="{{ asset('/css/driver/global.css') }}" />
+  <link rel="stylesheet" type="text/css" href="{{ asset('/css/custom.css') }}" />
   {{-- Favicon --}}
   <link rel="shortcut icon" href="{{ asset('/img/favicon.ico') }}">
 
@@ -71,11 +72,21 @@
 
   <!-- JavaScript files-->
   <script src="{{ asset('/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
   <!-- Main File-->
-  <script src="{{ asset('/js/front.js') }}"></script>
-  <script src="{{ asset('/js/function.js') }}"></script>
+  <script src="{{ asset('/js/function.js') }}" defer></script>
+  <script src="{{ asset('/js/front.js') }}" defer></script>
+
   {{-- Zoom JS --}}
   <script src="{{ asset('/vendor/zoom/zoom.js') }}"></script>
+
+  {{-- Currency --}}
+  <script src="{{ asset('/vendor/currency/currency.js') }}"></script>
+
+  <!-- Laravel Javascript Validation -->
+  <script type="text/javascript" src="{{ asset('vendor/jsvalidation/jsvalidation.min.js') }}"></script>
+
+
   <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
   <script src="https://kit.fontawesome.com/2d78a8b052.js" crossorigin="anonymous"></script>

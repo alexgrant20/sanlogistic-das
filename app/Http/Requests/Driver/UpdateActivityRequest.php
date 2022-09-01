@@ -3,9 +3,6 @@
 namespace App\Http\Requests\Driver;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateActivityRequest extends FormRequest
 {
@@ -15,19 +12,12 @@ class UpdateActivityRequest extends FormRequest
     return true;
   }
 
-  public function getValidatorInstance()
-  {
-    $this->formatMoneyTable();
-
-    return parent::getValidatorInstance();
-  }
-
-  protected function formatMoneyTable()
+  protected function prepareForValidation()
   {
     $this->merge([
-      'bbm_amount' => convertMoneyInt($this->request->get('bbm_amount')),
-      'toll_amount' => convertMoneyInt($this->request->get('toll_amount')),
-      'parking_amount' => convertMoneyInt($this->request->get('parking_amount'))
+      'bbm_amount' => (int) convertMoneyInt($this->get('bbm_amount')),
+      'toll_amount' => (int) convertMoneyInt($this->get('toll_amount')),
+      'parking_amount' => (int) convertMoneyInt($this->get('parking_amount'))
     ]);
   }
 

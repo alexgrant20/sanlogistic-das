@@ -27,7 +27,8 @@ return new class extends Migration
   public function down()
   {
     Schema::table('vehicles', function (Blueprint $table) {
-      Schema::dropIfExists('vehicles');
+      $table->dropForeign(['created_by', 'updated_by']);
+      $table->dropColumn(['created_by', 'updated_by']);
     });
   }
 };

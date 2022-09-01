@@ -12,30 +12,24 @@ class UpdateActivityCostRequest extends FormRequest
     return true;
   }
 
-  public function getValidatorInstance()
-  {
-    $this->formatMoneyTable();
 
-    return parent::getValidatorInstance();
-  }
-
-  protected function formatMoneyTable()
+  protected function prepareForValidation()
   {
     $this->merge([
-      'bbm_amount' => convertMoneyInt($this->request->get('bbm_amount')),
-      'toll_amount' => convertMoneyInt($this->request->get('toll_amount')),
-      'parking_amount' => convertMoneyInt($this->request->get('parking_amount')),
-      'retribution_amount' =>  convertMoneyInt($this->request->get('retribution_amount')),
+      'bbm_amount' => convertMoneyInt($this->get('bbm_amount')),
+      'toll_amount' => convertMoneyInt($this->get('toll_amount')),
+      'parking_amount' => convertMoneyInt($this->get('parking_amount')),
+      'retribution_amount' =>  convertMoneyInt($this->get('retribution_amount')),
     ]);
   }
 
   public function rules()
   {
     return [
-      'bbm_amount' => 'nullable|integer|min:0',
-      'toll_amount' => 'nullable|integer|min:0',
-      'retribution_amount' => 'nullable|integer|min:0',
-      'parking_amount' => 'nullable|integer|min:0',
+      'bbm_amount' => 'nullable',
+      'toll_amount' => 'nullable',
+      'retribution_amount' => 'nullable',
+      'parking_amount' => 'nullable',
     ];
   }
 }

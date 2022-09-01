@@ -17,7 +17,8 @@
     "laravel/sanctum": "^2.14.1",
     "laravel/tinker": "^2.7",
     "livewire/livewire": "^2.10",
-    "maatwebsite/excel": "^3.1"
+    "maatwebsite/excel": "^3.1",
+    "proengsoft/laravel-jsvalidation": "^4.7"
   },
   "require-dev": {
     "barryvdh/laravel-debugbar": "^3.6",

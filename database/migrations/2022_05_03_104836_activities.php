@@ -28,7 +28,8 @@ return new class extends Migration
   public function down()
   {
     Schema::table('activities', function (Blueprint $table) {
-      Schema::dropIfExists('activities');
+      $table->dropForeign(['created_by', 'updated_by', 'activity_status_id']);
+      $table->dropColumn(['created_by', 'updated_by', 'activity_status_id']);
     });
   }
 };

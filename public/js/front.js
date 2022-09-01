@@ -109,23 +109,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // ------------------------------------------------------- //
-  // Search Popup
-  // ------------------------------------------------------ //
-  var searchOpenBtn = document.querySelector(".search-open");
-  var searchPanel = document.querySelector(".search-panel");
-  var searchCloseBtn = document.querySelector(".search-panel .close-btn");
-  if (searchOpenBtn) {
-    searchOpenBtn.addEventListener("click", function (e) {
-      e.preventDefault();
-      searchPanel.style.display = "block";
-    });
-    searchCloseBtn.addEventListener("click", function (e) {
-      e.preventDefault();
-      searchPanel.style.display = "none";
-    });
-  }
-
-  // ------------------------------------------------------- //
   // Tooltips init
   // ------------------------------------------------------ //
   var tooltipTriggerList = [].slice.call(
@@ -281,28 +264,22 @@ document.addEventListener("DOMContentLoaded", function () {
   // ------------------------------------------------------- //
   //  Currency JS
   // ------------------------------------------------------ //
+
   const target = document.querySelectorAll('[data="money"]');
 
   if (target.length > 0) {
-    const moneyFormat = {
-      symbol: "Rp. ",
-      decimal: ",",
-      separator: ".",
-      precision: 0,
-    };
-
     target.forEach((e) => {
       const id = `#${e.id}`;
 
       const value = $(id).val();
 
       if (value) {
-        const formated = currency(value, moneyFormat).format();
+        const formated = formatIDR(value);
         $(id).val(formated);
       }
 
       $(id).on("keyup", (e) => {
-        const formated = currency(e.target.value, moneyFormat).format();
+        const formated = formatIDR(e.target.value);
         $(id).val(formated);
       });
     });

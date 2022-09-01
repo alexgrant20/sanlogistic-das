@@ -119,8 +119,109 @@ function plateNumberHandler(value, type) {
   }
 }
 
+function formatIDR(value) {
+  const moneyFormat = {
+    symbol: "Rp. ",
+    decimal: ",",
+    separator: ".",
+    precision: 0,
+  };
+
+  return currency(value, moneyFormat).format();
+}
+
+function calculateCheckBox(id) {
+  var numberOfChecked = $("#" + id + " input:checkbox:checked").length;
+  var totalCheckboxes = $("#" + id + " input:checkbox").length;
+  $("#" + id + "-text").text(`[${numberOfChecked}/${totalCheckboxes}]`);
+}
+
+function getVehicleLastStatus() {
+  $(".accordion-item").addClass("disable-div");
+  $("input").attr("disabled", true);
+  $("button").attr("disabled", true);
+
+  $("input:checkbox").on("change", function (e) {
+    const checkboxMainID = $(this.parentNode.parentNode.parentNode).attr("id");
+    calculateCheckBox(checkboxMainID);
+  });
+
+  // Use last checklist value
+  $("#vehicle_id").on("change", async function (e) {
+    $(".accordion-item").addClass("disable-div");
+    $("input").attr("disabled", true);
+    $("button").attr("disabled", true);
+
+    const res = await fetch("/driver/last-status/" + e.target.value);
+    const data = await res.json();
+    if (Object.keys(data).length > 0) {
+      Object.keys(data).forEach((key) => {
+        $(`#${key}`).prop("checked", data[key] === 0 ? true : false);
+      });
+    } else {
+      $("input:checkbox").each(function () {
+        this.checked = true;
+      });
+    }
+
+    $(".accordion-item").removeClass("disable-div");
+    $("input").attr("disabled", false);
+    $("button").attr("disabled", false);
+
+    $("#checklist_container")
+      .children()
+      .each(function (e, item) {
+        calculateCheckBox(
+          $($(item).children()[1]).children().children().attr("id")
+        );
+      });
+  });
+}
+
+function createDynamicImage(buttonID, maxImage) {
+  // Assume page already have 1 default image
+  let totalImage = 1;
+
+  $("#" + buttonID).on("click", (e) => {
+    totalImage++;
+    $("#image-container")
+      .last()
+      .append(
+        `
+      <div class="mb-5">
+        <x-input-image id="image_${totalImage}" :label="__('Image')" />
+        <div class="mt-5">
+          <label class="form-label fs-5 text-primary" for="image_${totalImage}_description">{{ __('Image Description') }}</label>
+          <textarea class="form-control" name="image_${totalImage}_description" id="image_${totalImage}_description"></textarea>
+        </div>
+      </div>
+      `
+      );
+
+    // Check if exeeding
+    if (totalImage === maxImage) {
+      $("#" + buttonID).remove();
+      return;
+    }
+  });
+}
+
 $("form").on("submit", () => {
   $("button").attr("disabled", true);
   $("input, textarea").attr("readonly", true);
+  $("select").css("pointer-events", "none");
+
+  const spinnerExist = $("#spinner").length != 0;
+
+  if (!spinnerExist) {
+    $("#submit").append(
+      "<span class='ms-2 spinner-border spinner-border-sm' id='spinner'></span>"
+    );
+  }
+
   return true;
+});
+
+$("#submit").click(function (e) {
+  $("#form").submit();
 });

@@ -23,18 +23,19 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form action="{{ route('admin.address.update', $address->name) }}" method="POST">
+      <form action="{{ route('admin.address.update', $address->name) }}" method="POST" id="form">
         @csrf
         @method('PUT')
 
         @include('admin.addresses.utils.form-ce')
 
-        <button type="submit" class="btn btn-primary">Update</button>
       </form>
+      <button type="submit" class="btn btn-primary" id="submit">Update Address</button>
     </section>
   </div>
 @endsection
 
 @section('footJS')
   <script src="{{ asset('/js/address.js') }}"></script>
+  {!! JsValidator::formRequest('App\Http\Requests\Admin\UpdateAddressRequest', 'form') !!}
 @endsection

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\VehicleChecklist;
 use App\Models\Vehicle;
+use Illuminate\Support\Arr;
 
 class VehicleChecklistController extends Controller
 {
@@ -89,6 +90,7 @@ class VehicleChecklistController extends Controller
       'Lampu-Lampu' => [
         'config' => ['icon' => 'fa-solid fa-lightbulb'],
         'items' => $lamp,
+        'notes' => $vehicleChecklist->get('lamp_notes'),
         'summary' => [
           'ok' => $lampCount->get(0),
           'broken' => $lampCount->get(1),
@@ -98,6 +100,7 @@ class VehicleChecklistController extends Controller
       'Oil' => [
         'config' => ['icon' => 'fa-solid fa-oil-can'],
         'items' => $oil,
+        'notes' => $vehicleChecklist->get('equipment_notes'),
         'summary' => [
           'ok' => $oilCount->get(0),
           'broken' => $oilCount->get(1),
@@ -107,6 +110,7 @@ class VehicleChecklistController extends Controller
       'Ban Luar' => [
         'config' => ['icon' => 'fa-solid fa-circle-dot'],
         'items' => $tire,
+        'notes' => $vehicleChecklist->get('tire_notes'),
         'summary' => [
           'ok' => $tireCount->get(0),
           'broken' => $tireCount->get(1),
@@ -134,6 +138,7 @@ class VehicleChecklistController extends Controller
       'Kaca' => [
         'config' => ['icon' => 'fa-regular fa-window-maximize'],
         'items' => $glass,
+        'notes' => $vehicleChecklist->get('glass_notes'),
         'summary' => [
           'ok' => $glassCount->get(0),
           'broken' => $glassCount->get(1),
@@ -143,6 +148,7 @@ class VehicleChecklistController extends Controller
       'Lain-Lain Luar' => [
         'config' => ['icon' => 'fa-solid fa-ellipsis'],
         'items' => $otherOutside,
+        'notes' => $vehicleChecklist->get('other_notes'),
         'summary' => [
           'ok' => $otherOutsideCount->get(0),
           'broken' => $otherOutsideCount->get(1),
@@ -152,6 +158,7 @@ class VehicleChecklistController extends Controller
       'Lain-Lain Dalam' => [
         'config' => ['icon' => 'fa-solid fa-ellipsis'],
         'items' => $otherInside,
+        'notes' => $vehicleChecklist->get('other_notes'),
         'summary' => [
           'ok' => $otherInsideCount->get(0),
           'broken' => $otherInsideCount->get(1),
@@ -159,8 +166,6 @@ class VehicleChecklistController extends Controller
         ]
       ],
     ];
-
-
 
     return view('admin.vehicle_checklists.show', [
       'title' => $vehicle->license_plate . ' Last Status',

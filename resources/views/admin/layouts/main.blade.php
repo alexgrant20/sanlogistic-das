@@ -21,9 +21,6 @@
   {{-- Jquery --}}
   <script type='text/javascript' src="{{ asset('/vendor/jquery/jquery-3.6.0.min.js') }}"></script>
 
-  {{-- Animation --}}
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-
   {{-- Zoom CSS --}}
   <link href="{{ asset('/vendor/zoom/zoom.css') }}" rel="stylesheet">
 
@@ -50,8 +47,15 @@
   <!-- Main File-->
   <script src="{{ asset('/js/front.js') }}"></script>
   <script src="{{ asset('/js/function.js') }}"></script>
+
   {{-- Zoom JS --}}
   <script src="{{ asset('/vendor/zoom/zoom.js') }}"></script>
+
+  {{-- Currency --}}
+  <script src="{{ asset('/vendor/currency/currency.js') }}"></script>
+
+  <!-- Laravel Javascript Validation -->
+  <script type="text/javascript" src="{{ asset('vendor/jsvalidation/jsvalidation.min.js') }}"></script>
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
@@ -77,6 +81,7 @@
   <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
   <script src="https://kit.fontawesome.com/2d78a8b052.js" crossorigin="anonymous"></script>
+
 
   @yield('footJS')
 

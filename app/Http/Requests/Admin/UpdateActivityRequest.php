@@ -11,22 +11,16 @@ class UpdateActivityRequest extends FormRequest
     return true;
   }
 
-  public function getValidatorInstance()
-  {
-    $this->formatMoneyTable();
-
-    return parent::getValidatorInstance();
-  }
-
-  protected function formatMoneyTable()
+  protected function prepareForValidation()
   {
     $this->merge([
-      'bbm_amount' => convertMoneyInt($this->request->get('bbm_amount')),
-      'toll_amount' => convertMoneyInt($this->request->get('toll_amount')),
-      'parking_amount' => convertMoneyInt($this->request->get('parking_amount')),
-      'retribution_amount' =>  convertMoneyInt($this->request->get('retribution_amount')),
+      'bbm_amount' => convertMoneyInt($this->get('bbm_amount')),
+      'toll_amount' => convertMoneyInt($this->get('toll_amount')),
+      'parking_amount' => convertMoneyInt($this->get('parking_amount')),
+      'retribution_amount' =>  convertMoneyInt($this->get('retribution_amount')),
     ]);
   }
+
 
   public function rules()
   {
@@ -45,9 +39,9 @@ class UpdateActivityRequest extends FormRequest
       'arrival_date' => 'required|date',
       'arrival_odo' => 'required|integer|gt:departure_odo',
       'arrival_odo_image' => 'nullable|image|mimes:png,jpg,jpeg',
-      'bbm_amount' => 'nullable|integer|min:0',
-      'toll_amount' => 'nullable|integer|min:0',
-      'retribution_amount' => 'nullable|integer|min:0',
+      'bbm_amount' => 'nullable|min:0',
+      'toll_amount' => 'nullable|min:0',
+      'retribution_amount' => 'nullable|min:0',
       'parking_amount' => 'nullable|min:0',
       'bbm_image' => 'nullable|prohibited_if:bbm_amount, 0|image|mimes:png,jpg,jpeg',
       'toll_image' => 'nullable|prohibited_if:toll_amount, 0|image|mimes:png,jpg,jpeg',

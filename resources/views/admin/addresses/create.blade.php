@@ -23,17 +23,18 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form action="{{ route('admin.address.store') }}" method="POST">
+      <form action="{{ route('admin.address.store') }}" method="POST" id="form">
         @csrf
 
         @include('admin.addresses.utils.form-ce')
 
-        <button type="submit" class="btn btn-primary">Submit</button>
       </form>
+      <button type="submit" class="btn btn-primary" id="submit">Create Address</button>
     </section>
   </div>
 @endsection
 
 @section('footJS')
   <script src="{{ asset('/js/address.js') }}"></script>
+  {!! JsValidator::formRequest('App\Http\Requests\Admin\StoreAddressRequest', 'form') !!}
 @endsection

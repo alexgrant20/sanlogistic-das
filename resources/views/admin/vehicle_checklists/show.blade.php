@@ -100,7 +100,7 @@ function checkChecklist($checklist)
                 <table class="table table-striped table-dark text-center nowrap" data-display="datatables">
                   <thead>
                     <tr>
-                      <th>View</th>
+                      <th></th>
                       <th>ODO</th>
                       <th>Location</th>
                       <th>Conditon</th>
@@ -115,8 +115,8 @@ function checkChecklist($checklist)
                       @endif
                       <tr>
                         <td>
-                          <a href="{{ route('admin.vehicleChecklist.show', $item['id']) }}"
-                            class="btn btn-primary">See</a>
+                          <a href="{{ route('admin.vehicleChecklist.show', $item['id']) }}" class="btn btn-primary">
+                            <i class="fa-solid fa-eye"></i></a>
                         </td>
                         <td>{{ $item->get('odo') }}</td>
                         <td style="max-width: 150px" class="text-truncate">
@@ -165,7 +165,7 @@ function checkChecklist($checklist)
                   </div>
                 </div>
               </div>
-              <div class="card-body">
+              <div class="card-body d-flex justify-content-between flex-column">
                 <div class="row g-3">
                   @foreach ($checklistConf['items'] as $key => $item)
                     @php
@@ -180,13 +180,20 @@ function checkChecklist($checklist)
                     </div>
                   @endforeach
                 </div>
+
+                @if (!empty($checklistConf['notes']))
+                  <div class="mt-3">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-control" rows="3">{{ $checklistConf['notes'] }}</textarea>
+                  </div>
+                @endif
               </div>
             </div>
           </div>
         @endforeach
         @if ($vehicleChecklist__ori->vehicleChecklistImage->isNotEmpty())
           <div class="col-md-4">
-            <div class="card rounded h-100">
+            <div class="card rounded">
               <div class="card-header">
                 Other Desc
               </div>
@@ -214,7 +221,8 @@ function checkChecklist($checklist)
                       </div>
                     @endforeach
                   </div>
-                  <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                  <button class="carousel-control-prev" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
                   </button>

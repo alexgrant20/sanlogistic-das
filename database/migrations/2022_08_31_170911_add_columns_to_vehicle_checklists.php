@@ -6,14 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-  /**
-   * Run the migrations.
-   *
-   * @return void
-   */
   public function up()
   {
-    Schema::table('vehicle_last_statuses', function (Blueprint $table) {
+    Schema::table('vehicle_checklists', function (Blueprint $table) {
       $table->text('lamp_notes')->nullable();
       $table->text('glass_notes')->nullable();
       $table->text('tire_notes')->nullable();
@@ -23,20 +18,16 @@ return new class extends Migration
     });
   }
 
-  /**
-   * Reverse the migrations.
-   *
-   * @return void
-   */
   public function down()
   {
-    Schema::table('vehicle_last_statuses', function (Blueprint $table) {
+    Schema::table('vehicle_checklists', function (Blueprint $table) {
       $table->dropColumn([
         'glass_notes',
         'tire_notes',
         'equipment_notes',
         'gear_notes',
-        'other_notes'
+        'other_notes',
+        'lamp_notes'
       ]);
     });
   }

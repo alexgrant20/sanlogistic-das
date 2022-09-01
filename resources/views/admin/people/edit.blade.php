@@ -8,14 +8,19 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form action="{{ route('admin.person.update', $person->id) }}" method="POST" enctype="multipart/form-data">
+      <form class="mb-5" action="{{ route('admin.person.update', $person->id) }}" method="POST"
+        enctype="multipart/form-data" id="form">
         @method('PUT')
         @csrf
 
         @include('admin.people.utils.form-ce')
 
-        <button type="submit" class="btn btn-lg btn-primary">Update</button>
       </form>
+      <button type="submit" class="btn btn-lg btn-primary" id="submit">Update Person</button>
     </section>
   </div>
+@endsection
+
+@section('footJS')
+  {!! JsValidator::formRequest('App\Http\Requests\Admin\UpdatePersonRequest', 'form') !!}
 @endsection

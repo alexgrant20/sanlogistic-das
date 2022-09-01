@@ -230,3 +230,39 @@ input[data-autocompleted] {
 .text-red-900 {
   color: #e03131 !important;
 }
+
+.text-ocean-100 {
+  color: #5fa9a8;
+}
+
+.text-ocean-200 {
+  color: #4b9e9d;
+}
+
+.text-ocean-300 {
+  color: #379392;
+}
+
+.text-ocean-400 {
+  color: #328483;
+}
+
+.text-ocean-500 {
+  color: #2c7675;
+}
+
+.text-ocean-600 {
+  color: #276766;
+}
+
+.text-ocean-700 {
+  color: #215858;
+}
+
+.text-ocean-800 {
+  color: #1c4a49;
+}
+
+.text-ocean-900 {
+  color: #163b3a;
+}

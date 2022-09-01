@@ -1,7 +1,84 @@
 @extends('driver.layouts.main')
 
 @section('content')
-  <form action="{{ url('/driver/activities/' . $activity->id) }}" method="POST" enctype="multipart/form-data">
+  <x-modal id="assure-modal" size="modal-lg">
+    <x-slot:body>
+      <div>
+        <p class="fs-2 fw-bold text-center">Summary</p>
+        <div class="row g-4 mb-5">
+          <div class="col-xl-6">
+            <div class="d-flex align-items-center p-2 gap-3 rounded" style="background-color: #495057;">
+              <div class="rounded-circle d-flex align-items-center justify-content-center p-2"
+                style="background-color: #212529">
+                <i class="fa-solid fa-plane-departure text-gray-500" style="width: 30px; height: 30px;"></i>
+              </div>
+              <div class="d-flex flex-column">
+                <span class="fs-5 fw-bold text-ocean-200">Lokasi Awal</span>
+                <span class="fs-5 text-gray-500">{{ $activity->departureLocation->name }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-6">
+            <div class="d-flex align-items-center p-2 gap-3 rounded" style="background-color: #495057;">
+              <div class="rounded-circle d-flex align-items-center justify-content-center p-2"
+                style="background-color: #212529">
+                <i class="fa-solid fa-plane-arrival text-gray-500" style="width: 30px; height: 30px;"></i>
+              </div>
+              <div class="d-flex flex-column">
+                <span class="fs-5 fw-bold text-ocean-200">Lokasi Tujuan</span>
+                <span class="fs-5 text-gray-500" id="arrival_name"></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-6">
+            <div class="d-flex align-items-center p-2 gap-3 rounded" style="background-color: #495057;">
+              <div class="rounded-circle d-flex align-items-center justify-content-center p-2"
+                style="background-color: #212529">
+                <i class="fa-solid fa-clock text-gray-500" style="width: 30px; height: 30px;"></i>
+              </div>
+              <div class="d-flex flex-column">
+                <span class="fs-5 fw-bold text-ocean-200">Total Waktu</span>
+                <span class="fs-5 text-gray-500">{{ gmdate('H:i:s', $activity->created_at->diffInSeconds(now())) }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-6">
+            <div class="d-flex align-items-center p-2 gap-3 rounded" style="background-color: #495057;">
+              <div class="rounded-circle d-flex align-items-center justify-content-center p-2"
+                style="background-color: #212529">
+                <i class="fa-solid fa-rupiah-sign text-gray-500" style="width: 30px; height: 30px;"></i>
+              </div>
+              <div class="d-flex flex-column">
+                <span class="fs-5 fw-bold text-ocean-200">Biaya</span>
+                <span class="fs-5 text-gray-500" id="summary_price"></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-6">
+            <div class="d-flex align-items-center p-2 gap-3 rounded" style="background-color: #495057;">
+              <div class="rounded-circle d-flex align-items-center justify-content-center p-2"
+                style="background-color: #212529">
+                <i class="fa-solid fa-map-location-dot text-gray-500" style="width: 30px; height: 30px;"></i>
+              </div>
+              <div class="d-flex flex-column">
+                <span class="fs-5 fw-bold text-ocean-200">Jarak</span>
+                <span class="fs-5 text-gray-500" id="distance"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+      </div>
+      <div class="d-grid gap-2 w-100">
+        <button type="submit" class="btn btn-lg btn-primary" id="submit">{{ __('End Activity') }}</button>
+        <button type="button" class="btn btn-lg" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+      </div>
+    </x-slot:body>
+  </x-modal>
+  <form action="{{ url('/driver/activities/' . $activity->id) }}" method="POST" enctype="multipart/form-data"
+    id="form">
     @csrf
     @method('PUT')
 
@@ -145,12 +222,36 @@
           </div>
         </div>
       </div>
-      <div class="col-12 order-last d-grid">
-        <button type="submit" class="btn btn-lg btn-success">
-          End Journey
+      <div class="d-grid order-last align-items-center">
+        <button type="button" id="modal-opener" class="btn btn-lg btn-primary" data-bs-toggle="modal"
+          data-bs-target="#assure-modal">
+          {{ __('Submit') }}
         </button>
       </div>
-
     </div>
   </form>
+@endsection
+
+
+@section('footJS')
+  <script>
+    $('#modal-opener').click(function() {
+      const arrival_name = $('#arrival_id').find(':selected').text();
+      const departureOdo = Number($('#departure_odo').val());
+      const arrivalOdo = Number($('#arrival_odo').val());
+      const distance = arrivalOdo - departureOdo;
+      let parking = $('#parking_amount').val();
+      let toll = $('#toll_amount').val();
+      let bbm = $('#bbm_amount').val();
+
+      parking = Number(parking.replaceAll('Rp. ', '').replaceAll('.', ''));
+      toll = Number(toll.replaceAll('Rp. ', '').replaceAll('.', ''));
+      bbm = Number(bbm.replaceAll('Rp. ', '').replaceAll('.', ''));
+
+      $('#arrival_name').text(arrival_name.trim());
+      $('#distance').text(distance <= 0 ? 'Value Incorrect' : distance + ' km');
+      $('#summary_price').text(formatIDR(bbm + toll + parking));
+    });
+  </script>
+  {!! JsValidator::formRequest('App\Http\Requests\Driver\UpdateActivityRequestView', 'form') !!}
 @endsection

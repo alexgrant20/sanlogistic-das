@@ -1,10 +1,23 @@
 @extends('driver.layouts.main')
 
 @section('content')
-  <form method="POST" action="{{ route('driver.activity.store') }}" enctype="multipart/form-data">
+  <x-modal id="assure-modal" size="modal-lg">
+    <x-slot:body>
+      <div class="d-flex flex-column align-items-center mb-3">
+        <i class="bi bi-exclamation-circle display-1 text-warning"></i>
+        <p class="display-6 text-white mb-1 fw-bold">{{ __('Are you want to create activity?') }}</p>
+        <p class="fs-3 text-gray-600">{{ __('Make sure all the data is correct') }}</p>
+      </div>
+      <div class="d-grid gap-2 w-100">
+        <button type="submit" id="submit" class="btn btn-lg btn-primary">{{ __('Create Activity') }}</button>
+        <button type="button" class="btn btn-lg" data-bs-dismiss="modal">{{ __('Close') }}</button>
+      </div>
+    </x-slot:body>
+  </x-modal>
+  <form method="POST" action="{{ route('driver.activity.store') }}" enctype="multipart/form-data" id="form">
     @csrf
 
-    <div class="row gy-5">
+    <div class="row gy-5 mb-5">
       @livewire('driver.activity.vehicle-form', ['projectId' => $projectId, 'vehicles' => $vehicles])
       <div class="col-xl-8">
         <h4>Input Image</h4>
@@ -19,14 +32,29 @@
           </div>
         </div>
       </div>
-      <span class="col-12 d-grid mt-5">
-        <button type="submit" class="btn btn-lg btn-success">
-          Create
-        </button>
-      </span>
+
+      {{-- VEHICLE CHECKLIST --}}
+      <div class="col-12">
+        @include('driver.components.vehicle-checklist-form')
+      </div>
+
+      <div class="col-12">
+        <div class="d-grid">
+          <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#assure-modal">
+            {{ __('Submit') }}
+          </button>
+        </div>
+      </div>
     </div>
   </form>
 @endsection
 
 @section('footJS')
+  {!! JsValidator::formRequest('App\Http\Requests\Driver\StoreActivityRequest', 'form') !!}
+  <script>
+    $(document).ready(function() {
+      getVehicleLastStatus()
+      createDynamicImage('add-image', 4);
+    });
+  </script>
 @endsection
