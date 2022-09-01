@@ -85,9 +85,9 @@ class FinanceController extends Controller
         return to_route('admin.finance.acceptance')
           ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'approve'));
       }
-      return to_route('admin.finance.acceptance')
-        ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'approved'));
     }
+    return to_route('admin.finance.acceptance')
+      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'approved'));
   }
 
   public function pay(Request $request)
