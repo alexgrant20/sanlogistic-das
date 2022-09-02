@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Driver\ActivityController;
 use App\Http\Controllers\Driver\AddressController;
+use App\Http\Controllers\Driver\ChecklistController;
 use App\Http\Controllers\Driver\MenuController;
 use App\Http\Controllers\Driver\VehicleController;
 use Illuminate\Support\Facades\Route;
@@ -23,9 +24,13 @@ Route::prefix('driver')->name('driver.')->middleware('auth', 'driver')->group(fu
 
   Route::controller(MenuController::class)->name('menu.')->group(function () {
     Route::get('/profile', 'profile')->name('profile');
-    Route::get('/checklist', 'checklist')->name('checklist');
-    Route::post('/checklist', 'checklistStore')->name('checklist.store');
+    Route::get('/finance', 'finance')->name('finance');
     Route::get('/location/{id?}', 'location')->name('location');
     Route::get('/last-status/{vehicleId}', 'getChecklistLastStatus')->name('lastStatus.get');
+  });
+
+  Route::controller(ChecklistController::class)->name('checklist.')->group(function () {
+    Route::get('/checklist', 'create')->name('create');
+    Route::post('/checklist', 'store')->name('store');
   });
 });

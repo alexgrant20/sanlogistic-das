@@ -24,7 +24,7 @@
       </div>
     </x-slot:body>
   </x-modal>
-  <form action="{{ route('driver.menu.checklist.store') }}" enctype="multipart/form-data" method="POST" id="form">
+  <form action="{{ route('driver.checklist.store') }}" enctype="multipart/form-data" method="POST" id="form">
     @csrf
     <div class="mb-5">
       <label for="vehicle_id" class="form-label fs-5 text-primary">Kendaraan</label>

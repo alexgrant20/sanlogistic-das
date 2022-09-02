@@ -17,10 +17,10 @@
     <x-ui.menu-item backgroundColor="bg-purplish" icon="bi bi-map" :label="__('Location')" :link="route('driver.menu.location')" />
 
     {{-- Checklist --}}
-    <x-ui.menu-item backgroundColor="bg-brown" icon="bi bi-clipboard-check-fill" :label="__('Checklist')" :link="route('driver.menu.checklist')" />
+    <x-ui.menu-item backgroundColor="bg-brown" icon="bi bi-clipboard-check-fill" :label="__('Checklist')" :link="route('driver.checklist.create')" />
 
     {{-- Finance(TODO) --}}
-    {{-- <x-ui.menu-item backgroundColor="bg-darkGreen" icon="bi bi-cash-coin" :label="__('Finance')" link="#" /> --}}
+    <x-ui.menu-item backgroundColor="bg-darkGreen" icon="bi bi-cash-coin" :label="__('Finance')" :link="route('driver.menu.finance')" />
   </div>
   @if (!is_null($activity))
     <div class="bg-dash-dark-3 p-3 rounded">

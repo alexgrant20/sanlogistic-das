@@ -47,7 +47,7 @@
     </a>
 
     {{-- Location --}}
-    <a href="{{ route('driver.menu.checklist') }}"
+    <a href="{{ route('driver.checklist.create') }}"
       class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/checklist') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
       <i class="bi bi-clipboard2-check-fill fs-3 me-5"></i>
       {{ __('Checklist') }}
