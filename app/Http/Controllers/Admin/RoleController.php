@@ -19,7 +19,7 @@ class RoleController extends Controller
   {
     return view('admin.roles.index', [
       'title' => 'Role',
-      'roles' => Role::orderBy('name')->paginate(10),
+      'roles' => Role::whereNotIn('name', ['super-admin'])->orderBy('name')->paginate(10),
     ]);
   }
 
