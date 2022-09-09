@@ -8,7 +8,7 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form class="mb-5" action="{{ url("/admin/vehicles/$vehicle->license_plate") }}" method="POST"
+      <form class="mb-5" action="{{ route('admin.vehicles.update', $vehicle->license_plate) }}" method="POST"
         enctype="multipart/form-data" id="form">
         @csrf
         @method('PUT')

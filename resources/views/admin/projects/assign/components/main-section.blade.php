@@ -2,13 +2,13 @@
   <div class="p-5">
     <div class="row mb-4 g-3">
       <x-summary-box summaryTitle="Total Vehicle" summaryTotal="{{ $totalVehicle }}" icon="bi bi-truck" id="total-vehicle"
-        link="{{ route('admin.project.index.assign.vehicle', $project->name) }}" :active="Request::is('*/vehicle/*') ? true : false" />
+        link="{{ route('admin.projects.show.vehicles', $project->name) }}" :active="Request::is('*/vehicles/*') ? true : false" />
 
       <x-summary-box summaryTitle="Total Person" summaryTotal="{{ $totalPerson }}" icon="bi bi-person" id="total-person"
-        link="{{ route('admin.project.index.assign.person', $project->name) }}" :active="Request::is('*/person/*') ? true : false" />
+        link="{{ route('admin.projects.show.people', $project->name) }}" :active="Request::is('*/people/*') ? true : false" />
 
       <x-summary-box summaryTitle="Total Address" summaryTotal="{{ $totalAddress }}" icon="bi bi-house-door"
-        id="total-address" link="{{ route('admin.project.index.assign.address', $project->name) }}" :active="Request::is('*/address/*') ? true : false" />
+        id="total-address" link="{{ route('admin.projects.show.addresses', $project->name) }}" :active="Request::is('*/addresses/*') ? true : false" />
     </div>
     <div class="my-5">
       <div class="d-flex text-muted align-items-center justify-content-between">

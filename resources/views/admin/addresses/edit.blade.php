@@ -23,7 +23,7 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form action="{{ route('admin.address.update', $address->name) }}" method="POST" id="form">
+      <form action="{{ route('admin.addresses.update', $address->name) }}" method="POST" id="form">
         @csrf
         @method('PUT')
 

@@ -15,10 +15,11 @@ class ChecklistController extends Controller
 {
   public function create()
   {
+    $is_driver = auth()->user()->hasRole('driver');
 
-    $projectId = auth()->user()->person->project_id;
-
-    $vehicles = Vehicle::where('project_id', $projectId)->orderBy('license_plate')->get();
+    $vehicles = Vehicle::when($is_driver, function ($query) {
+      $query->where('project_id', auth()->user()->person->project_id);
+    })->orderBy('license_plate')->get();
 
     return view('driver.checklists.create', [
       'title' => 'Checklist',
@@ -120,66 +121,89 @@ class ChecklistController extends Controller
 
     $vehicleChecklist = VehicleChecklist::create($payload);
 
+    // 1 --> false
+    // 0 --> true
+    // when lamp is false than it's give no value
+
+    // ketika tidak tersedia (rusak) maka beri value 1
+    // namun ketika benar maka beri value sebelumnya
+    // 'lampu_besar' => !isset($request->lampu_besar) ? 1 : DB::raw('lampu_besar')
+
+    // ketika tidak tersedia (rusak) maka beri value SEBELUMNYA
+    // namun ketika benar maka beri value 0
+    // 'lampu_besar' => !isset($request->lampu_besar) ? DB::raw('lampu_besar') : 0
+
+    // Driver
+    function getChecklistVal($checklistName)
+    {
+      global $request;
+      if (auth()->user()->hasRole('driver')) {
+        return !isset($request[$checklistName]) ? 1 : DB::raw($checklistName);
+      } else {
+        return !isset($request[$checklistName]) ? DB::raw($checklistName) : 0;
+      }
+    }
+
     VehicleLastStatus::updateOrCreate(
       ['vehicle_id' => $request->vehicle_id],
       [
-        'lampu_besar' => !isset($request->lampu_besar) ? 1 : DB::raw('lampu_besar'),
-        'lampu_kota' => !isset($request->lampu_kota) ? 1 : DB::raw('lampu_kota'),
-        'lampu_rem' => !isset($request->lampu_rem) ? 1 : DB::raw('lampu_rem'),
-        'lampu_sein' => !isset($request->lampu_sein) ? 1 : DB::raw('lampu_sein'),
-        'lampu_mundur' => !isset($request->lampu_mundur) ? 1 : DB::raw('lampu_mundur'),
-        'lampu_kabin' => !isset($request->lampu_kabin) ? 1 : DB::raw('lampu_kabin'),
-        'lampu_senter' => !isset($request->lampu_senter) ? 1 : DB::raw('lampu_senter'),
-        'kaca_depan' => !isset($request->kaca_depan) ? 1 : DB::raw('kaca_depan'),
-        'kaca_samping' => !isset($request->kaca_samping) ? 1 : DB::raw('kaca_samping'),
-        'kaca_belakang' => !isset($request->kaca_belakang) ? 1 : DB::raw('kaca_belakang'),
-        'ban_depan' => !isset($request->ban_depan) ? 1 : DB::raw('ban_depan'),
-        'ban_belakang_dalam' => !isset($request->ban_belakang_dalam) ? 1 : DB::raw('ban_belakang_dalam'),
-        'ban_belakang_luar' => !isset($request->ban_belakang_luar) ? 1 : DB::raw('ban_belakang_luar'),
-        'ban_serep' => !isset($request->ban_serep) ? 1 : DB::raw('ban_serep'),
-        'tekanan_angin_ban_depan' => !isset($request->tekanan_angin_ban_depan) ? 1 : DB::raw('tekanan_angin_ban_depan'),
-        'tekanan_angin_ban_belakang_dalam' => !isset($request->tekanan_angin_ban_belakang_dalam) ? 1 : DB::raw('tekanan_angin_ban_belakang_dalam'),
-        'tekanan_angin_ban_belakang_luar' => !isset($request->tekanan_angin_ban_belakang_luar) ? 1 : DB::raw('tekanan_angin_ban_belakang_luar'),
-        'tekanan_angin_ban_serep' => !isset($request->tekanan_angin_ban_serep) ? 1 : DB::raw('tekanan_angin_ban_serep'),
-        'velg_ban_depan' => !isset($request->velg_ban_depan) ? 1 : DB::raw('velg_ban_depan'),
-        'velg_ban_belakang_dalam' => !isset($request->velg_ban_belakang_dalam) ? 1 : DB::raw('velg_ban_belakang_dalam'),
-        'velg_ban_belakang_luar' => !isset($request->velg_ban_belakang_luar) ? 1 : DB::raw('velg_ban_belakang_luar'),
-        'velg_ban_serep' => !isset($request->velg_ban_serep) ? 1 : DB::raw('velg_ban_serep'),
-        'ganjal_ban' => !isset($request->ganjal_ban) ? 1 : DB::raw('ganjal_ban'),
-        'dongkrak' => !isset($request->dongkrak) ? 1 : DB::raw('dongkrak'),
-        'kunci_roda' => !isset($request->kunci_roda) ? 1 : DB::raw('kunci_roda'),
-        'stang_kunci_roda' => !isset($request->stang_kunci_roda) ? 1 : DB::raw('stang_kunci_roda'),
-        'pipa_bantu' => !isset($request->pipa_bantu) ? 1 : DB::raw('pipa_bantu'),
-        'kotak_p3k' => !isset($request->kotak_p3k) ? 1 : DB::raw('kotak_p3k'),
-        'apar' => !isset($request->apar) ? 1 : DB::raw('apar'),
-        'emergency_triangle' => !isset($request->emergency_triangle) ? 1 : DB::raw('emergency_triangle'),
-        'tool_kit' => !isset($request->tool_kit) ? 1 : DB::raw('tool_kit'),
-        'seragam' => !isset($request->seragam) ? 1 : DB::raw('seragam'),
-        'safety_shoes' => !isset($request->safety_shoes) ? 1 : DB::raw('safety_shoes'),
-        'driver_license' => !isset($request->driver_license) ? 1 : DB::raw('driver_license'),
-        'kartu_keur' => !isset($request->kartu_keur) ? 1 : DB::raw('kartu_keur'),
-        'stnk' => !isset($request->stnk) ? 1 : DB::raw('stnk'),
-        'helmet' => !isset($request->helmet) ? 1 : DB::raw('helmet'),
-        'tatakan_menulis' => !isset($request->tatakan_menulis) ? 1 : DB::raw('tatakan_menulis'),
-        'ballpoint' => !isset($request->ballpoint) ? 1 : DB::raw('ballpoint'),
-        'straples' => !isset($request->straples) ? 1 : DB::raw('straples'),
-        'exhaust_brake' => !isset($request->exhaust_brake) ? 1 : DB::raw('exhaust_brake'),
-        'spion' => !isset($request->spion) ? 1 : DB::raw('spion'),
-        'wiper' => !isset($request->wiper) ? 1 : DB::raw('wiper'),
-        'tangki_bahan_bakar' => !isset($request->tangki_bahan_bakar) ? 1 : DB::raw('tangki_bahan_bakar'),
-        'tutup_tangki_bahan_bakar' => !isset($request->tutup_tangki_bahan_bakar) ? 1 : DB::raw('tutup_tangki_bahan_bakar'),
-        'tutup_radiator' => !isset($request->tutup_radiator) ? 1 : DB::raw('tutup_radiator'),
-        'accu' => !isset($request->accu) ? 1 : DB::raw('accu'),
-        'oli_mesin' => !isset($request->oli_mesin) ? 1 : DB::raw('oli_mesin'),
-        'minyak_rem' => !isset($request->minyak_rem) ? 1 : DB::raw('minyak_rem'),
-        'minyak_kopling' => !isset($request->minyak_kopling) ? 1 : DB::raw('minyak_kopling'),
-        'oli_hidraulic' => !isset($request->oli_hidraulic) ? 1 : DB::raw('oli_hidraulic'),
-        'klakson' => !isset($request->klakson) ? 1 : DB::raw('klakson'),
-        'panel_speedometer' => !isset($request->panel_speedometer) ? 1 : DB::raw('panel_speedometer'),
-        'panel_bahan_bakar' => !isset($request->panel_bahan_bakar) ? 1 : DB::raw('panel_bahan_bakar'),
-        'sunvisor' => !isset($request->sunvisor) ? 1 : DB::raw('sunvisor'),
-        'jok' => !isset($request->jok) ? 1 : DB::raw('jok'),
-        'air_conditioner' => !isset($request->air_conditioner) ? 1 : DB::raw('air_conditioner'),
+        'lampu_besar' => getChecklistVal('lampu_besar'),
+        'lampu_kota' => getChecklistVal('lampu_kota'),
+        'lampu_rem' => getChecklistVal('lampu_rem'),
+        'lampu_sein' => getChecklistVal('lampu_sein'),
+        'lampu_mundur' => getChecklistVal('lampu_mundur'),
+        'lampu_kabin' => getChecklistVal('lampu_kabin'),
+        'lampu_senter' => getChecklistVal('lampu_senter'),
+        'kaca_depan' => getChecklistVal('kaca_depan'),
+        'kaca_samping' => getChecklistVal('kaca_samping'),
+        'kaca_belakang' => getChecklistVal('kaca_belakang'),
+        'ban_depan' => getChecklistVal('ban_depan'),
+        'ban_belakang_dalam' => getChecklistVal('ban_belakang_dalam'),
+        'ban_belakang_luar' => getChecklistVal('ban_belakang_luar'),
+        'ban_serep' => getChecklistVal('ban_serep'),
+        'tekanan_angin_ban_depan' => getChecklistVal('tekanan_angin_ban_depan'),
+        'tekanan_angin_ban_belakang_dalam' => getChecklistVal('tekanan_angin_ban_belakang_dalam'),
+        'tekanan_angin_ban_belakang_luar' => getChecklistVal('tekanan_angin_ban_belakang_luar'),
+        'tekanan_angin_ban_serep' => getChecklistVal('tekanan_angin_ban_serep'),
+        'velg_ban_depan' => getChecklistVal('velg_ban_depan'),
+        'velg_ban_belakang_dalam' => getChecklistVal('velg_ban_belakang_dalam'),
+        'velg_ban_belakang_luar' => getChecklistVal('velg_ban_belakang_luar'),
+        'velg_ban_serep' => getChecklistVal('velg_ban_serep'),
+        'ganjal_ban' => getChecklistVal('ganjal_ban'),
+        'dongkrak' => getChecklistVal('dongkrak'),
+        'kunci_roda' => getChecklistVal('kunci_roda'),
+        'stang_kunci_roda' => getChecklistVal('stang_kunci_roda'),
+        'pipa_bantu' => getChecklistVal('pipa_bantu'),
+        'kotak_p3k' => getChecklistVal('kotak_p3k'),
+        'apar' => getChecklistVal('apar'),
+        'emergency_triangle' => getChecklistVal('emergency_triangle'),
+        'tool_kit' => getChecklistVal('tool_kit'),
+        'seragam' => getChecklistVal('seragam'),
+        'safety_shoes' => getChecklistVal('safety_shoes'),
+        'driver_license' => getChecklistVal('driver_license'),
+        'kartu_keur' => getChecklistVal('kartu_keur'),
+        'stnk' => getChecklistVal('stnk'),
+        'helmet' => getChecklistVal('helmet'),
+        'tatakan_menulis' => getChecklistVal('tatakan_menulis'),
+        'ballpoint' => getChecklistVal('ballpoint'),
+        'straples' => getChecklistVal('straples'),
+        'exhaust_brake' => getChecklistVal('exhaust_brake'),
+        'spion' => getChecklistVal('spion'),
+        'wiper' => getChecklistVal('wiper'),
+        'tangki_bahan_bakar' => getChecklistVal('tangki_bahan_bakar'),
+        'tutup_tangki_bahan_bakar' => getChecklistVal('tutup_tangki_bahan_bakar'),
+        'tutup_radiator' => getChecklistVal('tutup_radiator'),
+        'accu' => getChecklistVal('accu'),
+        'oli_mesin' => getChecklistVal('oli_mesin'),
+        'minyak_rem' => getChecklistVal('minyak_rem'),
+        'minyak_kopling' => getChecklistVal('minyak_kopling'),
+        'oli_hidraulic' => getChecklistVal('oli_hidraulic'),
+        'klakson' => getChecklistVal('klakson'),
+        'panel_speedometer' => getChecklistVal('panel_speedometer'),
+        'panel_bahan_bakar' => getChecklistVal('panel_bahan_bakar'),
+        'sunvisor' => getChecklistVal('sunvisor'),
+        'jok' => getChecklistVal('jok'),
+        'air_conditioner' => getChecklistVal('air_conditioner'),
         'address_id' => intval($vehicle->address_id),
         'odo' => intval($vehicle->odo),
       ]

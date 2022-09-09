@@ -8,7 +8,7 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form class="mb-5" action="{{ route('admin.vehicle.store') }}" method="post" enctype="multipart/form-data"
+      <form class="mb-5" action="{{ route('admin.vehicles.store') }}" method="post" enctype="multipart/form-data"
         id="form">
         @csrf
 

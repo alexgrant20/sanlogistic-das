@@ -14,39 +14,41 @@
       </div>
     </x-slot:body>
   </x-modal>
-  <form method="POST" action="{{ route('driver.activity.store') }}" enctype="multipart/form-data" id="form">
-    @csrf
+  <section>
+    <form method="POST" action="{{ route('driver.activity.store') }}" enctype="multipart/form-data" id="form">
+      @csrf
 
-    <div class="row gy-5 mb-5">
-      @livewire('driver.activity.vehicle-form', ['projectId' => $projectId, 'vehicles' => $vehicles])
-      <div class="col-xl-8">
-        <h4>Input Image</h4>
-        <hr>
-        <div class="row g-3">
-          <div class="col-md-6">
-            <x-input-image id="do_image" :label="__('DO Image')" :required="true" />
+      <div class="row gy-5 mb-5">
+        @livewire('driver.activity.vehicle-form', ['projectId' => $projectId, 'vehicles' => $vehicles])
+        <div class="col-xl-8">
+          <h4>Input Image</h4>
+          <hr>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <x-input-image id="do_image" :label="__('DO Image')" :required="true" />
+            </div>
+
+            <div class="col-md-6">
+              <x-input-image id="departure_odo_image" :label="__('ODO Image')" :required="true" />
+            </div>
           </div>
+        </div>
 
-          <div class="col-md-6">
-            <x-input-image id="departure_odo_image" :label="__('ODO Image')" :required="true" />
+        {{-- VEHICLE CHECKLIST --}}
+        <div class="col-12">
+          @include('driver.components.vehicle-checklist-form')
+        </div>
+
+        <div class="col-12">
+          <div class="d-grid">
+            <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#assure-modal">
+              {{ __('Submit') }}
+            </button>
           </div>
         </div>
       </div>
-
-      {{-- VEHICLE CHECKLIST --}}
-      <div class="col-12">
-        @include('driver.components.vehicle-checklist-form')
-      </div>
-
-      <div class="col-12">
-        <div class="d-grid">
-          <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#assure-modal">
-            {{ __('Submit') }}
-          </button>
-        </div>
-      </div>
-    </div>
-  </form>
+    </form>
+  </section>
 @endsection
 
 @section('footJS')

@@ -12,7 +12,7 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form action="{{ route('admin.company.store') }}" id="form" method="post" enctype="multipart/form-data">
+      <form action="{{ route('admin.companies.store') }}" id="form" method="post" enctype="multipart/form-data">
         @csrf
 
         @include('admin.companies.utils.form-ce')

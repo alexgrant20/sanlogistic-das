@@ -9,6 +9,6 @@ final class NotifactionTypeConstant
 
   public const NOTIFICATIONS = [
     'error' => '? Failed To ?!',
-    'success' => '? Successfully ?!'
+    'success' => '? Successfully ?!',
   ];
 }

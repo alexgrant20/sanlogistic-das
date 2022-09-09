@@ -32,13 +32,16 @@ class AuthController extends Controller
       $request->session()->regenerate();
 
       if ($user->hasRole('driver')) {
-        $activity = Activity::whereRelation('activityStatus', 'status', 'draft')->where('user_id', $user->id)->latest()->limit(1)->first();
+        $activity = Activity::whereRelation('activityStatus', 'status', 'draft')
+          ->where('user_id', $user->id)
+          ->where('created_by', $user->id)
+          ->latest()
+          ->limit(1)
+          ->first();
         if ($activity && $activity->id) $request->session()->put('activity_id', $activity->id);
       }
 
       Auth::logoutOtherDevices(request('password'));
-
-      $request->session()->put('user_role', $user->role->name);
 
       return to_route('index')
         ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'Login Successfull!'));

@@ -24,7 +24,7 @@
         </div>
       </div>
 
-      <form action="{{ route('admin.finance.audit', $activity->id) }}" method="post" id="form">
+      <form action="{{ route('admin.finances.audit', $activity->id) }}" method="post" id="form">
         @csrf
         @method('PUT')
         <div class="mb-5">

@@ -28,6 +28,12 @@ use App\Transaction\Constants\VehicleDTConstant;
 
 class VehicleController extends Controller
 {
+  public function __construct()
+  {
+    $this->middleware('can:create-vehicle', ['only' => ['create', 'store']]);
+    $this->middleware('can:edit-vehicle', ['only' => ['edit', 'update']]);
+    $this->middleware('can:view-vehicle', ['only' => ['index']]);
+  }
 
   public function index()
   {
@@ -154,14 +160,12 @@ class VehicleController extends Controller
     } catch (Exception $e) {
       DB::rollback();
 
-      return to_route('admin.vehicle.create')->withInput()
-        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'vehicle', 'create'));
+      return back()->withInput()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'vehicle', 'create'));
     }
 
     DB::commit();
 
-    return to_route('admin.vehicle.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'vehicle', 'created'));
+    return to_route('admin.vehicles.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'vehicle', 'created'));
   }
 
   public function edit(Vehicle $vehicle)
@@ -251,15 +255,12 @@ class VehicleController extends Controller
       dd($e->getMessage());
       DB::rollback();
 
-      return redirect("/admin/vehicles/{$vehicle->license_plate}/edit")
-        ->withInput()
-        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'vehicle', 'updated'));
+      return back()->withInput()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'vehicle', 'updated'));
     }
 
     DB::commit();
 
-    return to_route('admin.vehicle.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'vehicle', 'updated'));
+    return to_route('admin.vehicles.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'vehicle', 'updated'));
   }
 
   public function exportExcel(Request $request)
@@ -281,16 +282,14 @@ class VehicleController extends Controller
       $file = $request->file('file')->store('file-import/vehicle/');
       $import->import($file);
     } catch (Exception $e) {
-      return to_route('admin.vehicle.index')
-        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'vehicle', 'import'));
+      return to_route('admin.vehicles.index')->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'vehicle', 'import'));
     }
 
     if ($import->failures()->isNotEmpty()) {
       return back()->with('importErrorList', $import->failures());
     }
 
-    return to_route('admin.vehicle.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'vehicle', 'imported'));
+    return to_route('admin.vehicles.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'vehicle', 'imported'));
   }
 
   // Api Route

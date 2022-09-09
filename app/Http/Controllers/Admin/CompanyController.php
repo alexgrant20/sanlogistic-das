@@ -20,6 +20,13 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class CompanyController extends Controller
 {
+  public function __construct()
+  {
+    $this->middleware('can:create-company', ['only' => ['create', 'store']]);
+    $this->middleware('can:edit-company', ['only' => ['edit', 'update']]);
+    $this->middleware('can:view-company', ['only' => ['index']]);
+  }
+
   public function index()
   {
     $companies = Company::with('companyDocuments', 'city')->latest()->get();
@@ -76,15 +83,14 @@ class CompanyController extends Controller
     } catch (Exception $e) {
       DB::rollback();
 
-      return to_route('admin.company.create')
+      return back()
         ->withInput()
         ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'company', 'create'));
     }
 
     DB::commit();
 
-    return to_route('admin.company.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'company', 'created'));
+    return to_route('admin.companies.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'company', 'created'));
   }
 
   public function edit(Company $company)
@@ -148,8 +154,7 @@ class CompanyController extends Controller
 
     DB::commit();
 
-    return to_route('admin.company.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'company', 'updated'));
+    return to_route('admin.companies.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'company', 'updated'));
   }
 
   public function importExcel(Request $request)
@@ -164,16 +169,14 @@ class CompanyController extends Controller
       $file = $request->file('file')->store('file-import/company/');
       $import->import($file);
     } catch (Exception $e) {
-      return to_route('admin.company.index')
-        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'company', 'import'));
+      return to_route('admin.companies.index')->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'company', 'import'));
     }
 
     if ($import->failures()->isNotEmpty()) {
       return back()->with('importErrorList', $import->failures());
     }
 
-    return to_route('admin.company.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'company', 'imported'));
+    return to_route('admin.companies.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'company', 'imported'));
   }
 
   public function exportExcel(Request $request)

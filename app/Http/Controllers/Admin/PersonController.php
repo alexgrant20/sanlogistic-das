@@ -25,6 +25,13 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class PersonController extends Controller
 {
+  public function __construct()
+  {
+    $this->middleware('can:create-person', ['only' => ['create', 'store']]);
+    $this->middleware('can:edit-person', ['only' => ['edit', 'update']]);
+    $this->middleware('can:view-person', ['only' => ['index']]);
+  }
+
   public function index()
   {
     $people = Person::with('department', 'project', 'user')->latest()->get();
@@ -88,13 +95,11 @@ class PersonController extends Controller
     } catch (Exception $e) {
       DB::rollback();
 
-      return to_route('admin.person.create')->withInput()
-        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'person', 'create'));
+      return back()->withInput()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'person', 'create'));
     }
     DB::commit();
 
-    return to_route('admin.person.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'person', 'created'));
+    return to_route('admin.people.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'person', 'created'));
   }
 
   public function edit(Person $person)
@@ -170,14 +175,12 @@ class PersonController extends Controller
     } catch (Exception $e) {
       DB::rollback();
 
-      return to_route('admin.person.edit', $person->id)->withInput()
-        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'person', 'update'));
+      return back()->withInput()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'person', 'update'));
     }
 
     DB::commit();
 
-    return to_route('admin.person.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'person', 'updated'));
+    return to_route('admin.people.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'person', 'updated'));
   }
 
   public function importExcel(Request $request)
@@ -195,12 +198,10 @@ class PersonController extends Controller
         return back()->with('importErrorList', $import->failures());
       }
     } catch (Exception $e) {
-      return to_route('admin.person.index')
-        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'person', 'import'));
+      return to_route('admin.people.index')->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'person', 'import'));
     }
 
-    return to_route('admin.person.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'person', 'imported'));
+    return to_route('admin.people.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'person', 'imported'));
   }
 
   public function exportExcel(Request $request)

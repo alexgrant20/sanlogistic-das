@@ -2,7 +2,6 @@
 
 @section('container')
   <div class="page-content">
-    <!-- Page Header-->
     <div class="bg-dash-dark-2 py-4">
       <div class="container-fluid">
         <h2 class="h5 mb-0">Register</h2>
@@ -16,12 +15,10 @@
         </div>
       @enderror
 
-      <form action="/admin/users/{{ $user->id }}" method="post">
+      <form action=" {{ route('admin.users.update', $user->id) }}" method="POST" id="form">
         @csrf
         @method('PUT')
         <div class="mb-5">
-          <h4 class="text-primary fw-bold">Data</h4>
-          <hr>
           <div class="row g-2 mb-2">
             <div class="col-xl-4">
               <label for="username" class="form-label">Username</label>
@@ -49,20 +46,18 @@
             </div>
 
             <div class="col-xl-4">
-              <label for="role_id" class="form-label">Role</label>
-              <select name="role_id" id="role_id"
-                class="form-select form-select-lg  @error('role_id') is-invalid @enderror">
-                <option hidden></option>
+              <label for="role" class="form-label">Role</label>
+              <select name="role" class="form-select form-select-lg form-control @error('role') is-invalid @enderror"
+                id="role">
+                <option value="" hidden></option>
                 @foreach ($roles as $role)
-                  @if ($role['id'] == old('role_id', $user->role_id))
-                    <option value="{{ $role['id'] }}" selected>{{ $role['name'] }}</option>
-                  @else
-                    <option value="{{ $role['id'] }}">{{ $role['name'] }}</option>
-                  @endif
+                  <option value="{{ $role->name }}" @selected(($user->roles->first()->name ?? null) == $role->name)>
+                    {{ $role->name }}
+                  </option>
                 @endforeach
               </select>
 
-              @error('role_id')
+              @error('role')
                 <div class="invalid-feedback">
                   {{ $message }}
                 </div>
@@ -70,8 +65,9 @@
             </div>
           </div>
         </div>
-        <button type="submit" class="btn btn-lg btn-primary">Submit</button>
+
       </form>
+      <button type="submit" class="btn btn-lg btn-primary" id="submit">Submit</button>
     </section>
   </div>
 @endsection

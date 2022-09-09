@@ -10,7 +10,7 @@
     <section class="container-fluid">
       <div class="row mb-4">
         <x-summary-box summaryTitle="Total Person" summaryTotal="{{ $people->count() }}" icon="bi bi-person" id="total-person"
-          link="{{ route('admin.person.index') }}" disabled />
+          link="{{ route('admin.people.index') }}" disabled />
       </div>
       @include('admin.partials.import')
       <h4 class="text-primary fw-bold">Action</h4>
@@ -40,39 +40,46 @@
                 <td>{{ $person->id }}</td>
                 <td></td>
                 <td>
-                  <div class="dropdown">
-                    <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi bi-three-dots"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                      <li>
-                        <a href="{{ url("/admin/people/$person->id/edit") }}"class="dropdown-item"s>
-                          Edit
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
+                  @canany('edit-person')
+                    <div class="dropdown">
+                      <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-three-dots"></i>
+                      </button>
+                      <ul class="dropdown-menu">
+                        {{-- IF OTHER MENU EXISTS UNCOMENT THIS --}}
+                        {{-- @can('edit-person') --}}
+                        <li>
+                          <a href="{{ route('admin.people.edit', $person->id) }}"class="dropdown-item">
+                            Edit
+                          </a>
+                        </li>
+                        {{-- @endcan --}}
+                      </ul>
+                    </div>
+                  @endcan
                 </td>
                 <td>{{ $person->name }}</td>
                 <td>{{ $person->project->name ?? null }}</td>
                 <td>{{ $person->phone_number }}</td>
                 <td>{{ $person->department->name ?? null }}</td>
-                @if (isset($person->user->username))
-                  <td>
-                    <a href="{{ url("/admin/users/{$person->user->id}/edit") }}" class="btn badge bg-warning fs-6">
+
+                <td>
+                  @if ($person->user)
+                    <a href="{{ route('admin.users.edit', $person->user->id) }}" class="badge bg-warning fs-6">
                       <i class="bi bi-person-fill"></i>
                     </a>
-                  </td>
-                @else
-                  <td>
-                    <form action="{{ route('admin.user.create') }}">
-                      <input type="hidden" name="person_id" value="{{ $person->id }}">
-                      <button type="submit" class="btn badge bg-info fs-6">
+
+                    @can('assign-user-role-and-permission')
+                      <a href="{{ route('admin.users.show', $person->user->id) }}" class="badge bg-primary fs-6">
                         <i class="bi bi-person-plus-fill"></i>
-                      </button>
-                    </form>
-                  </td>
-                @endif
+                      </a>
+                    @endcan
+                  @else
+                    <a href="{{ route('admin.users.create', $person->id) }}" class="badge bg-info fs-6">
+                      <i class="bi bi-person-plus-fill"></i>
+                    </a>
+                  @endif
+                </td>
               </tr>
             @endforeach
           </tbody>

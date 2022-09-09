@@ -8,10 +8,12 @@
       class="col {{ Request::is('driver/profile') ? 'border-primary' : '' }} d-flex flex-column border-top-3 justify-content-center align-items-center p-2 text-decoration-none text-white">
       <i class="bi {{ Request::is('driver/profile') ? 'bi-person-fill text-primary' : 'bi-person' }} mb-2 fs-3"></i>
     </a>
-    <a href="{{ route('driver.activity.index') }}"
-      class="col {{ Request::is('driver/activities') ? 'border-primary' : '' }} d-flex flex-column border-top-3 justify-content-center align-items-center p-2 text-decoration-none text-white">
-      <i
-        class="fa-solid fa-clock-rotate-left {{ Request::is('driver/activities') ? 'text-primary' : '' }} mb-2 fs-3"></i>
-    </a>
+    @role('driver')
+      <a href="{{ route('driver.activity.index') }}"
+        class="col {{ Request::is('driver/activities') ? 'border-primary' : '' }} d-flex flex-column border-top-3 justify-content-center align-items-center p-2 text-decoration-none text-white">
+        <i
+          class="fa-solid fa-clock-rotate-left {{ Request::is('driver/activities') ? 'text-primary' : '' }} mb-2 fs-3"></i>
+      </a>
+    @endrole
   </div>
 </footer>

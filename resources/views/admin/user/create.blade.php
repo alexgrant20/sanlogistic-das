@@ -9,19 +9,17 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form action="{{ route('admin.user.store') }}" method="post" autocomplete="off">
+      <form action="{{ route('admin.users.store') }}" method="post" autocomplete="off" id="form">
         @csrf
+
+        <input type="hidden" name="person_id" value="{{ $person_id }}">
+
         <div class="mb-5">
-          <h4 class="text-primary fw-bold">Data</h4>
-          <hr>
           <div class="row g-2 mb-2">
-
-            <input type="hidden" name="person_id" value="{{ $person_id }}">
-
             <div class="col-xl-4">
               <label for="username" class="form-label">Username</label>
               <input type="text" class="form-control form-control-lg @error('username') is-invalid @enderror"
-                id="username" name="username" value="{{ old('username') }}" autofocus>
+                id="username" name="username" value="{{ old('username') }}" autocomplete="new-username" autofocus>
 
               @error('username')
                 <div class="invalid-feedback">
@@ -33,7 +31,7 @@
             <div class="col-xl-4">
               <label for="password" class="form-label">Password</label>
               <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror"
-                id="password" name="password">
+                id="password" name="password" autocomplete="new-password">
 
               @error('password')
                 <div class="invalid-feedback">
@@ -43,20 +41,16 @@
             </div>
 
             <div class="col-xl-4">
-              <label for="role_id" class="form-label">Role</label>
-              <select name="role_id" id="role_id"
-                class="form-select form-select-lg  @error('role_id') is-invalid @enderror">
-                <option hidden></option>
+              <label for="role" class="form-label">Role</label>
+              <select name="role" class="form-select form-select-lg form-control @error('role') is-invalid @enderror"
+                id="role">
+                <option value="" hidden></option>
                 @foreach ($roles as $role)
-                  @if ($role['id'] == old('role_id'))
-                    <option value="{{ $role['id'] }}" selected>{{ $role['name'] }}</option>
-                  @else
-                    <option value="{{ $role['id'] }}">{{ $role['name'] }}</option>
-                  @endif
+                  <option value="{{ $role->name }}">{{ $role->name }}</option>
                 @endforeach
               </select>
 
-              @error('role_id')
+              @error('role')
                 <div class="invalid-feedback">
                   {{ $message }}
                 </div>
@@ -64,8 +58,8 @@
             </div>
           </div>
         </div>
-        <button type="submit" class="btn btn-lg btn-primary">Submit</button>
       </form>
+      <button type="submit" class="btn btn-lg btn-primary" id="submit">Submit</button>
     </section>
   </div>
 @endsection

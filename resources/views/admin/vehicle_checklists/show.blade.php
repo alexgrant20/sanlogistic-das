@@ -115,7 +115,7 @@ function checkChecklist($checklist)
                       @endif
                       <tr>
                         <td>
-                          <a href="{{ route('admin.vehicleChecklist.show', $item['id']) }}" class="btn btn-primary">
+                          <a href="{{ route('admin.vehicles-checklists.show', $item['id']) }}" class="btn btn-primary">
                             <i class="fa-solid fa-eye"></i></a>
                         </td>
                         <td>{{ $item->get('odo') }}</td>

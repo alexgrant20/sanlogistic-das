@@ -8,6 +8,7 @@
 
     {{-- Menu --}}
 
+
     {{-- Home --}}
     <a href="{{ route('index') }}"
       class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('/') ? 'bg-primary' : '' }}  fs-4 rounded fw-bold">
@@ -22,43 +23,51 @@
       {{ __('Profile') }}
     </a>
 
-    {{-- History --}}
-    <a href="{{ route('driver.activity.index') }}"
-      class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/activities') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
-      <i class="fa-solid fa-clock-rotate-left fs-3 me-5"></i>
-      {{ __('History') }}
-    </a>
+    @role('driver')
+      {{-- History --}}
+      <a href="{{ route('driver.activity.index') }}"
+        class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/activities') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
+        <i class="fa-solid fa-clock-rotate-left fs-3 me-5"></i>
+        {{ __('History') }}
+      </a>
 
-    {{-- Activity --}}
-    @php
-      $activityId = is_null(session()->get('activity_id'));
-    @endphp
-    <a href="{{ $activityId ? route('driver.activity.create') : route('driver.activity.edit', session()->get('activity_id')) }}"
-      class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/activities/*') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
-      <i class="{{ $activityId ? 'bi-clipboard-plus-fill' : 'bi-flag' }} fs-3 me-5"></i>
-      {{ __('Activity') }}
-    </a>
+      {{-- Activity --}}
+      @php
+        $activityId = is_null(session()->get('activity_id'));
+      @endphp
+      <a href="{{ $activityId ? route('driver.activity.create') : route('driver.activity.edit', session()->get('activity_id')) }}"
+        class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/activities/*') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
+        <i class="{{ $activityId ? 'bi-clipboard-plus-fill' : 'bi-flag' }} fs-3 me-5"></i>
+        {{ __('Activity') }}
+      </a>
 
-    {{-- Location --}}
-    <a href="{{ route('driver.menu.location') }}"
-      class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/location') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
-      <i class="bi bi-map fs-3 me-5"></i>
-      {{ __('Location') }}
-    </a>
+      {{-- Location --}}
+      <a href="{{ route('driver.menu.location') }}"
+        class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/location') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
+        <i class="bi bi-map fs-3 me-5"></i>
+        {{ __('Location') }}
+      </a>
 
-    {{-- Location --}}
+      {{-- Finances --}}
+      <a href="#"
+        class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/finance') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
+        <i class="bi bi-cash-coin fs-3 me-5"></i>
+        {{ __('Finance') }}
+      </a>
+    @endrole
+
+    {{-- Checklist --}}
     <a href="{{ route('driver.checklist.create') }}"
       class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/checklist') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
       <i class="bi bi-clipboard2-check-fill fs-3 me-5"></i>
       {{ __('Checklist') }}
     </a>
 
-    {{-- Finances --}}
-    <a href="#"
-      class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/finance') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
-      <i class="bi bi-cash-coin fs-3 me-5"></i>
-      {{ __('Finance') }}
-    </a>
-
+    <form href="#" action="{{ route('logout') }}" method="POST" class="">
+      @csrf
+      <button class="btn fs-4 fw-bold text-white py-2 px-3" type="submit">
+        <i class="bi bi-box-arrow-right fs-3 me-5"></i>{{ __('Sign Out') }}
+      </button>
+    </form>
   </div>
 </div>

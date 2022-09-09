@@ -5,25 +5,28 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
-use App\Models\Address;
 use App\Models\Driver;
 use App\Models\Person;
-use App\Models\Role;
 use App\Models\User;
 use App\Transaction\Constants\NotifactionTypeConstant;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-
-  public function create(Request $request)
+  public function __construct()
   {
-    # Making sure person exists
-    $person = Person::findOrFail($request->person_id);
+    $this->middleware('can:assign-user-role-and-permission', ['only' => [
+      'show', 'create', 'removeRole',  'assignRole', 'givePermission', 'revokePermission'
+    ]]);
+  }
 
+  public function create(Person $person)
+  {
     # Making sure user not exists
     if ($person->user) return back();
 
@@ -36,30 +39,29 @@ class UserController extends Controller
 
   public function store(StoreUserRequest $request)
   {
-    $role = Role::find($request->role_id);
-
-    $userPayload = array_merge(
-      $request->safe()->toArray(),
-      ['password' => Hash::make($request->password)]
-    );
-
     DB::beginTransaction();
 
     try {
-      $user = User::create($userPayload);
-      $role->name !== "driver" ?: Driver::create(array('user_id' => $user->id));
+      $user = User::create([
+        'username' => $request->username,
+        'password' => Hash::make($request->password),
+        'person_id' => $request->person_id,
+      ]);
+
+      $request->role !== "driver" ?: Driver::create(array('user_id' => $user->id));
+      $user->assignRole($request->role);
     } catch (Exception $e) {
+
+      dd($e->getMessage());
+
       DB::rollBack();
 
-      return to_route('admin.person.index')
-        ->withInput()
-        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'user', 'create'));
+      return back()->withInput()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'user', 'create'));
     }
 
     DB::commit();
 
-    return to_route('admin.person.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'user', 'created'));
+    return to_route('admin.people.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'user', 'created'));
   }
 
   public function edit(User $user)
@@ -73,19 +75,16 @@ class UserController extends Controller
 
   public function update(UpdateUserRequest $request, User $user)
   {
-    $role = Role::find($request->role_id);
-
-    $userPayload = array_merge(
-      $request->safe()->toArray(),
-      ['password' => $request->password ? Hash::make($request->password) : $user->password],
-    );
-
     DB::beginTransaction();
-
     try {
-      $user->update($userPayload);
+      $user->update([
+        'username' => $request->username,
+        'password' => Hash::make($request->password),
+      ]);
 
-      if ($role->name === 'driver') {
+      $user->syncRoles(array($request->role));
+
+      if ($request->role === 'driver') {
         # If Driver already exists than no need to create
         Driver::firstOrCreate([
           'user_id' => $user->id,
@@ -94,13 +93,65 @@ class UserController extends Controller
     } catch (Exception $e) {
       DB::rollBack();
 
-      return redirect("/admin/users/{$user->id}/edit")
-        ->withInput()
-        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'user', 'update'));
+      return back()->withInput()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'user', 'update'));
     }
     DB::commit();
 
-    return to_route('admin.person.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'user', 'updated'));
+    return to_route('admin.people.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'user', 'updated'));
+  }
+
+  public function show(User $user)
+  {
+    if (empty($user->roles()->first())) return back()->with(genereateNotifaction('error', 'Please Assign User a Role!'));
+
+    $roles = Role::orderBy('name')->get();
+    $permissions = Permission::orderBy('name')->get();
+
+    return view('admin.user.role', [
+      'title' => 'User',
+      'roles' => $roles,
+      'permissions' => $permissions,
+      'user' => $user
+    ]);
+  }
+
+  public function assignRole(Request $request, User $user)
+  {
+    if ($user->hasRole($request->role)) {
+      return back()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'role', 'assign'));
+    }
+
+    $user->assignRole($request->role);
+    return back()->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'role', 'assigned'));
+  }
+
+  public function removeRole(User $user, Role $role)
+  {
+    if ($user->hasRole($role)) {
+      $user->removeRole($role);
+      return back()->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'role', 'removed'));
+    }
+    return back()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'role', 'remove'));
+  }
+
+  public function givePermission(Request $request, User $user)
+  {
+    $request->validate(['permission' => 'required']);
+
+    if ($user->hasPermissionTo($request->permission)) {
+      return back()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'user', 'permission'));
+    }
+
+    $user->givePermissionTo($request->permission);
+    return back()->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'permission', 'assigned'));
+  }
+
+  public function revokePermission(User $user, Permission $permission)
+  {
+    if ($user->hasPermissionTo($permission)) {
+      $user->revokePermissionTo($permission);
+      return back()->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'permission', 'revoked'));
+    }
+    return back()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'permission', 'revoked'));
   }
 }

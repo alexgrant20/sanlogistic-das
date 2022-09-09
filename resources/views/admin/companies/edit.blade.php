@@ -12,7 +12,7 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form action="{{ route('admin.company.update', $company->name) }}" method="POST" enctype="multipart/form-data"
+      <form action="{{ route('admin.companies.update', $company->name) }}" method="POST" enctype="multipart/form-data"
         id="form">
         @csrf
         @method('PUT')

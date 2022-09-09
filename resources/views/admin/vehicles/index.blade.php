@@ -49,26 +49,31 @@
                 <td>{{ $vehicle->id }}</td>
                 <td></td>
                 <td>
-                  <div class="dropdown">
-                    <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi bi-three-dots"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                      <li>
-                        <a href="{{ route('admin.vehicle.edit', $vehicle->license_plate) }}" class="dropdown-item">
-                          Edit
-                        </a>
-                      </li>
-                      @if (!empty($vehicle->vehicle_last_status_id))
-                        <li>
-                          <a href="{{ route('admin.vehicleLastStatus.show', $vehicle->license_plate) }}"
-                            class="dropdown-item">
-                            Last Status
-                          </a>
-                        </li>
-                      @endif
-                    </ul>
-                  </div>
+                  @if (!empty($vehicle->vehicle_last_status_id) and
+                      auth()->user()->can('edit-vehicle'))
+                    <div class="dropdown">
+                      <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-three-dots"></i>
+                      </button>
+                      <ul class="dropdown-menu">
+                        @can('edit-vehicle')
+                          <li>
+                            <a href="{{ route('admin.vehicles.edit', $vehicle->license_plate) }}" class="dropdown-item">
+                              Edit
+                            </a>
+                          </li>
+                        @endcan
+                        @if (!empty($vehicle->vehicle_last_status_id))
+                          <li>
+                            <a href="{{ route('admin.vehicles-last-statuses.show', $vehicle->license_plate) }}"
+                              class="dropdown-item">
+                              Last Status
+                            </a>
+                          </li>
+                        @endif
+                      </ul>
+                    </div>
+                  @endif
                 </td>
                 <td>
                   @php

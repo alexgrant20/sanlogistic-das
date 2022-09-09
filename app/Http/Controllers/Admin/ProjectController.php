@@ -21,6 +21,13 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ProjectController extends Controller
 {
+  public function __construct()
+  {
+    $this->middleware('can:create-project', ['only' => ['create', 'store']]);
+    $this->middleware('can:edit-project', ['only' => ['edit', 'update']]);
+    $this->middleware('can:view-project', ['only' => ['index']]);
+  }
+
   public function index()
   {
     return view('admin.projects.index', [
@@ -42,7 +49,7 @@ class ProjectController extends Controller
   {
     Project::create($request->safe()->toArray());
 
-    return to_route('admin.project.index')
+    return to_route('admin.projects.index')
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'project', 'created'));
   }
 
@@ -59,7 +66,7 @@ class ProjectController extends Controller
   {
     $project->update($request->safe()->toArray());
 
-    return to_route('admin.project.index')
+    return to_route('admin.projects.index')
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'project', 'updated'));
   }
 
@@ -75,7 +82,7 @@ class ProjectController extends Controller
 
       $import->import($file);
     } catch (Exception $e) {
-      return to_route('admin.project.index')
+      return to_route('admin.projects.index')
         ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'project', 'import'));
     }
 
@@ -83,7 +90,7 @@ class ProjectController extends Controller
       return back()->with('importErrorList', $import->failures());
     }
 
-    return to_route('admin.project.index')
+    return to_route('admin.projects.index')
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'project', 'imported'));
   }
 

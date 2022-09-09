@@ -23,7 +23,7 @@
 
       function getData(keyword, templateId, type) {
         $.ajax({
-          url: '/admin/project/vehicle',
+          url: "{{ route('admin.projects.vehicles') }}",
           type: 'GET',
           data: {
             keyword,
@@ -144,7 +144,7 @@
         $('button').prop("disabled", true);
 
         request = $.ajax({
-          url: "/admin/assign/vehicle",
+          url: "{{ route('admin.projects.assign.vehicles') }}",
           type: "post",
           data: serializedData
         });

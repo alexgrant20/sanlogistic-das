@@ -2,11 +2,11 @@
   <div class="container-fluid">
     <h2 class="h5 mb-0" style="letter-spacing: 0.5px">
       Assign
-      @if (Request::is('*/assign/address/*'))
+      @if (Request::is('*/assign/addresses/*'))
         Address
-      @elseif (Request::is('*/assign/vehicle/*'))
+      @elseif (Request::is('*/assign/vehicles/*'))
         Vehicle
-      @elseif (Request::is('*/assign/person/*'))
+      @elseif (Request::is('*/assign/people/*'))
         Person
       @endif
       <select name="project_name" id="project_name" class="fs-5 text-primary ms-1 form-select w-auto d-inline">

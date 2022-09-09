@@ -39,7 +39,7 @@
 
 <body class="min-vh-100 min-vw-100 background">
   @include('driver.partials.header')
-  <div class="px-3 pt-5" style="padding-bottom: 120px">
+  <div class="px-3" style="padding-bottom: 120px">
     @yield('content')
   </div>
   @include('driver.partials.footer')

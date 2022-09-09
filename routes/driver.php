@@ -7,7 +7,7 @@ use App\Http\Controllers\Driver\MenuController;
 use App\Http\Controllers\Driver\VehicleController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('driver')->name('driver.')->middleware('auth', 'driver')->group(function () {
+Route::prefix('driver')->name('driver.')->middleware('auth', 'role:driver|mechanic')->group(function () {
 
   // Route::get('/activities/create', \App\Http\Livewire\Driver\Activity\Create::class)->name('activity.create');
 

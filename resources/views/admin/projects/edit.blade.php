@@ -9,7 +9,7 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form action="{{ url("/admin/projects/$project->name") }}" classs="mb-5" method="POST" id="form">
+      <form action="{{ route('admin.projects.update', $project->name) }}" classs="mb-5" method="POST" id="form">
         @csrf
         @method('PUT')
 

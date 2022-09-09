@@ -10,23 +10,25 @@ class IndexController extends Controller
 {
   public function index()
   {
-    $isUserDriver = Session::get('user_role') === 'driver';
-
     $params = [
       'title' => 'Home'
     ];
 
-    if ($isUserDriver) {
-      $activity = Activity::where('user_id', auth()->user()->id)
+    $user = auth()->user();
+
+    if ($user->hasAnyRole('super-admin', 'admin')) {
+      return view('admin.index', $params);
+    }
+
+    if ($user->hasRole('driver')) {
+      $activity = Activity::where('user_id', $user->id)
         ->with(['departureLocation', 'arrivalLocation'])
         ->latest()
         ->first();
 
       $params['activity'] = $activity;
-
-      return view('driver.index', $params);
-    } else {
-      return view('admin.index', $params);
     }
+
+    return view('driver.index', $params);
   }
 }

@@ -65,7 +65,7 @@
 
         const data = JSON.stringify(uniqueIds);
 
-        await fetch("/admin/finances/pay", {
+        await fetch("{{ route('admin.finances.pay') }}", {
           method: "post",
           headers: {
             "X-CSRF-Token": $("input[name=_token]").val(),
@@ -109,7 +109,7 @@
     {{-- EXCEL MODAL --}}
     <x-modal id="exportExcel" size="modal-lg" title="Export">
       <x-slot:body>
-        <form id="exportExcelForm" method="post" action="{{ route('admin.finance.export.excel.accepted') }}"
+        <form id="exportExcelForm" method="post" action="{{ route('admin.finances.export.excel') }}"
           enctype="multipart/form-data">
           @csrf
 
@@ -171,7 +171,7 @@
               <td>{{ $activity->user_id }}</td>
               <td></td>
               <td>
-                <form action="{{ route('admin.finance.reject') }}" method="POST">
+                <form action="{{ route('admin.finances.reject') }}" method="POST">
                   @csrf
                   <input type="hidden" name="project_id" value="{{ $activity->project_id }}">
                   <input type="hidden" name="user_id" value="{{ $activity->user_id }}">

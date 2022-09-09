@@ -23,6 +23,13 @@ use Maatwebsite\Excel\Facades\Excel;
 class ActivityController extends Controller
 {
 
+  public function __construct()
+  {
+    $this->middleware('can:create-activity', ['only' => ['create', 'store']]);
+    $this->middleware('can:edit-activity', ['only' => ['edit', 'update']]);
+    $this->middleware('can:view-activity', ['only' => ['index']]);
+  }
+
   public function index(Request $request)
   {
     $q_status = $request->status;
@@ -56,13 +63,13 @@ class ActivityController extends Controller
       'title' => 'Activities',
       'activities' => $activities,
       'activities_filtered' => $activities_filtered,
-      'importPath' => '/admin/activities/import/excel',
+      'importPath' => route('admin.activities.export.excel'),
     ]);
   }
 
   public function create()
   {
-    $users = User::orderBy('username')->whereRelation('role', 'name', 'driver')->get();
+    $users = User::orderBy('username')->whereRelation('roles', 'name', 'driver')->get();
 
     return view('admin.activities.create', [
       'title' => 'Create Activity',
@@ -129,20 +136,19 @@ class ActivityController extends Controller
     } catch (Exception $e) {
       DB::rollback();
 
-      return to_route('admin.activity.create')
+      return back()
         ->withInput()
         ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'create'));
     }
 
     DB::commit();
 
-    return to_route('admin.activity.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'created'));
+    return to_route('admin.activities.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'created'));
   }
 
   public function edit(Activity $activity)
   {
-    $users = User::orderBy('username')->whereRelation('role', 'name', 'driver')->get();
+    $users = User::orderBy('username')->whereRelation('roles', 'name', 'driver')->get();
 
     return view('admin.activities.edit', [
       'title' => 'Update Activity',
@@ -215,14 +221,13 @@ class ActivityController extends Controller
     } catch (Exception $e) {
       DB::rollback();
 
-      return redirect("/admin/activities/{$activity->id}/edit")
+      return back()
         ->withInput()
         ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'update'));
     }
     DB::commit();
 
-    return to_route('admin.activity.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'updated'));
+    return to_route('admin.activities.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'updated'));
   }
 
   public function importExcel(Request $request)
@@ -236,16 +241,14 @@ class ActivityController extends Controller
       $file = $request->file('file')->store('file-import/activity/');
       $import->import($file);
     } catch (Exception $e) {
-      return to_route('admin.activity.index')
-        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'import'));
+      return to_route('admin.activities.index')->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'import'));
     }
 
     if ($import->failures()->isNotEmpty()) {
       return back()->with('importErrorList', $import->failures());
     }
 
-    return to_route('admin.activity.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'imported'));
+    return to_route('admin.activities.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'imported'));
   }
 
   public function exportExcel(Request $request)
@@ -261,10 +264,11 @@ class ActivityController extends Controller
     $activityStatus = DB::table('activity_statuses')
       ->leftJoin('users', 'activity_statuses.created_by', '=', 'users.id')
       ->leftJoin('people', 'users.person_id', '=', 'people.id')
-      ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+      ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+      ->leftJoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
       ->where('activity_id', $activity->id)
       ->get(['status', 'people.name', 'activity_statuses.created_at', 'roles.name AS role']);
 
-    return to_route('admin.activity.index')->with('log_data', $activityStatus);
+    return to_route('admin.activities.index')->with('log_data', $activityStatus);
   }
 }

@@ -11,31 +11,31 @@
     <section class="container-fluid">
       <div class="row mb-4 g-3">
         <x-summary-box summaryTitle="Total Activity" summaryTotal="{{ $activities->count() }}" icon="bi bi-journal-text"
-          id="total-activity" link="{{ route('admin.activity.index') }}" :active="empty(Request::getQueryString()) ? true : false" />
+          id="total-activity" link="{{ route('admin.activities.index') }}" :active="empty(Request::getQueryString()) ? true : false" />
 
         <x-summary-box summaryTitle="On Going"
           summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'draft')->count() }}"
           icon="bi bi-journal-arrow-up" id="total-ongoing-activity"
-          link="{{ route('admin.activity.index') . '?status=draft' }}" :active="Request::getQueryString() === 'status=draft' ? true : false" />
+          link="{{ route('admin.activities.index') . '?status=draft' }}" :active="Request::getQueryString() === 'status=draft' ? true : false" />
 
         <x-summary-box summaryTitle="Pending"
           summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'pending')->count() }}"
           icon="bi bi-journal-medical" id="total-pending-activity"
-          link="{{ route('admin.activity.index') . '?status=pending' }}" :active="Request::getQueryString() === 'status=pending' ? true : false" />
+          link="{{ route('admin.activities.index') . '?status=pending' }}" :active="Request::getQueryString() === 'status=pending' ? true : false" />
 
         <x-summary-box summaryTitle="Approved"
           summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'approved')->count() }}"
           icon="bi bi-journal-check" id="total-approved-activity"
-          link="{{ route('admin.activity.index') . '?status=approved' }}" :active="Request::getQueryString() === 'status=approved' ? true : false" />
+          link="{{ route('admin.activities.index') . '?status=approved' }}" :active="Request::getQueryString() === 'status=approved' ? true : false" />
 
         <x-summary-box summaryTitle="Rejected"
           summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'rejected')->count() }}"
           icon="bi bi-journal-x" id="total-rejected-activity"
-          link="{{ route('admin.activity.index') . '?status=rejected' }}" :active="Request::getQueryString() === 'status=rejected' ? true : false" />
+          link="{{ route('admin.activities.index') . '?status=rejected' }}" :active="Request::getQueryString() === 'status=rejected' ? true : false" />
 
         <x-summary-box summaryTitle="Paid"
           summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'paid')->count() }}"
-          icon="bi bi-wallet-fill" id="total-paid-activity" link="{{ route('admin.activity.index') . '?status=paid' }}"
+          icon="bi bi-wallet-fill" id="total-paid-activity" link="{{ route('admin.activities.index') . '?status=paid' }}"
           :active="Request::getQueryString() === 'status=paid' ? true : false" />
       </div>
 
@@ -102,13 +102,15 @@
                       <i class="bi bi-three-dots"></i>
                     </button>
                     <ul class="dropdown-menu">
+                      @can('edit-activity')
+                        <li>
+                          <a href="{{ route('admin.activities.edit', $activity->id) }}" class="dropdown-item">
+                            Edit
+                          </a>
+                        </li>
+                      @endcan
                       <li>
-                        <a href="{{ route('admin.activity.edit', $activity->id) }}" class="dropdown-item">
-                          Edit
-                        </a>
-                      </li>
-                      <li>
-                        <a href="{{ route('admin.activity.log', $activity->id) }}" class="dropdown-item">
+                        <a href="{{ route('admin.activities.logs', $activity->id) }}" class="dropdown-item">
                           History Log
                         </a>
                       </li>

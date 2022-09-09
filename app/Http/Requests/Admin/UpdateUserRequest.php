@@ -16,7 +16,7 @@ class UpdateUserRequest extends FormRequest
     return [
       'username' => "required|unique:users,username,{$this->user->id}",
       'password' => 'nullable|min:5',
-      'role_id' => 'required',
+      'role' => 'required|exists:roles,name',
     ];
   }
 }

@@ -11,7 +11,7 @@
     <section class="container-fluid">
       <div class="row mb-4">
         <x-summary-box summaryTitle="Total Project" summaryTotal="{{ $projects->count() }}" icon="bi bi-kanban"
-          id="total-project" link="{{ route('admin.project.index') }}" disabled />
+          id="total-project" link="{{ route('admin.projects.index') }}" disabled />
       </div>
 
       @include('admin.partials.import')
@@ -46,23 +46,25 @@
                       <i class="bi bi-three-dots"></i>
                     </button>
                     <ul class="dropdown-menu">
+                      @can('edit-project')
+                        <li>
+                          <a href="{{ route('admin.projects.edit', $project->name) }}" class="dropdown-item">
+                            Edit
+                          </a>
+                        </li>
+                      @endcan
                       <li>
-                        <a href="{{ url("/admin/projects/$project->name/edit") }}" class="dropdown-item">
-                          Edit
-                        </a>
-                      </li>
-                      <li>
-                        <a href="{{ url("/admin/assign/vehicle/$project->name") }}" class="dropdown-item">
+                        <a href="{{ route('admin.projects.show.vehicles', $project->name) }}" class="dropdown-item">
                           Assign Vehicle
                         </a>
                       </li>
                       <li>
-                        <a href="{{ url("/admin/assign/address/$project->name") }}" class="dropdown-item">
+                        <a href="{{ route('admin.projects.show.addresses', $project->name) }}" class="dropdown-item">
                           Assign Address
                         </a>
                       </li>
                       <li>
-                        <a href="{{ url("/admin/assign/person/$project->name") }}" class="dropdown-item">
+                        <a href="{{ route('admin.projects.show.people', $project->name) }}" class="dropdown-item">
                           Assign Person
                         </a>
                       </li>

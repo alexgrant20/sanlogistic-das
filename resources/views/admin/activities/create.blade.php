@@ -8,7 +8,7 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form action="{{ route('admin.activity.store') }}" method="post" enctype="multipart/form-data" id="form">
+      <form action="{{ route('admin.activities.store') }}" method="post" enctype="multipart/form-data" id="form">
         @csrf
 
         @include('admin.activities.utils.form-ce')

@@ -127,7 +127,7 @@ function checkChecklist($checklist)
                 </div>
               </div>
               <div class="text-center">
-                <a href="{{ route('admin.vehicleChecklist.show', $latestVehicleChecklist['id']) }}"
+                <a href="{{ route('admin.vehicles-checklists.show', $latestVehicleChecklist['id']) }}"
                   class="text-gray-500 fs-6 link">See
                   All Report <i class="fa-solid fa-arrow-right"></i></a>
               </div>

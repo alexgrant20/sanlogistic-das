@@ -17,7 +17,6 @@ use App\Models\PoolType;
 use App\Models\Project;
 use App\Models\Province;
 use App\Models\Regional;
-use App\Models\Role;
 use App\Models\SimType;
 use App\Models\Subdistrict;
 use App\Models\Vehicle;
@@ -27,103 +26,89 @@ use App\Models\VehicleTowing;
 use App\Models\VehicleType;
 use App\Models\VehicleVariety;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
-  /**
-   * Seed the application's database.
-   *
-   * @return void
-   */
-  public function run()
-  {
+	/**
+	 * Seed the application's database.
+	 *
+	 * @return void
+	 */
+	public function run()
+	{
 
-    $this->call([
-      ProvinceSeeder::class,
-      CitySeeder::class,
-      DistrictSeeder::class,
-      SubdistrictSeeder::class,
-    ]);
+		$this->call([
+			ProvinceSeeder::class,
+			CitySeeder::class,
+			DistrictSeeder::class,
+			SubdistrictSeeder::class,
+		]);
 
-    Role::create([
-      'name' => 'admin'
-    ]);
+		Role::create(['name' => 'admin']);
+		Role::create(['name' => 'driver']);
+		Role::create(['name' => 'finances']);
 
-    Role::create([
-      'name' => 'driver'
-    ]);
+		VehicleLicensePlateColor::create([
+			'name' => 'black'
+		]);
 
-    Role::create([
-      'name' => 'finances'
-    ]);
+		VehicleLicensePlateColor::create(['name' => 'yellow']);
 
-    VehicleLicensePlateColor::create([
-      'name' => 'black'
-    ]);
+		AddressType::create(['name' => 'Kantor Utama']);
 
-    VehicleLicensePlateColor::create([
-      'name' => 'yellow'
-    ]);
+		AddressType::create([
+			'name' => 'Tujuan Pengiriman'
+		]);
 
+		AddressType::create([
+			'name' => 'Pool'
+		]);
 
-    AddressType::create([
-      'name' => 'Kantor Utama'
-    ]);
+		AddressType::create([
+			'name' => 'Station'
+		]);
 
-    AddressType::create([
-      'name' => 'Tujuan Pengiriman'
-    ]);
+		AddressType::create([
+			'name' => 'Workshop'
+		]);
 
-    AddressType::create([
-      'name' => 'Pool'
-    ]);
+		AddressType::create([
+			'name' => 'PKB/SAMSAT'
+		]);
 
-    AddressType::create([
-      'name' => 'Station'
-    ]);
+		Department::factory(10)->create();
+		SimType::factory(5)->create();
+		CompanyType::factory(5)->create();
+		VehicleBrand::factory(10)->create();
+		VehicleType::factory(30)->create();
+		VehicleVariety::factory(20)->create();
+		Regional::factory(20)->create();
+		Area::factory(30)->create();
+		Province::factory(20)->create();
+		City::factory(20)->create();
+		District::factory(20)->create();
+		Subdistrict::factory(20)->create();
+		PoolType::factory(10)->create();
+		Address::factory(20)->create();
+		Company::factory(20)->create();
+		Project::factory(20)->create();
+		Person::factory(20)->create();
+		VehicleTowing::factory(10)->create();
+		Vehicle::factory(20)->create();
 
-    AddressType::create([
-      'name' => 'Workshop'
-    ]);
+		User::create([
+			'person_id' => '1',
+			'username' => 'admin',
+			'password' => bcrypt('admin')
+		])->assignRole('admin');
 
-    AddressType::create([
-      'name' => 'PKB/SAMSAT'
-    ]);
+		User::create([
+			'person_id' => '2',
+			'username' => 'driver',
+			'password' => bcrypt('driver')
+		])->assignRole('driver');
 
-    Department::factory(10)->create();
-    SimType::factory(5)->create();
-    CompanyType::factory(5)->create();
-    VehicleBrand::factory(10)->create();
-    VehicleType::factory(30)->create();
-    VehicleVariety::factory(20)->create();
-    Regional::factory(20)->create();
-    Area::factory(30)->create();
-    Province::factory(20)->create();
-    City::factory(20)->create();
-    District::factory(20)->create();
-    Subdistrict::factory(20)->create();
-    PoolType::factory(10)->create();
-    Address::factory(20)->create();
-    Company::factory(20)->create();
-    Project::factory(20)->create();
-    Person::factory(20)->create();
-    VehicleTowing::factory(10)->create();
-    Vehicle::factory(20)->create();
-
-    User::create([
-      'person_id' => '1',
-      'role_id' => '1',
-      'username' => 'admin',
-      'password' => bcrypt('admin')
-    ]);
-
-    User::create([
-      'person_id' => '2',
-      'role_id' => '2',
-      'username' => 'driver',
-      'password' => bcrypt('driver')
-    ]);
-
-    Driver::factory(1)->create();
-  }
+		Driver::factory(1)->create();
+	}
 }

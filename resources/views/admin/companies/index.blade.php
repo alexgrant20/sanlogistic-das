@@ -11,7 +11,7 @@
     <section class="container-fluid">
       <div class="row mb-4">
         <x-summary-box summaryTitle="Total Company" summaryTotal="{{ $companies->count() }}" icon="bi bi-building"
-          id="total-company" link="{{ route('admin.company.index') }}" disabled />
+          id="total-company" link="{{ route('admin.companies.index') }}" disabled />
       </div>
 
       @include('admin.partials.import')
@@ -43,18 +43,23 @@
                 <td>{{ $company->id }}</td>
                 <td></td>
                 <td>
-                  <div class="dropdown">
-                    <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi bi-three-dots"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                      <li>
-                        <a href="{{ route('admin.company.edit', $company->name) }}" class="dropdown-item">
-                          Edit
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
+                  @canany('edit-company')
+                    <div class="dropdown">
+                      <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-three-dots"></i>
+                      </button>
+                      <ul class="dropdown-menu">
+                        {{-- IF OTHER MENU EXISTS UNCOMENT THIS --}}
+                        {{-- @can('edit-company') --}}
+                        <li>
+                          <a href="{{ route('admin.companies.edit', $company->name) }}" class="dropdown-item">
+                            Edit
+                          </a>
+                        </li>
+                        {{-- @endcan --}}
+                      </ul>
+                    </div>
+                  @endcanany
                 </td>
                 <td>{{ $company->name }}</td>
                 <td>Active</td>

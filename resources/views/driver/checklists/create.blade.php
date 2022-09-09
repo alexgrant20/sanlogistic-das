@@ -1,16 +1,6 @@
 @extends('driver.layouts.main')
 
 @section('content')
-  @if ($errors->any())
-    <div class="alert alert-danger">
-      <p><strong>Opps Something went wrong</strong></p>
-      <ul>
-        @foreach ($errors->all() as $error)
-          <li>{{ $error }}</li>
-        @endforeach
-      </ul>
-    </div>
-  @endif
   <x-modal id="assure-modal" size="modal-lg">
     <x-slot:body>
       <div class="d-flex flex-column align-items-center mb-3">
@@ -24,33 +14,46 @@
       </div>
     </x-slot:body>
   </x-modal>
-  <form action="{{ route('driver.checklist.store') }}" enctype="multipart/form-data" method="POST" id="form">
-    @csrf
-    <div class="mb-5">
-      <label for="vehicle_id" class="form-label fs-5 text-primary">Kendaraan</label>
-      <select id="vehicle_id" name="vehicle_id" class="form-dark form-select form-select-lg">
-        <option value="" hidden>Pilih Kendaraan</option>
-        @foreach ($vehicles as $vehicle)
-          <option value="{{ $vehicle->id }}">{{ $vehicle->license_plate }}</option>
-        @endforeach
-      </select>
+  <section>
+    @if ($errors->any())
+      <div class="alert alert-danger">
+        <p><strong>Opps Something went wrong</strong></p>
+        <ul>
+          @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+          @endforeach
+        </ul>
+      </div>
+    @endif
 
-      @error('vehicle_id')
-        <div class="invalid-feedback d-block">
-          {{ $message }}
-        </div>
-      @enderror
-    </div>
+    <form action="{{ route('driver.checklist.store') }}" enctype="multipart/form-data" method="POST" id="form">
+      @csrf
+      <div class="mb-5">
+        <label for="vehicle_id" class="form-label fs-5 text-primary">Kendaraan</label>
+        <select id="vehicle_id" name="vehicle_id" class="form-dark form-select form-select-lg">
+          <option value="" hidden>Pilih Kendaraan</option>
+          @foreach ($vehicles as $vehicle)
+            <option value="{{ $vehicle->id }}">{{ $vehicle->license_plate }}</option>
+          @endforeach
+        </select>
 
-    @include('driver.components.vehicle-checklist-form')
+        @error('vehicle_id')
+          <div class="invalid-feedback d-block">
+            {{ $message }}
+          </div>
+        @enderror
+      </div>
 
-    <div class="d-grid">
-      <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#assure-modal">
-        {{ __('Submit') }}
-      </button>
-    </div>
+      @include('driver.components.vehicle-checklist-form')
 
-  </form>
+      <div class="d-grid">
+        <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#assure-modal">
+          {{ __('Submit') }}
+        </button>
+      </div>
+
+    </form>
+  </section>
 @endsection
 
 @section('footJS')

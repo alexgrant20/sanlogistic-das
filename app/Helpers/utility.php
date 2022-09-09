@@ -148,13 +148,11 @@ function genereateNotifaction(string $notifType, string $subject = "", string $a
 {
   $message = NotifactionTypeConstant::NOTIFICATIONS[$notifType];
 
-  if (!$message) {
-    return [];
+  if ($message) {
+    $message = Str::wordCount($action) > 0 ?
+      Str::replaceArray('?', [ucfirst($subject), ucfirst($action)], $message) :
+      $subject;
   }
-
-  $message = Str::wordCount($action) > 0 ?
-    Str::replaceArray('?', [ucfirst($subject), ucfirst($action)], $message) :
-    $subject;
 
   return [
     'message' => $message,

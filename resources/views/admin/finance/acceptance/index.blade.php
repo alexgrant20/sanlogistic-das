@@ -112,17 +112,17 @@
       </x-modal>
       <div class="row mb-4 g-3">
         <x-summary-box summaryTitle="Total" summaryTotal="{{ $activities->count() }}" icon="bi bi-journal-text"
-          id="total-activity" link="{{ route('admin.finance.acceptance') }}" :active="empty(Request::getQueryString()) ? true : false" />
+          id="total-activity" link="{{ route('admin.finances.approval') }}" :active="empty(Request::getQueryString()) ? true : false" />
 
         <x-summary-box summaryTitle="Pending"
           summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'pending')->count() }}"
           icon="bi bi-journal-medical" id="total-pending-activity"
-          link="{{ route('admin.finance.acceptance') . '?status=pending' }}" :active="Request::getQueryString() === 'status=pending' ? true : false" />
+          link="{{ route('admin.finances.approval') . '?status=pending' }}" :active="Request::getQueryString() === 'status=pending' ? true : false" />
 
         <x-summary-box summaryTitle="Rejected"
           summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'rejected')->count() }}"
           icon="bi bi-journal-x" id="total-rejected-activity"
-          link="{{ route('admin.finance.acceptance') . '?status=rejected' }}" :active="Request::getQueryString() === 'status=rejected' ? true : false" />
+          link="{{ route('admin.finances.approval') . '?status=rejected' }}" :active="Request::getQueryString() === 'status=rejected' ? true : false" />
       </div>
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
@@ -158,7 +158,7 @@
                   <input type="checkbox" id="btncheck1" class="form-check-input">
                 </td>
                 <td>
-                  <a href="{{ route('admin.finance.acceptance.edit', $activity->id) }}" class="badge bg-primary fs-6">
+                  <a href="{{ route('admin.finances.approval.edit', $activity->id) }}" class="badge bg-primary fs-6">
                     <i class="bi bi-currency-dollar"></i>
                   </a>
                 </td>

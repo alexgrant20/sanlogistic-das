@@ -39,7 +39,7 @@
           <hr>
           <div class="row">
             <x-summary-box size="col-12" summaryTitle="Total Addresses" summaryTotal="{{ $addresses->count() }}"
-              icon="bi bi-building" id="total-address" link="{{ route('admin.address.index') }}" disabled />
+              icon="bi bi-building" id="total-address" link="{{ route('admin.addresses.index') }}" disabled />
           </div>
         </div>
       </div>
@@ -71,18 +71,23 @@
                 <td>{{ $address->id }}</td>
                 <td></td>
                 <td>
-                  <div class="dropdown">
-                    <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi bi-three-dots"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                      <li>
-                        <a href="{{ route('admin.address.edit', $address->name) }}" class="dropdown-item">
-                          Edit
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
+                  @canany('edit-address')
+                    <div class="dropdown">
+                      <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-three-dots"></i>
+                      </button>
+                      <ul class="dropdown-menu">
+                        {{-- IF OTHER MENU EXISTS UNCOMENT THIS --}}
+                        {{-- @can('edit-address') --}}
+                        <li>
+                          <a href="{{ route('admin.addresses.edit', $address->name) }}" class="dropdown-item">
+                            Edit
+                          </a>
+                        </li>
+                        {{-- @endcan --}}
+                      </ul>
+                    </div>
+                  @endcan
                 </td>
                 <td>{{ $address->name }}</td>
                 <td>{{ $address->address_types_name }}</td>
@@ -115,7 +120,7 @@
 
     const getLocation = async () => {
       try {
-        const res = await fetch('/admin/addresses/location', {
+        const res = await fetch('{{ route('admin.addresses.locations') }}', {
           method: 'GET'
         });
         const data = await res.json();

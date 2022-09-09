@@ -266,3 +266,18 @@ input[data-autocompleted] {
 .text-ocean-900 {
   color: #163b3a;
 }
+
+.clipping {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+.btn-hover {
+  filter: brightness(100%);
+  transition: all 0.3s;
+}
+
+.btn-hover:hover {
+  filter: brightness(85%);
+}

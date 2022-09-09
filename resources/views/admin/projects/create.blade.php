@@ -9,7 +9,7 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form action="{{ route('admin.project.store') }}" class="mb-5" method="post" id="form">
+      <form action="{{ route('admin.projects.store') }}" class="mb-5" method="post" id="form">
         @csrf
 
         @include('admin.projects.components.form-ce')

@@ -24,12 +24,15 @@ use Maatwebsite\Excel\Facades\Excel;
 class AddressController extends Controller
 {
 
-  public function index(Request $request)
+  public function __construct()
   {
-    if ($request->user()->cannot('viewAny', Address::class)) {
-      abort(404);
-    }
+    $this->middleware('can:create-address', ['only' => ['create', 'store']]);
+    $this->middleware('can:edit-address', ['only' => ['edit', 'update']]);
+    $this->middleware('can:view-address', ['only' => ['index']]);
+  }
 
+  public function index()
+  {
     $addresses = DB::table('addresses')
       ->leftJoin('address_types', 'addresses.address_type_id', '=', 'address_types.id')
       ->leftJoin('subdistricts', 'addresses.subdistrict_id', '=', 'subdistricts.id')
@@ -59,10 +62,6 @@ class AddressController extends Controller
 
   public function create(Request $request)
   {
-    if ($request->user()->cannot('create', Address::class)) {
-      abort(403);
-    }
-
     return view('admin.addresses.create', [
       'title' => 'Create Address',
       'address' => new Address(),
@@ -79,8 +78,7 @@ class AddressController extends Controller
 
     Address::create($addressPayload);
 
-    return to_route('admin.address.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'created'));
+    return to_route('admin.addresses.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'created'));
   }
 
   public function edit(Address $address)
@@ -99,8 +97,7 @@ class AddressController extends Controller
   {
     $address->update($request->safe()->toArray());
 
-    return to_route('admin.address.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'address', 'created'));
+    return to_route('admin.addresses.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'address', 'created'));
   }
 
   public function city($id)
@@ -141,16 +138,14 @@ class AddressController extends Controller
       $file = $request->file('file')->store('file-import/address/');
       $import->import($file);
     } catch (Exception $e) {
-      return to_route('admin.address.index')
-        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'address', 'import'));
+      return to_route('admin.addresses.index')->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'address', 'import'));
     }
 
     if ($import->failures()->isNotEmpty()) {
       return back()->with('importErrorList', $import->failures());
     }
 
-    return to_route('admin.address.index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'address', 'imported'));
+    return to_route('admin.addresses.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'address', 'imported'));
   }
 
   public function exportExcel(Request $request)

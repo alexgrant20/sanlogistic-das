@@ -17,7 +17,13 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class FinanceController extends Controller
 {
-  public function acceptance(Request $request)
+  public function __construct()
+  {
+    $this->middleware('can:finance-acceptance', ['only' => ['acceptance', 'approve']]);
+    $this->middleware('can:finance-payment', ['only' => ['payment', 'pay', 'edit', 'audit', 'reject']]);
+  }
+
+  public function approval(Request $request)
   {
     $q_status = $request->status;
 
@@ -82,11 +88,11 @@ class FinanceController extends Controller
           ]);
         });
       } catch (Exception $e) {
-        return to_route('admin.finance.acceptance')
+        return to_route('admin.finances.acceptance')
           ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'approve'));
       }
     }
-    return to_route('admin.finance.acceptance')
+    return to_route('admin.finances.acceptance')
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'approved'));
   }
 
@@ -123,11 +129,11 @@ class FinanceController extends Controller
           ]);
         });
       } catch (Exception $e) {
-        return to_route('admin.finance.payment')
+        return to_route('admin.finances.payment')
           ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'pay'));
       }
     }
-    return to_route('admin.finance.payment')
+    return to_route('admin.finances.payment')
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'paid'));
   }
 
@@ -170,10 +176,10 @@ class FinanceController extends Controller
         });
       }
     } catch (Exception $e) {
-      return to_route('admin.finance.payment')
+      return to_route('admin.finances.payment')
         ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'reject'));
     }
-    return to_route('admin.finance.payment')
+    return to_route('admin.finances.payment')
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'rejected'));
   }
 
@@ -181,7 +187,7 @@ class FinanceController extends Controller
   {
     return view('admin.finance.acceptance.edit', [
       'activities' => Activity::status('pending')->get(),
-      'importPath' => '/admin/finance/acceptance/import/excel',
+      'importPath' =>  route('admin.finances.export.excel'),
       'title' => 'Acceptance',
       'activity' => $activity,
     ]);
@@ -206,12 +212,12 @@ class FinanceController extends Controller
     } catch (Exception $e) {
       DB::rollBack();
 
-      return redirect("/admin/finances/acceptance/$activity->id/edit")->withInput()
+      return back()
         ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'audit'));
     }
     DB::commit();
 
-    return to_route('admin.finance.acceptance')
+    return to_route('admin.finances.acceptance')
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'audited'));
   }
 

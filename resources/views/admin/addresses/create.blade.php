@@ -23,7 +23,7 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form action="{{ route('admin.address.store') }}" method="POST" id="form">
+      <form action="{{ route('admin.addresses.store') }}" method="POST" id="form">
         @csrf
 
         @include('admin.addresses.utils.form-ce')
