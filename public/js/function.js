@@ -178,7 +178,7 @@ function getVehicleLastStatus() {
   });
 }
 
-$("form").on("submit", () => {
+$("#form").on("submit", () => {
   $("button").attr("disabled", true);
   $("input, textarea").attr("readonly", true);
   $("select").css("pointer-events", "none");

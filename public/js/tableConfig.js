@@ -55,11 +55,26 @@ document.addEventListener("DOMContentLoaded", function () {
             },
           },
           {
-            extend: "pdfHtml5",
-            exportOptions: {
-              columns: [":visible"],
+            text: "PDF",
+            action: function (param) {
+              let ids = "";
+              const data = table.rows({ filter: "applied" }).data();
+
+              data.map((e) => {
+                ids += e[0] + ",";
+              });
+
+              const tableName = $("#tableName").val();
+
+              window.location.replace(tableName + "/export/pdf?ids=" + ids);
             },
           },
+          // {
+          //   extend: "pdfHtml5",
+          //   exportOptions: {
+          //     columns: [":visible"],
+          //   },
+          // },
         ],
       },
     ],

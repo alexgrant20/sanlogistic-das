@@ -20,6 +20,7 @@ use App\Transaction\Constants\NotifactionTypeConstant;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AddressController extends Controller
 {
@@ -154,5 +155,35 @@ class AddressController extends Controller
     $params = $request->input('ids');
     $ids = preg_split("/[,]/", $params);
     return Excel::download(new AddressExport($ids), "addresses_export_{$timestamp}.xlsx");
+  }
+
+  public function exportPDF(Request $request)
+  {
+    $timestamp = now()->timestamp;
+    $params = $request->input('ids');
+    $ids = preg_split("/[,]/", $params);
+    $data = DB::table('addresses')
+      ->leftJoin('address_types', 'addresses.address_type_id', '=', 'address_types.id')
+      ->leftJoin('subdistricts', 'addresses.subdistrict_id', '=', 'subdistricts.id')
+      ->leftJoin('districts', 'subdistricts.district_id', '=', 'districts.id')
+      ->leftJoin('cities', 'districts.city_id', '=', 'cities.id')
+      ->leftJoin('provinces', 'cities.province_id', '=', 'provinces.id')
+      ->orderByDesc('addresses.created_at')
+      ->get(
+        [
+          'addresses.id AS address_id',
+          'addresses.name AS address_name',
+          'addresses.full_address AS full_address',
+          'subdistricts.name AS subdistrict_name',
+          'districts.name AS district_name',
+          'address_types.name AS address_types_name',
+          'cities.name AS cities_name',
+          'provinces.name AS provinces_name'
+        ]
+      );
+
+    $pdf = Pdf::loadView('pdf.address', compact('data'));
+
+    return $pdf->download('addresses-' . $timestamp . '.pdf');
   }
 }
