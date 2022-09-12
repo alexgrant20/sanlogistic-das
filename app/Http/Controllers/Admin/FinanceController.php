@@ -14,6 +14,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class FinanceController extends Controller
 {
@@ -41,7 +42,9 @@ class FinanceController extends Controller
           'activity_payments.bbm_amount',
           'activity_payments.toll_amount',
           'activity_payments.parking_amount',
-          'activity_payments.retribution_amount',
+          'activity_payments.load_amount',
+          'activity_payments.unload_amount',
+          'activity_payments.maintenance_amount',
           'activity_statuses.status as status',
         ]
       );
@@ -68,7 +71,9 @@ class FinanceController extends Controller
         'bbm_amount',
         'parking_amount',
         'toll_amount',
-        'retribution_amount',
+        'load_amount',
+        'unload_amount',
+        'maintenance_amount',
       ]);
 
     foreach ($activities as $activity) {
@@ -84,15 +89,17 @@ class FinanceController extends Controller
             'bbm_amount' => $activity->bbm_amount,
             'parking_amount' => $activity->parking_amount,
             'toll_amount' => $activity->toll_amount,
-            'retribution_amount' => $activity->retribution_amount,
+            'load_amount' => $activity->load_amount,
+            'unload_amount' => $activity->unload_amount,
+            'maintenance_amount' => $activity->maintenance_amount,
           ]);
         });
       } catch (Exception $e) {
-        return to_route('admin.finances.acceptance')
+        return to_route('admin.finances.approval')
           ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'approve'));
       }
     }
-    return to_route('admin.finances.acceptance')
+    return to_route('admin.finances.approval')
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'approved'));
   }
 
@@ -109,7 +116,10 @@ class FinanceController extends Controller
         'bbm_amount',
         'parking_amount',
         'toll_amount',
-        'retribution_amount',
+        'load_amount',
+        'unload_amount',
+        'maintenance_amount',
+
       ]);
 
     foreach ($activities as $activity) {
@@ -125,7 +135,9 @@ class FinanceController extends Controller
             'bbm_amount' => $activity->bbm_amount,
             'parking_amount' => $activity->parking_amount,
             'toll_amount' => $activity->toll_amount,
-            'retribution_amount' => $activity->retribution_amount,
+            'load_amount' => $activity->load_amount,
+            'unload_amount' => $activity->unload_amount,
+            'maintenance_amount' => $activity->maintenance_amount,
           ]);
         });
       } catch (Exception $e) {
@@ -150,14 +162,7 @@ class FinanceController extends Controller
       ->where('project_id', '=', $request->project_id)
       ->where('user_id', '=', $request->user_id)
       ->where('status', '=', 'approved')
-      ->get([
-        'activities.id',
-        'bbm_amount',
-        'parking_amount',
-        'toll_amount',
-        'retribution_amount',
-      ]);
-
+      ->get(['activities.id', 'bbm_amount', 'parking_amount', 'toll_amount', 'load_amount', 'unload_amount', 'maintenance_amount']);
     try {
       foreach ($activities as $activity) {
         DB::transaction(function () use ($activity) {
@@ -171,7 +176,9 @@ class FinanceController extends Controller
             'bbm_amount' => $activity->bbm_amount,
             'parking_amount' => $activity->parking_amount,
             'toll_amount' => $activity->toll_amount,
-            'retribution_amount' => $activity->retribution_amount,
+            'load_amount' => $activity->load_amount,
+            'unload_amount' => $activity->unload_amount,
+            'maintenance_amount' => $activity->maintenance_amount,
           ]);
         });
       }
@@ -185,6 +192,10 @@ class FinanceController extends Controller
 
   public function edit(Activity $activity)
   {
+    $activityStatus = $activity->activityStatus->status;
+
+    if ($activityStatus !== 'rejected' && $activityStatus !== 'pending') abort(404);
+
     return view('admin.finance.acceptance.edit', [
       'activities' => Activity::status('pending')->get(),
       'importPath' =>  route('admin.finances.export.excel'),
@@ -207,7 +218,9 @@ class FinanceController extends Controller
         'bbm_amount' => $request->bbm_amount,
         'parking_amount' => $request->parking_amount,
         'toll_amount' => $request->toll_amount,
-        'retribution_amount' => $request->retribution_amount,
+        'load_amount' => $request->load_amount,
+        'unload_amount' => $request->unload_amount,
+        'maintenance_amount' => $request->maintenance_amount,
       ]);
     } catch (Exception $e) {
       DB::rollBack();
@@ -217,7 +230,7 @@ class FinanceController extends Controller
     }
     DB::commit();
 
-    return to_route('admin.finances.acceptance')
+    return to_route('admin.finances.approval')
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'audited'));
   }
 
@@ -232,8 +245,10 @@ class FinanceController extends Controller
       ->selectRaw("SUM(activity_payments.bbm_amount) total_bbm")
       ->selectRaw("SUM(activity_payments.toll_amount) total_toll")
       ->selectRaw("SUM(activity_payments.parking_amount) total_park")
-      ->selectRaw("SUM(activity_payments.retribution_amount) total_retribution")
-      ->selectRaw("projects.name as project_name, people.name as person_name, activities.user_id as user_id,
+      ->selectRaw("SUM(activity_payments.load_amount) total_load")
+      ->selectRaw("SUM(activity_payments.unload_amount) total_unload")
+      ->selectRaw("SUM(activity_payments.maintenance_amount) total_maintenance")
+      ->selectRaw("projects.name as project_name, projects.id as project_id, people.name as person_name, activities.user_id as user_id,
       activities.project_id as project_id, activity_statuses.status as status")
       ->groupBy('activities.project_id')
       ->groupBy('user_id')
@@ -241,21 +256,59 @@ class FinanceController extends Controller
       ->where('activity_statuses.status', '=', 'approved')
       ->get();
 
+    $projects = $activities->unique('project_id')->pluck('project_name', 'project_id');
+
     return view('admin.finance.payment.index', [
       'activities' => $activities,
       'title' => 'Pay',
-      'projects' => Project::all(),
+      'projects' => $projects,
     ]);
   }
 
   public function exportExcel(Request $request)
   {
     $timestamp = now()->timestamp;
+
     $params = $request->validate([
-      'month' => 'required',
       'project_id' => 'required',
     ]);
 
     return Excel::download(new ActivityRecapExport($params), "activities_export_{$timestamp}.xlsx");
+  }
+
+  public function exportPDF(Request $request)
+  {
+    $params = $request->validate([
+      'project_id' => 'required',
+    ]);
+
+    $params = $request->input('ids');
+
+    $ids = preg_split("/[,]/", $params);
+    $data = DB::table('activities')
+      ->leftJoin('projects', 'activities.project_id', '=', 'projects.id')
+      ->leftJoin('users', 'activities.user_id', '=', 'users.id')
+      ->leftJoin('people', 'users.person_id', '=', 'people.id')
+      ->leftJoin('activity_statuses', 'activities.activity_status_id', '=', 'activity_statuses.id')
+      ->leftJoin('activity_payments', 'activity_statuses.id', '=', 'activity_payments.activity_status_id')
+      ->selectRaw("SUM(activity_payments.bbm_amount) total_bbm")
+      ->selectRaw("SUM(activity_payments.toll_amount) total_toll")
+      ->selectRaw("SUM(activity_payments.parking_amount) total_park")
+      ->selectRaw("SUM(activity_payments.load_amount) total_load")
+      ->selectRaw("SUM(activity_payments.unload_amount) total_unload")
+      ->selectRaw("SUM(activity_payments.maintenance_amount) total_maintenance")
+      ->selectRaw("projects.name as project_name, people.name as person_name, activities.user_id as user_id,
+    activities.project_id as project_id, activity_statuses.status as status")
+      ->groupBy('user_id')
+      ->orderByDesc('activity_payments.id')
+      ->where('activity_statuses.status', '=', 'approved')
+      ->where('activities.project_id', '=', $request->project_id)
+      ->get();
+
+    if ($data->isEmpty()) return back()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'No Data Found!'));
+
+    $pdf = Pdf::loadView('pdf.finance', compact('data'));
+
+    return  $pdf->download('Finance-' .  now()->timestamp . '.pdf');
   }
 }

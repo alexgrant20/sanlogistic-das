@@ -48,7 +48,6 @@ Route::prefix('/admin')->name('admin.')->middleware('auth', 'role:admin|super-ad
    */
   Route::controller(AddressController::class)->prefix('/addresses')->name('addresses.')->group(function () {
     Route::get('/export/excel', 'exportExcel')->name('export.excel');
-    Route::get('/export/pdf', 'exportPDF')->name('export.pdf');
     Route::post('/import/excel', 'importExcel')->name('import.excel');
     Route::get('/city/{id}', 'city')->name('cities');
     Route::get('/district/{id}', 'district')->name('districts');
@@ -153,5 +152,6 @@ Route::prefix('/admin')->name('admin.')->middleware('auth', 'role:admin|super-ad
     Route::get('/approval/{activity}/edit', 'edit')->name('approval.edit');
     Route::put('/approval/{activity}', 'audit')->name('audit');
     Route::post('/export/excel', 'exportExcel')->name('export.excel');
+    Route::post('/export/pdf', 'exportPDF')->name('export.pdf');
   });
 });

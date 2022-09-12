@@ -66,21 +66,44 @@
             </div>
 
             <div class="col-xl-4">
-              <label for="retribution_amount" class="form-label">Retribusi</label>
-              <input type="text" class="form-control form-control-lg @error('retribution_amount') is-invalid @enderror"
-                id="retribution_amount" name="retribution_amount"
-                value="{{ old('retribution_amount', $activity->activityStatus->activityPayment->retribution_amount) }}"
+              <label for="maintenance_amount" class="form-label">Maintenance</label>
+              <input type="text" class="form-control form-control-lg @error('maintenance_amount') is-invalid @enderror"
+                id="maintenance_amount" name="maintenance_amount"
+                value="{{ old('maintenance_amount', $activity->activityStatus->activityPayment->maintenance_amount) }}"
                 data="money">
 
-              @error('retribution_amount')
+              @error('maintenance_amount')
                 <div class="invalid-feedback">
                   {{ $message }}
                 </div>
               @enderror
+            </div>
 
-              <img src="{{ asset('storage/' . $activity['retribution_image']) }}"
-                class="img-fluid rounded zoom mw-100 mx-auto d-block mt-5" style="max-height: 200px"
-                id="retribution_image-preview" alt="" data-action="zoom">
+            <div class="col-xl-4">
+              <label for="load_amount" class="form-label">Load</label>
+              <input type="text" class="form-control form-control-lg @error('load_amount') is-invalid @enderror"
+                id="load_amount" name="load_amount"
+                value="{{ old('load_amount', $activity->activityStatus->activityPayment->load_amount) }}" data="money">
+
+              @error('load_amount')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
+            </div>
+
+            <div class="col-xl-4">
+              <label for="unload_amount" class="form-label">Unload</label>
+              <input type="text" class="form-control form-control-lg @error('unload_amount') is-invalid @enderror"
+                id="unload_amount" name="unload_amount"
+                value="{{ old('unload_amount', $activity->activityStatus->activityPayment->unload_amount) }}"
+                data="money">
+
+              @error('unload_amount')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
             </div>
 
             <div class="col-xl-4">

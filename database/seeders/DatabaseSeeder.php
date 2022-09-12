@@ -30,85 +30,84 @@ use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
-	/**
-	 * Seed the application's database.
-	 *
-	 * @return void
-	 */
-	public function run()
-	{
+  /**
+   * Seed the application's database.
+   *
+   * @return void
+   */
+  public function run()
+  {
 
-		$this->call([
-			ProvinceSeeder::class,
-			CitySeeder::class,
-			DistrictSeeder::class,
-			SubdistrictSeeder::class,
-		]);
+    $this->call([
+      ProvinceSeeder::class,
+      CitySeeder::class,
+      DistrictSeeder::class,
+      SubdistrictSeeder::class,
+    ]);
 
-		Role::create(['name' => 'admin']);
-		Role::create(['name' => 'driver']);
-		Role::create(['name' => 'finances']);
+    Role::create(['name' => 'super-admin']);
+    Role::create(['name' => 'driver']);
 
-		VehicleLicensePlateColor::create([
-			'name' => 'black'
-		]);
+    VehicleLicensePlateColor::create([
+      'name' => 'black'
+    ]);
 
-		VehicleLicensePlateColor::create(['name' => 'yellow']);
+    VehicleLicensePlateColor::create(['name' => 'yellow']);
 
-		AddressType::create(['name' => 'Kantor Utama']);
+    AddressType::create(['name' => 'Kantor Utama']);
 
-		AddressType::create([
-			'name' => 'Tujuan Pengiriman'
-		]);
+    AddressType::create([
+      'name' => 'Tujuan Pengiriman'
+    ]);
 
-		AddressType::create([
-			'name' => 'Pool'
-		]);
+    AddressType::create([
+      'name' => 'Pool'
+    ]);
 
-		AddressType::create([
-			'name' => 'Station'
-		]);
+    AddressType::create([
+      'name' => 'Station'
+    ]);
 
-		AddressType::create([
-			'name' => 'Workshop'
-		]);
+    AddressType::create([
+      'name' => 'Workshop'
+    ]);
 
-		AddressType::create([
-			'name' => 'PKB/SAMSAT'
-		]);
+    AddressType::create([
+      'name' => 'PKB/SAMSAT'
+    ]);
 
-		Department::factory(10)->create();
-		SimType::factory(5)->create();
-		CompanyType::factory(5)->create();
-		VehicleBrand::factory(10)->create();
-		VehicleType::factory(30)->create();
-		VehicleVariety::factory(20)->create();
-		Regional::factory(20)->create();
-		Area::factory(30)->create();
-		Province::factory(20)->create();
-		City::factory(20)->create();
-		District::factory(20)->create();
-		Subdistrict::factory(20)->create();
-		PoolType::factory(10)->create();
-		Address::factory(20)->create();
-		Company::factory(20)->create();
-		Project::factory(20)->create();
-		Person::factory(20)->create();
-		VehicleTowing::factory(10)->create();
-		Vehicle::factory(20)->create();
+    Department::factory(10)->create();
+    SimType::factory(5)->create();
+    CompanyType::factory(5)->create();
+    VehicleBrand::factory(10)->create();
+    VehicleType::factory(30)->create();
+    VehicleVariety::factory(20)->create();
+    Regional::factory(20)->create();
+    Area::factory(30)->create();
+    Province::factory(20)->create();
+    City::factory(20)->create();
+    District::factory(20)->create();
+    Subdistrict::factory(20)->create();
+    PoolType::factory(10)->create();
+    Address::factory(20)->create();
+    Company::factory(20)->create();
+    Project::factory(20)->create();
+    Person::factory(20)->create();
+    VehicleTowing::factory(10)->create();
+    Vehicle::factory(20)->create();
 
-		User::create([
-			'person_id' => '1',
-			'username' => 'admin',
-			'password' => bcrypt('admin')
-		])->assignRole('admin');
+    User::create([
+      'person_id' => '1',
+      'username' => 'admin',
+      'password' => bcrypt('admin')
+    ])->assignRole('super-admin');
 
-		User::create([
-			'person_id' => '2',
-			'username' => 'driver',
-			'password' => bcrypt('driver')
-		])->assignRole('driver');
+    User::create([
+      'person_id' => '2',
+      'username' => 'driver',
+      'password' => bcrypt('driver')
+    ])->assignRole('driver');
 
-		Driver::factory(1)->create();
-	}
+    Driver::factory(1)->create();
+  }
 }

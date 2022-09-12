@@ -32,10 +32,10 @@
               }
             },
             {
-              extend: "pdfHtml5",
-              exportOptions: {
-                columns: [":visible"],
-              },
+              text: "PDF",
+              action: function() {
+                $("#exportPDF").modal("show");
+              }
             },
           ],
         }, ],
@@ -113,7 +113,7 @@
           enctype="multipart/form-data">
           @csrf
 
-          <div class="mb-3">
+          {{-- <div class="mb-3">
             <label class="form-label">Pilih Bulan</label>
             <div class="form-group">
               <select class="form-select" name="month">
@@ -122,13 +122,13 @@
                 </option>
               </select>
             </div>
-          </div>
+          </div> --}}
 
           <label class="form-label">Pilih Project</label>
           <div class="form-group">
             <select class="form-select" name="project_id">
-              @foreach ($projects as $project)
-                <option value="{{ $project->id }}">{{ $project->name }}</option>
+              @foreach ($projects as $project_id => $project_name)
+                <option value="{{ $project_id }}">{{ $project_name }}</option>
               @endforeach
             </select>
           </div>
@@ -136,6 +136,28 @@
       </x-slot:body>
       <x-slot:footer>
         <button type="button" class="btn btn-success" onclick="$('#exportExcelForm').submit()">Export</button>
+      </x-slot:footer>
+    </x-modal>
+
+    {{-- EXCEL PDF --}}
+    <x-modal id="exportPDF" size="modal-lg" title="Export">
+      <x-slot:body>
+        <form id="exportPDFForm" method="post" action="{{ route('admin.finances.export.pdf') }}"
+          enctype="multipart/form-data">
+          @csrf
+
+          <label class="form-label">Pilih Project</label>
+          <div class="form-group">
+            <select class="form-select" name="project_id">
+              @foreach ($projects as $project_id => $project_name)
+                <option value="{{ $project_id }}">{{ $project_name }}</option>
+              @endforeach
+            </select>
+          </div>
+        </form>
+      </x-slot:body>
+      <x-slot:footer>
+        <button type="button" class="btn btn-success" onclick="$('#exportPDFForm').submit()">Export</button>
       </x-slot:footer>
     </x-modal>
 
@@ -156,13 +178,16 @@
           <tr class="header">
             <th>User ID</th>
             <th></th>
-            <th>Action</th>
+            <th></th>
             <th>Project</th>
             <th>Nama Pengendara</th>
             <th>BBM</th>
             <th>Toll</th>
             <th>Parkir</th>
-            <th>Rertibusi</th>
+            <th>Load</th>
+            <th>Unload</th>
+            <th>Maintenance</th>
+            <th>Total</th>
           </tr>
         </thead>
         <tbody>
@@ -185,7 +210,10 @@
               <td>@money($activity->total_bbm)</td>
               <td>@money($activity->total_toll)</td>
               <td>@money($activity->total_park)</td>
-              <td>@money($activity->total_retribution)</td>
+              <td>@money($activity->total_load)</td>
+              <td>@money($activity->total_unload)</td>
+              <td>@money($activity->total_maintenance)</td>
+              <td>@money($activity->total_bbm + $activity->total_toll + $activity->total_park + $activity->total_load + $activity->total_unload + $activity->total_maintenance)</td>
             </tr>
           @endforeach
         </tbody>

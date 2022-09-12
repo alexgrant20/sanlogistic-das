@@ -32,12 +32,9 @@ class ActivityRecapExport implements FromCollection, WithHeadings, ShouldAutoSiz
       ->selectRaw("SUM(activity_payments.retribution_amount) as total_retribution")
       ->selectRaw("SUM(activity_payments.bbm_amount) + SUM(activity_payments.toll_amount) + SUM(activity_payments.parking_amount) + SUM(activity_payments.retribution_amount) as total")
       ->where('activities.project_id', $this->params['project_id'])
-      ->whereRelation('activityStatus', 'status', 'approved')
-      ->whereRelation('activityStatus', function ($q) {
-        $q->whereMonth('created_at', '=', $this->params['month']);
-      })
-      ->get()
-      ->groupBy('user_id');
+      ->where('activity_statuses.status', 'approved')
+      ->groupBy('user_id')
+      ->get();
   }
 
   public function headings(): array

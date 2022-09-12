@@ -19,7 +19,9 @@ class UpdateActivityCostRequest extends FormRequest
       'bbm_amount' => convertMoneyInt($this->get('bbm_amount')),
       'toll_amount' => convertMoneyInt($this->get('toll_amount')),
       'parking_amount' => convertMoneyInt($this->get('parking_amount')),
-      'retribution_amount' =>  convertMoneyInt($this->get('retribution_amount')),
+      'maintenance_amount' =>  convertMoneyInt($this->get('maintenance_amount')),
+      'load_amount' =>  convertMoneyInt($this->get('load_amount')),
+      'unload_amount' =>  convertMoneyInt($this->get('unload_amount')),
     ]);
   }
 
@@ -28,7 +30,9 @@ class UpdateActivityCostRequest extends FormRequest
     return [
       'bbm_amount' => 'nullable',
       'toll_amount' => 'nullable',
-      'retribution_amount' => 'nullable',
+      'maintenance_amount' => 'nullable',
+      'load_amount' => 'nullable',
+      'unload_amount' => 'nullable',
       'parking_amount' => 'nullable',
     ];
   }

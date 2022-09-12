@@ -97,7 +97,9 @@ class ActivityController extends Controller
       'bbm_amount' => $request->bbm_amount,
       'toll_amount' => $request->toll_amount,
       'parking_amount' => $request->parking_amount,
-      'retribution_amount' => $request->retribution_amount,
+      'maintenance_amount' => $request->maintenance_amount,
+      'load_amount' => $request->load_amount,
+      'unload_amount' => $request->unload_amount,
     ];
 
     $activityStatusPayload = [
@@ -176,7 +178,9 @@ class ActivityController extends Controller
       'bbm_amount' => $request->bbm_amount,
       'toll_amount' => $request->toll_amount,
       'parking_amount' => $request->parking_amount,
-      'retribution_amount' => $request->retribution_amount,
+      'maintenance_amount' => $request->maintenance_amount,
+      'load_amount' => $request->load_amount,
+      'unload_amount' => $request->unload_amount,
     ];
 
     $activityStatusPayload = [

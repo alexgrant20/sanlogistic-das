@@ -54,21 +54,21 @@ document.addEventListener("DOMContentLoaded", function () {
               window.location.replace(tableName + "/export/excel?ids=" + ids);
             },
           },
-          {
-            text: "PDF",
-            action: function (param) {
-              let ids = "";
-              const data = table.rows({ filter: "applied" }).data();
+          // {
+          //   text: "PDF",
+          //   action: function (param) {
+          //     let ids = "";
+          //     const data = table.rows({ filter: "applied" }).data();
 
-              data.map((e) => {
-                ids += e[0] + ",";
-              });
+          //     data.map((e) => {
+          //       ids += e[0] + ",";
+          //     });
 
-              const tableName = $("#tableName").val();
+          //     const tableName = $("#tableName").val();
 
-              window.location.replace(tableName + "/export/pdf?ids=" + ids);
-            },
-          },
+          //     window.location.replace(tableName + "/export/pdf?ids=" + ids);
+          //   },
+          // },
           // {
           //   extend: "pdfHtml5",
           //   exportOptions: {

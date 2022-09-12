@@ -9,7 +9,7 @@
           targets: [0],
           visible: false,
         }, {
-          targets: [0, 1, 2],
+          targets: [0, 1, 2, 3],
           searchable: false,
           orderable: false,
         }],
@@ -111,8 +111,8 @@
         </x-slot:footer>
       </x-modal>
       <div class="row mb-4 g-3">
-        <x-summary-box summaryTitle="Total" summaryTotal="{{ $activities->count() }}" icon="bi bi-journal-text"
-          id="total-activity" link="{{ route('admin.finances.approval') }}" :active="empty(Request::getQueryString()) ? true : false" />
+        {{-- <x-summary-box summaryTitle="Total" summaryTotal="{{ $activities->count() }}" icon="bi bi-journal-text"
+          id="total-activity" link="{{ route('admin.finances.approval') }}" :active="empty(Request::getQueryString()) ? true : false" /> --}}
 
         <x-summary-box summaryTitle="Pending"
           summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'pending')->count() }}"
@@ -138,15 +138,18 @@
             <tr class="header">
               <th>ID</th>
               <th></th>
-              <th>Check</th>
-              <th>Action</th>
+              <th></th>
+              <th></th>
               <th>Tanggal</th>
               <th>Nomor DO</th>
               <th>Nama Pengendara</th>
               <th>BBM</th>
               <th>Toll</th>
               <th>Parkir</th>
-              <th>Retribusi</th>
+              <th>Load</th>
+              <th>Unload</th>
+              <th>Maintenance</th>
+              <th>Total</th>
             </tr>
           </thead>
           <tbody class="selectable align-items-center">
@@ -168,7 +171,10 @@
                 <td>@money($activity->bbm_amount)</td>
                 <td>@money($activity->toll_amount)</td>
                 <td>@money($activity->parking_amount)</td>
-                <td>@money($activity->retribution_amount)</td>
+                <td>@money($activity->load_amount)</td>
+                <td>@money($activity->unload_amount)</td>
+                <td>@money($activity->maintenance_amount)</td>
+                <td>@money($activity->bbm_amount + $activity->toll_amount + $activity->parking_amount + $activity->load_amount + $activity->unload_amount + $activity->maintenance_amount)</td>
               </tr>
             @endforeach
           </tbody>
