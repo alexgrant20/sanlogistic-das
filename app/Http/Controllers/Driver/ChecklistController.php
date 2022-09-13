@@ -119,7 +119,18 @@ class ChecklistController extends Controller
 
     $payload = array_merge($basicData, $checklistData);
 
+
+
     $vehicleChecklist = VehicleChecklist::create($payload);
+
+    if (auth()->user()->hasRole('mechanic')) {
+      if ($request->periodic_maintenance == 1) {
+        $vehicle->update([
+          'maintenance_odo' => $vehicle->odo + 10000,
+          'maintenance_date' => now()->addDays(180),
+        ]);
+      }
+    }
 
     // 1 --> false
     // 0 --> true

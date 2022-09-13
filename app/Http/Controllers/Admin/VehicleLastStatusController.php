@@ -7,9 +7,62 @@ use App\Models\Vehicle;
 use App\Models\VehicleChecklist;
 use App\Models\VehicleLastStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VehicleLastStatusController extends Controller
 {
+
+  public function index()
+  {
+
+    $vehicleLastStatuses = DB::table('vehicle_last_statuses')
+      ->leftJoin('vehicles', 'vehicles.id', '=', 'vehicle_last_statuses.vehicle_id')
+      ->leftJoin('vehicle_documents AS kir', function ($join) {
+        $join->on('kir.vehicle_id', '=', 'vehicles.id');
+        $join->where('kir.type', '=', 'kir');
+      })
+      ->leftJoin('vehicle_documents AS stnk', function ($join) {
+        $join->on('stnk.vehicle_id', '=', 'vehicles.id');
+        $join->where('stnk.type', '=', 'stnk');
+      })
+      ->get([
+        'vehicles.id',
+        'license_plate',
+        'vehicle_license_plate_color_id',
+        'vehicles.odo',
+        'vehicle_last_statuses.id AS vehicle_last_status_id',
+        'maintenance_odo',
+        'maintenance_date',
+        DB::raw("IFNULL(lampu_besar + lampu_kota + lampu_rem + lampu_sein + lampu_mundur + lampu_kabin + lampu_senter, 0) AS total_broken_lamp"),
+        DB::raw("IFNULL(kaca_depan + kaca_samping + kaca_belakang, 0) AS total_broken_glass"),
+        DB::raw(
+          "IFNULL(ban_depan + ban_belakang_dalam + ban_belakang_luar + ban_serep +
+        tekanan_angin_ban_depan + tekanan_angin_ban_belakang_dalam + tekanan_angin_ban_belakang_luar +
+        tekanan_angin_ban_serep + velg_ban_depan + velg_ban_belakang_dalam + velg_ban_belakang_luar +
+        velg_ban_serep + ganjal_ban, 0) AS total_broken_tire"
+        ),
+        DB::raw(
+          "IFNULL(dongkrak + kunci_roda + stang_kunci_roda + pipa_bantu + kotak_p3k + apar +
+        emergency_triangle + tool_kit, 0) AS total_broken_equipment"
+        ),
+        DB::raw(
+          "IFNULL(seragam + safety_shoes + driver_license + kartu_keur + stnk + helmet +
+        tatakan_menulis + ballpoint + straples, 0) AS total_broken_gear"
+        ),
+        DB::raw(
+          "IFNULL(exhaust_brake + spion + wiper + tangki_bahan_bakar + tutup_tangki_bahan_bakar +
+        tutup_radiator + accu + oli_mesin + minyak_rem + minyak_kopling + oli_hidraulic +
+        klakson + panel_speedometer + panel_bahan_bakar + sunvisor + jok
+        + air_conditioner, 0) AS total_broken_other"
+        ),
+      ]);
+
+    return view('admin.vehicle_last_status.index', [
+      'title' => 'Vehicle Last Status',
+      'vehicleLastStatuses' => $vehicleLastStatuses
+    ]);
+  }
+
   public function show(Vehicle $vehicle)
   {
     $lampLabel = ['lampu_besar', 'lampu_kota', 'lampu_rem', 'lampu_sein', 'lampu_mundur', 'lampu_kabin'];

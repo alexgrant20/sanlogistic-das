@@ -171,6 +171,12 @@
               </a>
             </li>
           @endcan
+          <li>
+            <a class="sidebar-link {{ Route::is('admin.vehicles-last-statuses.index') ? 'text-primary' : '' }}"
+              href="{{ route('admin.vehicles-last-statuses.index') }}">
+              View Condition
+            </a>
+          </li>
         </ul>
       </li>
     @endcanany

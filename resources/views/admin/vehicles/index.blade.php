@@ -33,14 +33,6 @@
               <th>Odo</th>
               <th>KIR Exp</th>
               <th>STNK Exp</th>
-              <th>Lamp</th>
-              <th>Glass</th>
-              <th>Tire</th>
-              <th>Equipment</th>
-              <th>Gear</th>
-              <th>Other</th>
-              {{-- <th>Odometer Service</th>
-            <th>Service Expired</th> --}}
             </tr>
           </thead>
           <tbody>
@@ -49,7 +41,7 @@
                 <td>{{ $vehicle->id }}</td>
                 <td></td>
                 <td>
-                  @if (!empty($vehicle->vehicle_last_status_id) and
+                  @if (!empty($vehicle->vehicle_last_status_id) or
                       auth()->user()->can('edit-vehicle'))
                     <div class="dropdown">
                       <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -86,41 +78,16 @@
                 <td>{{ $vehicle->vehicle_brand }}</td>
                 <td>{{ $vehicle->vehicle_type }}</td>
                 <td>{{ $vehicle->odo }}</td>
-                @if ($vehicle->kir_expire)
-                  <td>{{ $vehicle->kir_expire }}</td>
-                @else
-                  <td>No Data</td>
-                @endif
-                @if ($vehicle->kir_expire)
-                  <td>{{ $vehicle->stnk_expire }}</td>
-                @else
-                  <td>No Data</td>
-                @endif
 
-                {{-- -------------Checklist--------- --}}
-                @php
-                  $errorClass = 'text-red-600';
-                @endphp
-                <td @class([$errorClass => $vehicle->total_broken_lamp > 0])>
-                  {{ $vehicle->total_broken_lamp }}
+                <td
+                  class={{ decideTextColorByDay($vehicle->kir_expire, [0 => 'text-red-700', 15 => 'text-red-300', 30 => 'text-warning'], 'text-green-300') }}>
+                  {{ $vehicle->kir_expire ?? 'No Data' }}
                 </td>
-                <td @class([$errorClass => $vehicle->total_broken_glass > 0])>
-                  {{ $vehicle->total_broken_glass }}
+
+                <td
+                  class={{ decideTextColorByDay($vehicle->stnk_expire, [0 => 'text-red-700', 15 => 'text-red-300', 30 => 'text-warning'], 'text-green-300') }}>
+                  {{ $vehicle->stnk_expire ?? 'No Data' }}
                 </td>
-                <td @class([$errorClass => $vehicle->total_broken_tire > 0])>
-                  {{ $vehicle->total_broken_tire }}
-                </td>
-                <td @class([$errorClass => $vehicle->total_broken_equipment > 0])>
-                  {{ $vehicle->total_broken_equipment }}
-                </td>
-                <td @class([$errorClass => $vehicle->total_broken_gear > 0])>
-                  {{ $vehicle->total_broken_gear }}
-                </td>
-                <td @class([$errorClass => $vehicle->total_broken_other > 0])>
-                  {{ $vehicle->total_broken_other }}
-                </td>
-                {{-- <td></td>
-              <td></td> --}}
               </tr>
             @endforeach
           </tbody>

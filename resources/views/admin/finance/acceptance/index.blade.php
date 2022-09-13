@@ -38,7 +38,7 @@
 
       table.buttons(0, null).containers().appendTo("#actionContainer");
 
-      $(".selectable input[type='checkbox']").on("click", function() {
+      $("input[type='checkbox']").on("click", function() {
         $(this).closest("tr").toggleClass("selected");
 
         const totalSelected = table.rows(".selected").data().length;
@@ -138,7 +138,7 @@
             <tr class="header">
               <th>ID</th>
               <th></th>
-              <th></th>
+              <th><input class="form-check-input" type="checkbox" onclick="checkAll(this, 'checkbox')"></th>
               <th></th>
               <th>Tanggal</th>
               <th>Nomor DO</th>
@@ -158,7 +158,7 @@
                 <td>{{ $activity->id }}</td>
                 <td></td>
                 <td>
-                  <input type="checkbox" id="btncheck1" class="form-check-input">
+                  <input type="checkbox" class="form-check-input checkbox">
                 </td>
                 <td>
                   <a href="{{ route('admin.finances.approval.edit', $activity->id) }}" class="badge bg-primary fs-6">

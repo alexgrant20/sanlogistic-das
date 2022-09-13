@@ -105,6 +105,7 @@ Route::prefix('/admin')->name('admin.')->middleware('auth', 'role:admin|super-ad
 
   Route::controller(VehicleLastStatusController::class)->name('vehicles-last-statuses.')->group(function () {
     Route::get('/vehicle-last-status/{vehicle}', 'show')->name('show');
+    Route::get('/vehicle-last-statuses', 'index')->name('index');
   });
 
   /**

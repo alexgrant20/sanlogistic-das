@@ -169,3 +169,39 @@ function filterArrayByLabel(array $original, array $labels)
 {
   return array_intersect_key($original, array_flip($labels));
 }
+
+function days_to_seconds($days)
+{
+  if (is_numeric($days)) {
+    return 86400 * $days;
+  } else {
+    return 'string must be numeric';
+  }
+}
+
+function decideTextColorByDay($date, $rules, $fallbackColor, $defaultColor = 'text-white')
+{
+  if (empty($date)) {
+    return $defaultColor;
+  }
+
+  $date = Carbon\Carbon::parse($date);
+  $diff = $date->timestamp - now()->timestamp;
+
+  foreach ($rules as $key => $value) {
+    if ($diff <= days_to_seconds($key)) return $value;
+  }
+
+  return $fallbackColor;
+}
+
+function decideTextColorByTwoNumber($int, $compareInt, $failColor, $fallbackColor, $defaultColor = 'text-white')
+{
+  if (empty($compareInt)) {
+    return $defaultColor;
+  }
+
+  if ((int) $compareInt <= (int) $int) return $failColor;
+
+  return $fallbackColor;
+}

@@ -138,10 +138,10 @@ function calculateCheckBox(id) {
 
 function getVehicleLastStatus() {
   $(".accordion-item").addClass("disable-div");
-  $("input").attr("disabled", true);
-  $("button").attr("disabled", true);
+  $(".switches input").attr("disabled", true);
+  $(".submit").attr("disabled", true);
 
-  $("input:checkbox").on("change", function (e) {
+  $(".switches input:checkbox").on("change", function (e) {
     const checkboxMainID = $(this.parentNode.parentNode.parentNode).attr("id");
     calculateCheckBox(checkboxMainID);
   });
@@ -149,8 +149,8 @@ function getVehicleLastStatus() {
   // Use last checklist value
   $("#vehicle_id").on("change", async function (e) {
     $(".accordion-item").addClass("disable-div");
-    $("input").attr("disabled", true);
-    $("button").attr("disabled", true);
+    $(".switches input").attr("disabled", true);
+    $(".submit").attr("disabled", true);
 
     const res = await fetch("/driver/last-status/" + e.target.value);
     const data = await res.json();
@@ -159,14 +159,14 @@ function getVehicleLastStatus() {
         $(`#${key}`).prop("checked", data[key] === 0 ? true : false);
       });
     } else {
-      $("input:checkbox").each(function () {
+      $(".switches input:checkbox").each(function () {
         this.checked = true;
       });
     }
 
     $(".accordion-item").removeClass("disable-div");
-    $("input").attr("disabled", false);
-    $("button").attr("disabled", false);
+    $(".switches input").attr("disabled", false);
+    $(".submit").attr("disabled", false);
 
     $("#checklist_container")
       .children()
@@ -197,3 +197,18 @@ $("#form").on("submit", () => {
 $("#submit").click(function (e) {
   $("#form").submit();
 });
+
+function checkAll(bx, classEl) {
+  const checked = $(bx).is(":checked");
+  const cbs = document.querySelectorAll("." + classEl);
+
+  cbs.forEach((el) => {
+    $(el).prop("checked", checked);
+
+    if (checked) {
+      $(el).closest("tr").addClass("selected");
+    } else {
+      $(el).closest("tr").removeClass("selected");
+    }
+  });
+}

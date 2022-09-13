@@ -63,9 +63,9 @@
       {{ __('Checklist') }}
     </a>
 
-    <form href="#" action="{{ route('logout') }}" method="POST" class="">
+    <form action="{{ route('logout') }}" method="POST">
       @csrf
-      <button class="btn fs-4 fw-bold text-white py-2 px-3" type="submit">
+      <button class="btn fs-4 fw-bold text-white py-2 px-3">
         <i class="bi bi-box-arrow-right fs-3 me-5"></i>{{ __('Sign Out') }}
       </button>
     </form>

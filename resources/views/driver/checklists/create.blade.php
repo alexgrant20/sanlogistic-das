@@ -46,13 +46,23 @@
 
       @include('driver.components.vehicle-checklist-form')
 
+      @role('mechanic')
+        <div class="mb-3">
+          <input type="checkbox" name="periodic_maintenance" id="periodic_maintenance" value="1">
+          <label for="periodic_maintenance">Periodic Maintenance</label>
+        </div>
+      @endrole
+
       <div class="d-grid">
-        <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#assure-modal">
+        <button type="button" class="btn btn-lg btn-primary submit" data-bs-toggle="modal"
+          data-bs-target="#assure-modal">
           {{ __('Submit') }}
         </button>
       </div>
 
     </form>
+
+
   </section>
 @endsection
 

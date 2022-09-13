@@ -32,6 +32,8 @@ class StoreVehicleRequest extends FormRequest
       'capacity' => 'required|string',
       'wheel' => 'required|integer',
       'odo' => 'required|integer',
+      'maintenance_odo' => 'required|integer',
+      'maintenance_date' => 'required|date',
       'registration_year' => 'required|regex:/^[1-2][0-9]{3}/',
       'note' => 'nullable|string',
       'kir_number' => 'required|string',

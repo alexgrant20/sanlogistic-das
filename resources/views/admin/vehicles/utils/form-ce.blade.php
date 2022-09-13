@@ -293,8 +293,33 @@
           @enderror
         </div>
 
+        <div class="col-xl-4">
+          <label for="maintenance_odo" class="form-label">Maintenance ODO</label>
+          <input type="number" class="form-control form-control-lg @error('maintenance_odo') is-invalid @enderror"
+            id="maintenance_odo" name="maintenance_odo"
+            value="{{ old('maintenance_odo', $vehicle->maintenance_odo) }}">
+          @error('maintenance_odo')
+            <div class="invalid-feedback">
+              {{ $message }}
+            </div>
+          @enderror
+        </div>
+
+        <div class="col-xl-4">
+          <label for="maintenance_date" class="form-label">Maintenance Date</label>
+          <input type="date" class="form-control form-control-lg @error('maintenance_date') is-invalid @enderror"
+            id="maintenance_date" name="maintenance_date"
+            value="{{ old('maintenance_date', $vehicle->maintenance_date) }}">
+          @error('maintenance_date')
+            <div class="invalid-feedback">
+              {{ $message }}
+            </div>
+          @enderror
+        </div>
+
       </div>
     </div>
+
     <div class="col-xl-6 d-flex align-items-center justify-content-center">
       <div class="card rounded bg-white shadow-lg" id="plate">
         <div class="card-body d-flex flex-column align-items-center mw-100 text-truncate p-2">
