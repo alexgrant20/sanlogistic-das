@@ -50,7 +50,7 @@ class MenuController extends Controller
       ->orderByDesc('activities.updated_at')
       ->groupBy('activities.updated_at')
       ->selectRaw(
-        'SUM(bbm_amount) + SUM(toll_amount) + SUM(parking_amount) + SUM(retribution_amount) AS total_cost,
+        'SUM(bbm_amount) + SUM(toll_amount) + SUM(parking_amount) + SUM(load_amount) + SUM(unload_amount) + SUM(maintenance_amount) AS total_cost,
         activities.updated_at'
       )
       ->paginate(4);

@@ -40,7 +40,7 @@ class ActivityController extends Controller
       ->where('user_id', '=', auth()->user()->id)
       ->orderByDesc('activities.created_at')
       ->selectRaw(
-        'bbm_amount + toll_amount + parking_amount + retribution_amount AS total_cost, arrival_odo - departure_odo AS distance,
+        'bbm_amount + toll_amount + parking_amount + load_amount + unload_amount + maintenance_amount AS total_cost, arrival_odo - departure_odo AS distance,
         activity_statuses.status, do_number, departure_date, arrival_date, dep.name AS departure_name, arr.name AS arrival_name, license_plate,
         (CASE
           WHEN activity_statuses.status = "draft" THEN "bg-warning"
