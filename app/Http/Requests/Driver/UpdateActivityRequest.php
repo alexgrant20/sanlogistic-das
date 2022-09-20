@@ -25,7 +25,7 @@ class UpdateActivityRequest extends FormRequest
   {
     return [
       'arrival_id' => 'required|integer',
-      'arrival_odo' => 'required|integer|gt:' . $this->activity->departure_odo,
+      'arrival_odo' => 'required|integer|gt:' . $this->activity->departure_odo . '|lt:' . $this->activity->departure_odo + 800,
       'arrival_odo_image' => 'required|image|mimes:png,jpg,jpeg',
       'bbm_amount' => 'nullable|integer',
       'toll_amount' => 'nullable|integer',
