@@ -88,7 +88,7 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
           DB::raw('"" AS UNLOADING_EXPENSES'),
           //'Transport',
           DB::raw('"" AS Transport'),
-          'activity_payments.retribution_amount AS retribution',
+          // 'activity_payments.retribution_amount AS retribution',
           //'IFRETRIBUTION EXPENSES',
           DB::raw('"" AS IFRETRIBUTION_EXPENSES'),
           //'ZONE',
@@ -99,7 +99,7 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
           DB::raw('arrival_odo - departure_odo AS DISTANCE'),
           //'TOTAL COST',
           DB::raw('activity_payments.bbm_amount + activity_payments.toll_amount
-          + activity_payments.parking_amount + activity_payments.retribution_amount AS total_cost')
+          + activity_payments.parking_amount + activity_payments.load_amount + activity_payments.unload_amount + activity_payments.maintenance_amount AS total_cost')
         ]
       );
 
@@ -142,7 +142,7 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
       'LOADING EXPENSES',
       'UNLOADING EXPENSES',
       'Transport',
-      'FRETRIBUTION EXPENSES',
+      // 'FRETRIBUTION EXPENSES',
       'IFRETRIBUTION EXPENSES',
       'ZONE',
       'DCODE',
