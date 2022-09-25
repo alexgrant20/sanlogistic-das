@@ -16,7 +16,7 @@ use App\Http\Controllers\Admin\VehicleLastStatusController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::prefix('/admin')->name('admin.')->middleware('auth', 'role:admin|super-admin')->group(function () {
+Route::prefix('/admin')->name('admin.')->middleware('auth', 'can:access-admin-panel')->group(function () {
 
   /**
    * USER

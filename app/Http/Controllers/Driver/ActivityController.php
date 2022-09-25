@@ -26,7 +26,7 @@ class ActivityController extends Controller
 {
   public function __construct()
   {
-    $this->authorizeResource(Activity::class, 'activity');
+    $this->middleware('can:create-activity');
   }
 
   public function index()
@@ -411,10 +411,5 @@ class ActivityController extends Controller
 
     return to_route('index')
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'finished'));;
-  }
-
-  public function destroy(Activity $activity)
-  {
-    //
   }
 }

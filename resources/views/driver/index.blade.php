@@ -2,8 +2,6 @@
 
 @section('content')
   <section>
-    <h2 class="fs-3 mb-4 text-ocean-100">Feature</h2>
-
     <div class="row row-cols-sm-2 row-cols-xxl-4 gx-5 gy-4">
       @php
         $activityId = is_null(session()->get('activity_id'));
@@ -14,9 +12,7 @@
         $activityLink = $activityId ? route('driver.activity.create') : route('driver.activity.edit', session()->get('activity_id'));
       @endphp
 
-
-
-      @role('driver')
+      @can('create-activity')
         {{-- Activity --}}
         <x-ui.menu-item :backgroundColor="$activityBg" :icon="$activityIcon" :label="__($activityLabel)" :description="$activityDesc" :link="$activityLink" />
 
@@ -27,15 +23,23 @@
         {{-- Finance --}}
         <x-ui.menu-item backgroundColor="bg-darkGreen" icon="bi bi-cash-coin" :label="__('Finance')"
           description="Payments already paid" :link="route('driver.menu.finance')" />
-      @endrole
+      @endcan
 
-      {{-- Checklist --}}
-      <x-ui.menu-item backgroundColor="bg-brown" icon="bi bi-clipboard-check-fill" :label="__('Checklist')"
-        description="Markdown vehicle condition" :link="route('driver.checklist.create')" />
+      @canany(['create-checklist', 'create-activity'])
+        {{-- Create Checklist --}}
+        <x-ui.menu-item backgroundColor="bg-brown" icon="bi bi-clipboard-check-fill" :label="__('Create Checklist')"
+          description="Markdown vehicle condition" :link="route('driver.checklist.create')" />
+      @endcanany
 
+      @can('view-checklist')
+        {{-- View Checklist --}}
+        <x-ui.menu-item backgroundColor="bg-brown" icon="fa-solid fa-timeline" :label="__('View Checklist')"
+          description="View your checklist history" :link="route('driver.checklist.index')" />
+      @endcan
     </div>
   </section>
-  @role('driver')
+
+  @can('create-activity')
     @if (!is_null($activity))
       <section>
         <h2 class="fs-3 mb-4 text-ocean-100">Recent Activity</h2>
@@ -75,6 +79,6 @@
         </a>
       </section>
     @endif
-  @endrole
+  @endcan
 
 @endsection

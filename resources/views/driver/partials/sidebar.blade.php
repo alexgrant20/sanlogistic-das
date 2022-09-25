@@ -23,7 +23,7 @@
       {{ __('Profile') }}
     </a>
 
-    @role('driver')
+    @can('create-activity')
       {{-- History --}}
       <a href="{{ route('driver.activity.index') }}"
         class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/activities') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
@@ -54,14 +54,25 @@
         <i class="bi bi-cash-coin fs-3 me-5"></i>
         {{ __('Finance') }}
       </a>
-    @endrole
+    @endcan
 
-    {{-- Checklist --}}
-    <a href="{{ route('driver.checklist.create') }}"
-      class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/checklist') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
-      <i class="bi bi-clipboard2-check-fill fs-3 me-5"></i>
-      {{ __('Checklist') }}
-    </a>
+    @canany(['create-checklist', 'create-activity'])
+      {{-- Create Checklist --}}
+      <a href="{{ route('driver.checklist.create') }}"
+        class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/checklist/create') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
+        <i class="bi bi-clipboard2-check-fill fs-3 me-5"></i>
+        {{ __('Create Checklist') }}
+      </a>
+    @endcan
+
+    @can('view-checklist')
+      {{-- View Checklist --}}
+      <a href="{{ route('driver.checklist.index') }}"
+        class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/checklist') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
+        <i class="bi bi-clipboard2-check-fill fs-3 me-5"></i>
+        {{ __('View Checklist') }}
+      </a>
+    @endcan
 
     <form action="{{ route('logout') }}" method="POST">
       @csrf

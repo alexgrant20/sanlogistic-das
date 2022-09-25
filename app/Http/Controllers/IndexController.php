@@ -16,7 +16,7 @@ class IndexController extends Controller
 
     $user = auth()->user();
 
-    if ($user->hasAnyRole('super-admin', 'admin')) {
+    if ($user->hasRole('super-admin') || $user->hasPermissionTo('access-admin-panel')) {
       return view('admin.index', $params);
     }
 
