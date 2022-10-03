@@ -31,10 +31,9 @@
           <div class="row g-2">
             @foreach ($permissions as $permission)
               <div class="col-sm-3">
-                <label for="{{ $permission->name }}">{!! ucwords(str_replace('-', ' ', $permission->name)) !!}</label>
                 <input type="checkbox" name="{{ $permission->name }}" id="{{ $permission->name }}"
                   class="form-check-input" @if ($role->hasPermissionTo($permission->name)) checked @endif value="1">
-                {{-- <label for="{{ $permission->name }}">{!! ucwords(str_replace('-', ' ', $permission->name)) !!}</label> --}}
+                <label for="{{ $permission->name }}">{!! ucwords(str_replace('-', ' ', $permission->name)) !!}</label>
               </div>
             @endforeach
           </div>
