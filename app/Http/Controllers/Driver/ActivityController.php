@@ -26,7 +26,7 @@ class ActivityController extends Controller
 {
   public function __construct()
   {
-    $this->middleware('can:create-activity');
+    $this->middleware('can:activity-create');
   }
 
   public function index()

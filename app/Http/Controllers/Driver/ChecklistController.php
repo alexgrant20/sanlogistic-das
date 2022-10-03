@@ -13,11 +13,55 @@ use Illuminate\Support\Facades\DB;
 
 class ChecklistController extends Controller
 {
+
+  public function index()
+  {
+    $lampLabel = ['lampu_besar', 'lampu_kota', 'lampu_rem', 'lampu_sein', 'lampu_mundur', 'lampu_kabin'];
+    $oilLabel = ['oli_mesin', 'minyak_rem', 'minyak_kopling', 'oli_hidraulic', 'exhaust_brake'];
+    $tireLabel = ['ban_depan', 'ban_belakang_dalam', 'ban_belakang_luar', 'ban_serep'];
+    $velgLabel = ['velg_ban_depan', 'velg_ban_belakang_dalam', 'velg_ban_belakang_luar', 'velg_ban_serep'];
+    $tirePreasureLabel = ['tekanan_angin_ban_depan', 'tekanan_angin_ban_belakang_dalam', 'tekanan_angin_ban_belakang_luar', 'tekanan_angin_ban_serep'];
+    $glassLabel = ['kaca_depan', 'kaca_belakang', 'kaca_samping'];
+    $otherOutsideLabel = ['accu', 'tutup_radiator', 'tangki_bahan_bakar', 'tutup_tangki_bahan_bakar'];
+    $otherInsideLabel = ['spion', 'wiper', 'klakson', 'panel_speedometer', 'panel_bahan_bakar', 'sunvisor', 'jok'];
+
+    $totalElement = count($lampLabel) + count($oilLabel) + count($tireLabel) + count($velgLabel) + count($tirePreasureLabel) + count($glassLabel) + count($otherOutsideLabel) + count($otherInsideLabel);
+
+    $lampLabel = implode('+', $lampLabel);
+    $oilLabel = implode('+', $oilLabel);
+    $tireLabel = implode('+', $tireLabel);
+    $velgLabel = implode('+', $velgLabel);
+    $tirePreasureLabel = implode('+', $tirePreasureLabel);
+    $glassLabel = implode('+', $glassLabel);
+    $otherOutsideLabel = implode('+', $otherOutsideLabel);
+    $otherInsideLabel = implode('+', $otherInsideLabel);
+
+    $user = auth()->user();
+
+    $checklists = DB::table('vehicle_checklists')
+      ->join('vehicles', 'vehicle_checklists.vehicle_id', 'vehicles.id')
+      ->orderBy('vehicle_checklists.created_at', 'desc')
+      ->when($user->hasRole('driver'), function ($q) use ($user) {
+        return $q->where('user_id', $user->id);
+      })
+      ->get([
+        'vehicles.license_plate',
+        'vehicle_checklists.created_at',
+        DB::raw("({$totalElement} - SUM({$lampLabel} + {$oilLabel} + {$tireLabel} + {$velgLabel} + {$tirePreasureLabel} + {$glassLabel} + {$otherOutsideLabel} + {$otherInsideLabel}))/ {$totalElement} * 100 AS percentage"),
+        'vehicle_checklists.id'
+      ]);
+
+    return view('driver.checklists.index', [
+      'title' => 'Checklist',
+      'checlists' => $checklists
+    ]);
+  }
+
   public function create()
   {
-    $is_driver = auth()->user()->hasRole('driver');
+    $isDriver = auth()->user()->hasRole('driver');
 
-    $vehicles = Vehicle::when($is_driver, function ($query) {
+    $vehicles = Vehicle::when($isDriver, function ($query) {
       $query->where('project_id', auth()->user()->person->project_id);
     })->orderBy('license_plate')->get();
 

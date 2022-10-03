@@ -42,13 +42,13 @@
                 <td></td>
                 <td>
                   @if (!empty($vehicle->vehicle_last_status_id) or
-                      auth()->user()->can('edit-vehicle'))
+                      auth()->user()->can('vehicle-edit'))
                     <div class="dropdown">
                       <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-three-dots"></i>
                       </button>
                       <ul class="dropdown-menu">
-                        @can('edit-vehicle')
+                        @can('vehicle-edit')
                           <li>
                             <a href="{{ route('admin.vehicles.edit', $vehicle->license_plate) }}" class="dropdown-item">
                               Edit

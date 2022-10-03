@@ -22,9 +22,9 @@ class CompanyController extends Controller
 {
   public function __construct()
   {
-    $this->middleware('can:create-company', ['only' => ['create', 'store']]);
-    $this->middleware('can:edit-company', ['only' => ['edit', 'update']]);
-    $this->middleware('can:view-company', ['only' => ['index']]);
+    $this->middleware('can:company-create', ['only' => ['create', 'store']]);
+    $this->middleware('can:company-edit', ['only' => ['edit', 'update']]);
+    $this->middleware('can:company-view', ['only' => ['index']]);
   }
 
   public function index()
@@ -159,7 +159,6 @@ class CompanyController extends Controller
 
   public function importExcel(Request $request)
   {
-
     $request->validate([
       'file' => 'required|mimes:csv,xls,xlsx'
     ]);

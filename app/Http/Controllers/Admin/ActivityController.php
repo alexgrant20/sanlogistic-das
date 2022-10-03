@@ -25,9 +25,9 @@ class ActivityController extends Controller
 
   public function __construct()
   {
-    $this->middleware('can:create-activity', ['only' => ['create', 'store']]);
-    $this->middleware('can:edit-activity', ['only' => ['edit', 'update']]);
-    $this->middleware('can:view-activity', ['only' => ['index']]);
+    $this->middleware('can:activity-create', ['only' => ['create', 'store']]);
+    $this->middleware('can:activity-edit', ['only' => ['edit', 'update']]);
+    $this->middleware('can:activity-view', ['only' => ['index']]);
   }
 
   public function index(Request $request)

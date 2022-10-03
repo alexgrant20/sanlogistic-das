@@ -31,6 +31,7 @@
           </tr>
         </thead>
         <tbody>
+
           @foreach ($roles as $role)
             <tr>
               <td>{{ $role->name }}</td>

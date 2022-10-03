@@ -27,9 +27,9 @@ class AddressController extends Controller
 
   public function __construct()
   {
-    $this->middleware('can:create-address', ['only' => ['create', 'store']]);
-    $this->middleware('can:edit-address', ['only' => ['edit', 'update']]);
-    $this->middleware('can:view-address', ['only' => ['index']]);
+    $this->middleware('can:address-create', ['only' => ['create', 'store']]);
+    $this->middleware('can:address-edit', ['only' => ['edit', 'update']]);
+    $this->middleware('can:address-view', ['only' => ['index']]);
   }
 
   public function index()

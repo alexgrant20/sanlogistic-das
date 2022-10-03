@@ -8,10 +8,10 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form action="{{ route('admin.roles.update', $role->id) }}" method="post" id="form">
+      <form action="{{ route('admin.roles.update', $role->id) }}" method="post" id="form" class="mb-5">
         @method('PUT')
         @csrf
-        <div class="mb-3">
+        <div class="mb-4">
           <label for="name" class="form-label">Role Name</label>
           <input type="text" class="form-control form-control-lg @error('name') is-invalid @enderror" id="name"
             name="name" value="{{ old('name', $role->name) }}">
@@ -21,44 +21,36 @@
             </div>
           @enderror
         </div>
+        <div>
+          <h3 class="border-start border-primary ps-3 fs-2">Role Permission</h3>
+          <p class="fs-3">Manage Role Permission</p>
+          <input class="form-check-input" type="checkbox" onclick="checkAlls(this, 'checkbox')" id="check-all">
+          <label for="check-all">Check All</label>
+          <hr>
+
+          <div class="row g-2">
+            @foreach ($permissions as $permission)
+              <div class="col-sm-3">
+                <label for="{{ $permission->name }}">{!! ucwords(str_replace('-', ' ', $permission->name)) !!}</label>
+                <input type="checkbox" name="{{ $permission->name }}" id="{{ $permission->name }}"
+                  class="form-check-input" @if ($role->hasPermissionTo($permission->name)) checked @endif value="1">
+                {{-- <label for="{{ $permission->name }}">{!! ucwords(str_replace('-', ' ', $permission->name)) !!}</label> --}}
+              </div>
+            @endforeach
+          </div>
+        </div>
       </form>
       <button type="submit" class="btn btn-primary" id="submit">Update Role</button>
     </section>
-    <section class="container-fluid">
-      <h3>Role Permission</h3>
-      <div class="my-3">
-        @if ($role->permissions)
-          @foreach ($role->permissions as $role_permission)
-            <form class="d-inline"
-              action="{{ route('admin.roles.permissions.revoke', [$role->id, $role_permission->id]) }}" method="POST">
-              @csrf
-              @method('DELETE')
-              <button type="submit" class="btn btn-info">
-                {{ $role_permission->name }}
-              </button>
-            </form>
-          @endforeach
-        @endif
-      </div>
-
-      <form action="{{ route('admin.roles.permissions', $role->id) }}" method="post">
-        @csrf
-        <div class="mb-3">
-          <label for="permission" class="form-label">Permission</label>
-          <select name="permission" class="form-select form-control" id="permission">
-            <option value="" hidden></option>
-            @foreach ($permissions as $permission)
-              <option value="{{ $permission->name }}">{{ $permission->name }}</option>
-            @endforeach
-          </select>
-          @error('permission')
-            <div class="invalid-feedback">
-              {{ $message }}
-            </div>
-          @enderror
-        </div>
-        <button type="submit" class="btn btn-primary">Update Role</button>
-      </form>
-    </section>
   </div>
+@endsection
+
+@section('footJS')
+  <script>
+    function checkAlls(bx, classEl) {
+      const checked = $(bx).is(":checked");
+      const cbs = document.querySelectorAll("." + classEl);
+      $('input:checkbox').not(this).prop('checked', checked);
+    }
+  </script>
 @endsection

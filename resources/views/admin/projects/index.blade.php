@@ -40,37 +40,45 @@
               <tr>
                 <td>{{ $project->id }}</td>
                 <td></td>
-                <td>
-                  <div class="dropdown">
-                    <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi bi-three-dots"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                      @can('edit-project')
-                        <li>
-                          <a href="{{ route('admin.projects.edit', $project->name) }}" class="dropdown-item">
-                            Edit
-                          </a>
-                        </li>
-                      @endcan
-                      <li>
-                        <a href="{{ route('admin.projects.show.vehicles', $project->name) }}" class="dropdown-item">
-                          Assign Vehicle
-                        </a>
-                      </li>
-                      <li>
-                        <a href="{{ route('admin.projects.show.addresses', $project->name) }}" class="dropdown-item">
-                          Assign Address
-                        </a>
-                      </li>
-                      <li>
-                        <a href="{{ route('admin.projects.show.people', $project->name) }}" class="dropdown-item">
-                          Assign Person
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
+                @canany(['project-edit', 'project-assign-vehicle', 'project-assign-address', 'project-assign-person'])
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-three-dots"></i>
+                      </button>
+                      <ul class="dropdown-menu">
+                        @can('project-edit')
+                          <li>
+                            <a href="{{ route('admin.projects.edit', $project->name) }}" class="dropdown-item">
+                              Edit
+                            </a>
+                          </li>
+                        @endcan
+                        @can('project-assign-vehicle')
+                          <li>
+                            <a href="{{ route('admin.projects.show.vehicles', $project->name) }}" class="dropdown-item">
+                              Assign Vehicle
+                            </a>
+                          </li>
+                        @endcan
+                        @can('project-assign-address')
+                          <li>
+                            <a href="{{ route('admin.projects.show.addresses', $project->name) }}" class="dropdown-item">
+                              Assign Address
+                            </a>
+                          </li>
+                        @endcan
+                        @can('project-assign-person')
+                          <li>
+                            <a href="{{ route('admin.projects.show.people', $project->name) }}" class="dropdown-item">
+                              Assign Person
+                            </a>
+                          </li>
+                        @endcan
+                      </ul>
+                    </div>
+                  </td>
+                @endcanany
                 <td>{{ $project->company->name }}</td>
                 <td>{{ $project->name }}</td>
                 <td>Unkown</td>

@@ -100,20 +100,20 @@ class UserController extends Controller
     return to_route('admin.people.index')->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'user', 'updated'));
   }
 
-  public function show(User $user)
-  {
-    if (empty($user->roles()->first())) return back()->with(genereateNotifaction('error', 'Please Assign User a Role!'));
+  // public function show(User $user)
+  // {
+  //   if (empty($user->roles()->first())) return back()->with(genereateNotifaction('error', 'Please Assign User a Role!'));
 
-    $roles = Role::orderBy('name')->get();
-    $permissions = Permission::orderBy('name')->get();
+  //   $roles = Role::orderBy('name')->get();
+  //   $permissions = Permission::orderBy('name')->get();
 
-    return view('admin.user.role', [
-      'title' => 'User',
-      'roles' => $roles,
-      'permissions' => $permissions,
-      'user' => $user
-    ]);
-  }
+  //   return view('admin.user.role', [
+  //     'title' => 'User',
+  //     'roles' => $roles,
+  //     'permissions' => $permissions,
+  //     'user' => $user
+  //   ]);
+  // }
 
   public function assignRole(Request $request, User $user)
   {

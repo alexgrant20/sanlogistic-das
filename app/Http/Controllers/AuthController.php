@@ -10,11 +10,26 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class AuthController extends Controller
 {
   public function index()
   {
+    $users = User::all();
+
+    if ($users->count() === 0) {
+
+      Role::firstOrCreate(['name' => 'super-admin']);
+
+      $user = User::firstOrCreate([
+        'username' => 'admin',
+        'password' => Hash::make('admin')
+      ]);
+
+      $user->assignRole('super-admin');
+    }
+
     return view('login.index');
   }
 

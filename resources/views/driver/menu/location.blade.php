@@ -26,7 +26,7 @@
 @section('footJS')
   <script>
     $('#address').on('change', (e) => {
-      window.location.href = `/driver/location/${e.target.value}`;
+      window.location.href = `{{ route('driver.menu.location') }}/${e.target.value}`;
     })
   </script>
 @endsection

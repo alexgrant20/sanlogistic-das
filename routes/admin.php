@@ -6,8 +6,10 @@ use App\Http\Controllers\Admin\PersonController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AddressController;
+use App\Http\Controllers\Admin\AreaController;
 use App\Http\Controllers\Admin\VehicleController;
 use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\VehicleChecklistController;
@@ -16,19 +18,19 @@ use App\Http\Controllers\Admin\VehicleLastStatusController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::prefix('/admin')->name('admin.')->middleware('auth', 'permission:access-admin-panel')->group(function () {
+Route::prefix('/admin')->name('admin.')->middleware('auth', 'can:access-admin-panel')->group(function () {
 
   /**
    * USER
    */
-  Route::resource('/users', UserController::class)->except(['index', 'destroy', 'create']);
+  Route::resource('/users', UserController::class)->except(['index', 'destroy', 'create', 'show']);
 
   /**
    * ASSIGN USER ROLE & PERMISSION
    */
   Route::get('/users/create/{person}', [UserController::class, 'create'])->name('users.create');
-  // Route::post('/users/{user}/roles', [UserController::class, 'assignRole'])->name('users.roles');
-  // Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.remove');
+  Route::post('/users/{user}/roles', [UserController::class, 'assignRole'])->name('users.roles');
+  Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.remove');
   Route::post('/users/{user}/permissions', [UserController::class, 'givePermission'])->name('users.permissions');
   Route::delete('/users/{user}/permissions/{permission}', [UserController::class, 'revokePermission'])->name('users.permissions.revoke');
 
@@ -39,9 +41,9 @@ Route::prefix('/admin')->name('admin.')->middleware('auth', 'permission:access-a
   Route::resource('/roles', RoleController::class);
   Route::post('/roles/{role}/permissions', [RoleController::class, 'givePermission'])->name('roles.permissions');
   Route::delete('/roles/{role}/permissions/{permission}', [RoleController::class, 'revokePermission'])->name('roles.permissions.revoke');
-  Route::resource('/permissions', PermissionController::class);
-  Route::post('/permissions/{permission}/roles', [PermissionController::class, 'assignRole'])->name('permissions.roles');
-  Route::delete('/permissions/{permission}/roles/{role}', [PermissionController::class, 'removeRole'])->name('roles.permissions.remove');
+  // Route::resource('/permissions', PermissionController::class);
+  // Route::post('/permissions/{permission}/roles', [PermissionController::class, 'assignRole'])->name('permissions.roles');
+  // Route::delete('/permissions/{permission}/roles/{role}', [PermissionController::class, 'removeRole'])->name('roles.permissions.remove');
 
   /**
    * ADDRESS
@@ -143,7 +145,6 @@ Route::prefix('/admin')->name('admin.')->middleware('auth', 'permission:access-a
   /**
    * FINANCE
    */
-
   Route::controller(FinanceController::class)->prefix('/finances')->name('finances.')->group(function () {
     Route::get('/approval', 'approval')->name('approval');
     Route::post('/approve', 'approve')->name('approve');
@@ -155,4 +156,15 @@ Route::prefix('/admin')->name('admin.')->middleware('auth', 'permission:access-a
     Route::post('/export/excel', 'exportExcel')->name('export.excel');
     Route::post('/export/pdf', 'exportPDF')->name('export.pdf');
   });
+
+  /**
+   * Area
+   */
+  Route::resource('/areas', AreaController::class);
+
+
+  /**
+   * Department
+   */
+  Route::resource('/departments', DepartmentController::class);
 });

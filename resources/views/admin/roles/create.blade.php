@@ -8,9 +8,9 @@
       </div>
     </div>
     <section class="container-fluid">
-      <form action="{{ route('admin.roles.store') }}" method="post" id="form">
+      <form action="{{ route('admin.roles.store') }}" method="post" id="form" class="mb-5">
         @csrf
-        <div class="mb-3">
+        <div class="mb-4">
           <label for="name" class="form-label">Role Name</label>
           <input type="text" class="form-control form-control-lg @error('name') is-invalid @enderror" id="name"
             name="name" value="{{ old('name') }}">
@@ -20,8 +20,35 @@
             </div>
           @enderror
         </div>
+
+        <div>
+          <h3 class="border-start border-primary ps-3 fs-2">Role Permission</h3>
+          <p class="fs-3">Manage Role Permission</p>
+          <input class="form-check-input" type="checkbox" onclick="checkAlls(this, 'checkbox')" id="check-all">
+          <label for="check-all">Check All</label>
+          <hr>
+          <div class="row g-2">
+            @foreach ($permissions as $permission)
+              <div class="col-sm-3">
+                <input type="checkbox" name="{{ $permission->name }}" id="{{ $permission->name }}"
+                  class="form-check-input"value="1">
+                <label for="{{ $permission->name }}">{!! ucwords(str_replace('-', ' ', $permission->name)) !!}</label>
+              </div>
+            @endforeach
+          </div>
+        </div>
       </form>
       <button class="btn btn-primary" id="submit">Create Role</button>
     </section>
   </div>
+@endsection
+
+@section('footJS')
+  <script>
+    function checkAlls(bx, classEl) {
+      const checked = $(bx).is(":checked");
+      const cbs = document.querySelectorAll("." + classEl);
+      $('input:checkbox').not(this).prop('checked', checked);
+    }
+  </script>
 @endsection

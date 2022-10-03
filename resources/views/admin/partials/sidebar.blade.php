@@ -2,7 +2,7 @@
   <!-- Sidebar Header-->
   <div class="sidebar-header d-flex align-items-center p-4">
     <img class="avatar shadow-0 img-fluid rounded-circle"
-      src="{{ auth()->user()->person->image ? asset('/storage/' . auth()->user()->person->image) : asset('/img/default.jpg') }}"
+      src="{{ optional(auth()->user()->person)->image ? asset('/storage/' . auth()->user()->person->image) : asset('/img/default.jpg') }}"
       alt="">
     <div class="ms-3 title">
       <h1 class="h5 mb-1">{{ auth()->user()->username }}</h1>
@@ -23,14 +23,14 @@
 
   <span class="text-uppercase text-gray-600 text-xs heading mb-2 mx-3 text-wrap d-block">Super Admin</span>
   <ul class="list-unstyled">
-    @canany(['create-address', 'view-address'])
+    @canany(['address-create', 'address-view'])
       <li class="sidebar-item {{ Request::is('admin/addresses*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#addressesDropDown" data-bs-toggle="collapse">
           <i class="bi bi-cursor svg-icon svg-icon-sm svg-icon-heavy"></i>
           <span>Addresses</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/addresses*') ? 'show' : '' }}" id="addressesDropDown">
-          @can('create-address')
+          @can('address-create')
             <li>
               <a class="sidebar-link {{ Route::is('admin.addresses.create') ? 'text-primary' : '' }}"
                 href="{{ route('admin.addresses.create') }}">
@@ -38,7 +38,7 @@
               </a>
             </li>
           @endcan
-          @can('view-address')
+          @can('address-view')
             <li>
               <a class="sidebar-link {{ Route::is('admin.addresses.index') ? 'text-primary' : '' }}"
                 href="{{ route('admin.addresses.index') }}">
@@ -50,14 +50,14 @@
       </li>
     @endcanany
 
-    @canany(['create-activity', 'view-activity'])
+    @canany(['activity-create', 'activity-view'])
       <li class="sidebar-item {{ Request::is('admin/activities*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#activitiesDropDown" data-bs-toggle="collapse">
           <i class="bi bi-list-task svg-icon svg-icon-sm svg-icon-heavy"></i>
           <span>Activities</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/activities*') ? 'show' : '' }}" id="activitiesDropDown">
-          @can('create-activity')
+          @can('activity-create')
             <li>
               <a class="sidebar-link {{ Route::is('admin.activities.create') ? 'text-primary' : '' }}"
                 href="{{ route('admin.activities.create') }}">
@@ -65,7 +65,7 @@
               </a>
             </li>
           @endcan
-          @can('view-activity')
+          @can('activity-view')
             <li>
               <a class="sidebar-link {{ Route::is('admin.activities.index') ? 'text-primary' : '' }}"
                 href="{{ route('admin.activities.index') }}">
@@ -77,14 +77,14 @@
       </li>
     @endcanany
 
-    @canany(['create-person', 'view-person'])
+    @canany(['person-create', 'person-view'])
       <li class="sidebar-item {{ Request::is('admin/people*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#peopleDropDown" data-bs-toggle="collapse">
           <i class="bi bi-people-fill svg-icon svg-icon-sm svg-icon-heavy"></i>
           <span>People</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/people*') ? 'show' : '' }}" id="peopleDropDown">
-          @can('create-person')
+          @can('person-create')
             <li>
               <a class="sidebar-link {{ Route::is('admin.people.create') ? 'text-primary' : '' }}"
                 href="{{ route('admin.people.create') }}">
@@ -92,7 +92,7 @@
               </a>
             </li>
           @endcan
-          @can('view-person')
+          @can('person-view')
             <li>
               <a class="sidebar-link {{ Route::is('admin.people.index') ? 'text-primary' : '' }}"
                 href="{{ route('admin.people.index') }}">
@@ -104,29 +104,33 @@
       </li>
     @endcanany
 
-    @can('create-user-role-and-permission')
+    @canany(['user-role-create', 'user-role-view'])
       <li class="sidebar-item {{ Request::is('admin/roles*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#rolesDropDown" data-bs-toggle="collapse">
           <i class="fa-solid fa-user-gear svg-icon svg-icon-sm svg-icon-heavy"></i>
           <span>Roles</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/roles*') ? 'show' : '' }}" id="rolesDropDown">
-          <li>
-            <a class="sidebar-link {{ Route::is('admin.roles.create') ? 'text-primary' : '' }}"
-              href="{{ route('admin.roles.create') }}">
-              Add
-            </a>
-          </li>
-          <li>
-            <a class="sidebar-link {{ Route::is('admin.roles.index') ? 'text-primary' : '' }}"
-              href="{{ route('admin.roles.index') }}">
-              View
-            </a>
-          </li>
+          @can('user-role-create')
+            <li>
+              <a class="sidebar-link {{ Route::is('admin.roles.create') ? 'text-primary' : '' }}"
+                href="{{ route('admin.roles.create') }}">
+                Add
+              </a>
+            </li>
+          @endcan
+          @can('user-role-view')
+            <li>
+              <a class="sidebar-link {{ Route::is('admin.roles.index') ? 'text-primary' : '' }}"
+                href="{{ route('admin.roles.index') }}">
+                View
+              </a>
+            </li>
+          @endcan
         </ul>
       </li>
 
-      <li class="sidebar-item {{ Request::is('admin/permission*') ? 'active' : '' }}">
+      {{-- <li class="sidebar-item {{ Request::is('admin/permission*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#permissionDropDown" data-bs-toggle="collapse">
           <i class="fa-solid fa-gavel svg-icon svg-icon-sm svg-icon-heavy"></i>
           <span>Permission</span>
@@ -145,17 +149,17 @@
             </a>
           </li>
         </ul>
-      </li>
+      </li> --}}
     @endcan
 
-    @canany(['create-vehicle', 'view-vehicle'])
+    @canany(['vehicle-create', 'vehicle-view'])
       <li class="sidebar-item {{ Request::is('admin/vehicles*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#vehiclesDropDown" data-bs-toggle="collapse">
           <i class="bi bi-truck svg-icon svg-icon-sm svg-icon-heavy"></i>
           <span>Vehicles</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/vehicles*') ? 'show' : '' }}" id="vehiclesDropDown">
-          @can('create-vehicle')
+          @can('vehicle-create')
             <li>
               <a class="sidebar-link {{ Route::is('admin.vehicles.create') ? 'text-primary' : '' }}"
                 href="{{ route('admin.vehicles.create') }}">
@@ -163,7 +167,7 @@
               </a>
             </li>
           @endcan
-          @can('view-vehicle')
+          @can('vehicle-view')
             <li>
               <a class="sidebar-link {{ Route::is('admin.vehicles.index') ? 'text-primary' : '' }}"
                 href="{{ route('admin.vehicles.index') }}">
@@ -181,14 +185,14 @@
       </li>
     @endcanany
 
-    @canany(['create-company', 'view-company'])
+    @canany(['company-create', 'company-view'])
       <li class="sidebar-item {{ Request::is('admin/companies*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#companiesDropDown" data-bs-toggle="collapse">
           <i class="bi bi-building svg-icon svg-icon-sm svg-icon-heavy"></i>
           <span>Companies</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/companies*') ? 'show' : '' }}" id="companiesDropDown">
-          @can('create-company')
+          @can('company-create')
             <li>
               <a class="sidebar-link {{ Route::is('admin.companies.create') ? 'text-primary' : '' }}"
                 href="{{ route('admin.companies.create') }}">
@@ -196,7 +200,7 @@
               </a>
             </li>
           @endcan
-          @can('view-company')
+          @can('company-view')
             <li>
               <a class="sidebar-link {{ Route::is('admin.companies.index') ? 'text-primary' : '' }}"
                 href="{{ route('admin.companies.index') }}">
@@ -208,14 +212,14 @@
       </li>
     @endcanany
 
-    @canany(['create-project', 'view-project'])
+    @canany(['project-create', 'project-view'])
       <li class="sidebar-item {{ Request::is('admin/projects*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#projectsDropDown" data-bs-toggle="collapse">
           <i class="bi bi-kanban svg-icon svg-icon-sm svg-icon-heavy"></i>
           <span>Projects</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/projects*') ? 'show' : '' }}" id="projectsDropDown">
-          @can('create-project')
+          @can('project-create')
             <li>
               <a class="sidebar-link {{ Route::is('admin.projects.create') ? 'text-primary' : '' }}"
                 href="{{ route('admin.projects.create') }}">
@@ -223,7 +227,7 @@
               </a>
             </li>
           @endcan
-          @can('view-project')
+          @can('project-view')
             <li>
               <a class="sidebar-link {{ Route::is('admin.projects.index') ? 'text-primary' : '' }}"
                 href="{{ route('admin.projects.index') }}">
@@ -261,6 +265,31 @@
         </ul>
       </li>
     @endcanany
+
+    <li class="sidebar-item {{ Request::is('admin/areas*') ? 'active' : '' }}">
+      <a class="sidebar-link" href="#areasDropDown" data-bs-toggle="collapse">
+        <i class="bi bi-geo svg-icon svg-icon-sm svg-icon-heavy"></i>
+        <span>Area</span>
+      </a>
+      <ul class="collapse list-unstyled {{ Request::is('admin/areas*') ? 'show' : '' }}" id="areasDropDown">
+        @can('finance-acceptance')
+          <li>
+            <a class="sidebar-link {{ Route::is('admin.areas.approval') ? 'text-primary' : '' }}"
+              href="{{ route('admin.areas.create') }}">
+              Add
+            </a>
+          </li>
+        @endcan
+        @can('finance-payment')
+          <li>
+            <a class="sidebar-link {{ Route::is('admin.areas.payment') ? 'text-primary' : '' }}"
+              href="{{ route('admin.areas.index') }}">
+              View
+            </a>
+          </li>
+        @endcan
+      </ul>
+    </li>
   </ul>
 
 </nav>

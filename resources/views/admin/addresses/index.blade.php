@@ -71,14 +71,14 @@
                 <td>{{ $address->id }}</td>
                 <td></td>
                 <td>
-                  @canany('edit-address')
+                  @canany('address-edit')
                     <div class="dropdown">
                       <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-three-dots"></i>
                       </button>
                       <ul class="dropdown-menu">
                         {{-- IF OTHER MENU EXISTS UNCOMENT THIS --}}
-                        {{-- @can('edit-address') --}}
+                        {{-- @can('address-edit') --}}
                         <li>
                           <a href="{{ route('admin.addresses.edit', $address->name) }}" class="dropdown-item">
                             Edit

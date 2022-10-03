@@ -102,7 +102,7 @@
                       <i class="bi bi-three-dots"></i>
                     </button>
                     <ul class="dropdown-menu">
-                      @can('edit-activity')
+                      @can('activity-edit')
                         <li>
                           <a href="{{ route('admin.activities.edit', $activity->id) }}" class="dropdown-item">
                             Edit

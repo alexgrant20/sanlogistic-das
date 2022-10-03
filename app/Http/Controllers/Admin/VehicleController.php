@@ -30,9 +30,9 @@ class VehicleController extends Controller
 {
   public function __construct()
   {
-    $this->middleware('can:create-vehicle', ['only' => ['create', 'store']]);
-    $this->middleware('can:edit-vehicle', ['only' => ['edit', 'update']]);
-    $this->middleware('can:view-vehicle', ['only' => ['index']]);
+    $this->middleware('can:vehicle-create', ['only' => ['create', 'store']]);
+    $this->middleware('can:vehicle-edit', ['only' => ['edit', 'update']]);
+    $this->middleware('can:vehicle-view', ['only' => ['index']]);
   }
 
   public function index()

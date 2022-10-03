@@ -12,7 +12,7 @@
         $activityLink = $activityId ? route('driver.activity.create') : route('driver.activity.edit', session()->get('activity_id'));
       @endphp
 
-      @can('create-activity')
+      @can('activity-create')
         {{-- Activity --}}
         <x-ui.menu-item :backgroundColor="$activityBg" :icon="$activityIcon" :label="__($activityLabel)" :description="$activityDesc" :link="$activityLink" />
 
@@ -25,21 +25,21 @@
           description="Payments already paid" :link="route('driver.menu.finance')" />
       @endcan
 
-      @canany(['create-checklist', 'create-activity'])
+      @canany(['checklist-create', 'activity-create'])
         {{-- Create Checklist --}}
         <x-ui.menu-item backgroundColor="bg-brown" icon="bi bi-clipboard-check-fill" :label="__('Create Checklist')"
-          description="Markdown vehicle condition" :link="route('driver.checklist.create')" />
+          description="Markdown vehicle condition" :link="route('driver.checklists.create')" />
       @endcanany
 
-      @can('view-checklist')
+      @can('checklist-view')
         {{-- View Checklist --}}
         <x-ui.menu-item backgroundColor="bg-brown" icon="fa-solid fa-timeline" :label="__('View Checklist')"
-          description="View your checklist history" :link="route('driver.checklist.index')" />
+          description="View your checklist history" :link="route('driver.checklists.index')" />
       @endcan
     </div>
   </section>
 
-  @can('create-activity')
+  @can('activity-create')
     @if (!is_null($activity))
       <section>
         <h2 class="fs-3 mb-4 text-ocean-100">Recent Activity</h2>

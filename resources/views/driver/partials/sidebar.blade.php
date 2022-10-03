@@ -1,9 +1,9 @@
 <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
   <div class="offcanvas-body">
     <img class="rounded-circle mb-3"
-      src="{{ auth()->user()->person->image ? asset('/storage/' . auth()->user()->person->image) : asset('/img/default.jpg') }}"
+      src="{{ optional(auth()->user()->person)->image ? asset('/storage/' . auth()->user()->person->image) : asset('/img/default.jpg') }}"
       alt="" width="75" height="75">
-    <h4>{{ auth()->user()->person->name }}</h4>
+    <h4>{{ optional(auth()->user()->person)->name }}</h4>
     <hr class="mb-5">
 
     {{-- Menu --}}
@@ -23,7 +23,7 @@
       {{ __('Profile') }}
     </a>
 
-    @can('create-activity')
+    @can('activity-create')
       {{-- History --}}
       <a href="{{ route('driver.activity.index') }}"
         class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/activities') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
@@ -56,18 +56,18 @@
       </a>
     @endcan
 
-    @canany(['create-checklist', 'create-activity'])
+    @canany(['checklist-create', 'activity-create'])
       {{-- Create Checklist --}}
-      <a href="{{ route('driver.checklist.create') }}"
+      <a href="{{ route('driver.checklists.create') }}"
         class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/checklist/create') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
         <i class="bi bi-clipboard2-check-fill fs-3 me-5"></i>
         {{ __('Create Checklist') }}
       </a>
     @endcan
 
-    @can('view-checklist')
+    @can('checklist-view')
       {{-- View Checklist --}}
-      <a href="{{ route('driver.checklist.index') }}"
+      <a href="{{ route('driver.checklists.index') }}"
         class="d-flex align-items-center mb-4 py-2 px-3 {{ Request::is('driver/checklist') ? 'bg-primary' : '' }} fs-4 rounded fw-bold">
         <i class="bi bi-clipboard2-check-fill fs-3 me-5"></i>
         {{ __('View Checklist') }}

@@ -23,9 +23,9 @@ class ProjectController extends Controller
 {
   public function __construct()
   {
-    $this->middleware('can:create-project', ['only' => ['create', 'store']]);
-    $this->middleware('can:edit-project', ['only' => ['edit', 'update']]);
-    $this->middleware('can:view-project', ['only' => ['index']]);
+    $this->middleware('can:project-create', ['only' => ['create', 'store']]);
+    $this->middleware('can:project-edit', ['only' => ['edit', 'update']]);
+    $this->middleware('can:project-view', ['only' => ['index']]);
   }
 
   public function index()

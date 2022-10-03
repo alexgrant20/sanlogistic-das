@@ -29,9 +29,12 @@ Route::prefix('driver')->name('driver.')->middleware('auth')->group(function () 
     Route::get('/last-statuses/{vehicleId}', 'getChecklistLastStatus')->name('lastStatus.get');
   });
 
-  Route::controller(ChecklistController::class)->name('checklist.')->group(function () {
-    Route::get('/checklists', 'index')->name('index');
-    Route::get('/checklists/create', 'create')->name('create');
-    Route::post('/checklists', 'store')->name('store');
-  });
+  // Route::controller(ChecklistController::class)->name('checklist.')->group(function () {
+  //   Route::get('/checklists', 'index')->name('index');
+  //   Route::get('/checklists/create', 'create')->name('create');
+  //   Route::post('/checklists', 'store')->name('store');
+  //   Route::post('/checklist', 'show')->name('show');
+  // });
+
+  Route::resource('/checklists', ChecklistController::class);
 });

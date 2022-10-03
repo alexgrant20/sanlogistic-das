@@ -43,14 +43,14 @@
                 <td>{{ $company->id }}</td>
                 <td></td>
                 <td>
-                  @canany('edit-company')
+                  @canany('company-edit')
                     <div class="dropdown">
                       <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-three-dots"></i>
                       </button>
                       <ul class="dropdown-menu">
                         {{-- IF OTHER MENU EXISTS UNCOMENT THIS --}}
-                        {{-- @can('edit-company') --}}
+                        {{-- @can('company-edit') --}}
                         <li>
                           <a href="{{ route('admin.companies.edit', $company->name) }}" class="dropdown-item">
                             Edit

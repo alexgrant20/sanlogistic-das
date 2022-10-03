@@ -27,9 +27,9 @@ class PersonController extends Controller
 {
   public function __construct()
   {
-    $this->middleware('can:create-person', ['only' => ['create', 'store']]);
-    $this->middleware('can:edit-person', ['only' => ['edit', 'update']]);
-    $this->middleware('can:view-person', ['only' => ['index']]);
+    $this->middleware('can:person-create', ['only' => ['create', 'store']]);
+    $this->middleware('can:person-edit', ['only' => ['edit', 'update']]);
+    $this->middleware('can:person-view', ['only' => ['index']]);
   }
 
   public function index()

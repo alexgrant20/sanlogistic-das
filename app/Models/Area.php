@@ -10,4 +10,9 @@ class Area extends Model
   use HasFactory;
 
   protected $guarded = ['id'];
+
+  public function regional()
+  {
+    return $this->belongsTo(Regional::class);
+  }
 }

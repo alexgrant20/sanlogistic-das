@@ -40,14 +40,14 @@
                 <td>{{ $person->id }}</td>
                 <td></td>
                 <td>
-                  @canany('edit-person')
+                  @canany('person-edit')
                     <div class="dropdown">
                       <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-three-dots"></i>
                       </button>
                       <ul class="dropdown-menu">
                         {{-- IF OTHER MENU EXISTS UNCOMENT THIS --}}
-                        {{-- @can('edit-person') --}}
+                        {{-- @can('person-edit') --}}
                         <li>
                           <a href="{{ route('admin.people.edit', $person->id) }}"class="dropdown-item">
                             Edit
@@ -58,7 +58,14 @@
                     </div>
                   @endcan
                 </td>
-                <td>{{ $person->name }}</td>
+                <td>
+                  {{ $person->name }}
+
+                  @if ($person->user && empty(optional(optional($person->user)->roles())->first()))
+                    <i class="fa-solid fa-user-slash text-danger"></i>
+                  @endif
+
+                </td>
                 <td>{{ $person->project->name ?? null }}</td>
                 <td>{{ $person->phone_number }}</td>
                 <td>{{ $person->department->name ?? null }}</td>
@@ -69,11 +76,11 @@
                       <i class="bi bi-person-fill"></i>
                     </a>
 
-                    @can('assign-user-role-and-permission')
+                    {{-- @can('user-role-assign')
                       <a href="{{ route('admin.users.show', $person->user->id) }}" class="badge bg-primary fs-6">
                         <i class="bi bi-person-plus-fill"></i>
                       </a>
-                    @endcan
+                    @endcan --}}
                   @else
                     <a href="{{ route('admin.users.create', $person->id) }}" class="badge bg-info fs-6">
                       <i class="bi bi-person-plus-fill"></i>
