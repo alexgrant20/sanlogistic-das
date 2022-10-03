@@ -152,7 +152,7 @@ function getVehicleLastStatus() {
     $(".switches input").attr("disabled", true);
     $(".submit").attr("disabled", true);
 
-    const res = await fetch("/driver/last-status/" + e.target.value);
+    const res = await fetch("/driver/last-statuses/" + e.target.value);
     const data = await res.json();
     if (Object.keys(data).length > 0) {
       Object.keys(data).forEach((key) => {
