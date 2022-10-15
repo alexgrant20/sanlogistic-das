@@ -225,6 +225,8 @@ class ActivityController extends Controller
     } catch (Exception $e) {
       DB::rollback();
 
+      dd($e->getMessage());
+
       return back()
         ->withInput()
         ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'update'));
