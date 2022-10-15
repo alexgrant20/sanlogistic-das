@@ -127,7 +127,7 @@
     <div class="sign">
       <div class="sign__box">
         <div>Prepared by</div>
-        <div class="mt-5 text-underline">Astri Daya</div>
+        <div class="mt-5 text-underline">Astri Dya</div>
         <div>Operation</div>
       </div>
       <div class="sign__box ml-5">
