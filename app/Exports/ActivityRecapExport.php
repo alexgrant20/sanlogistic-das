@@ -26,11 +26,12 @@ class ActivityRecapExport implements FromCollection, WithHeadings, ShouldAutoSiz
       ->join('activity_statuses', 'activities.activity_status_id', '=', 'activity_statuses.id')
       ->join('activity_payments', 'activity_statuses.id', '=', 'activity_payments.activity_status_id')
       ->selectRaw("projects.name as project_name, people.name as person_name")
-      ->selectRaw("SUM(activity_payments.bbm_amount) as total_bbm")
-      ->selectRaw("SUM(activity_payments.toll_amount) as total_toll")
-      ->selectRaw("SUM(activity_payments.parking_amount) as total_park")
-      ->selectRaw("SUM(activity_payments.retribution_amount) as total_retribution")
-      ->selectRaw("SUM(activity_payments.bbm_amount) + SUM(activity_payments.toll_amount) + SUM(activity_payments.parking_amount) + SUM(activity_payments.retribution_amount) as total")
+      ->selectRaw("SUM(activity_payments.bbm_amount) total_bbm")
+      ->selectRaw("SUM(activity_payments.toll_amount) total_toll")
+      ->selectRaw("SUM(activity_payments.parking_amount) total_park")
+      ->selectRaw("SUM(activity_payments.load_amount) + SUM(activity_payments.unload_amount) total_load")
+      ->selectRaw("SUM(activity_payments.maintenance_amount) total_maintenance")
+      ->selectRaw("SUM(activity_payments.bbm_amount) + SUM(activity_payments.toll_amount) + SUM(activity_payments.parking_amount) + SUM(activity_payments.load_amount) + SUM(activity_payments.unload_amount) + SUM(activity_payments.maintenance_amount)  as total")
       ->where('activities.project_id', $this->params['project_id'])
       ->where('activity_statuses.status', 'approved')
       ->groupBy('user_id')
@@ -45,7 +46,8 @@ class ActivityRecapExport implements FromCollection, WithHeadings, ShouldAutoSiz
       'TOTAL BBM',
       'TOTAL TOLL',
       'TOTAL PARK',
-      'TOTAL RETRIBUTION',
+      'TOTAL UN/LOAD',
+      'TOTAL MAINTENANCE',
       'TOTAL'
     ];
   }

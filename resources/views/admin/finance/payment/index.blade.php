@@ -147,12 +147,22 @@
           @csrf
 
           <label class="form-label">Pilih Project</label>
-          <div class="form-group">
+          <div class="form-group mb-3">
             <select class="form-select" name="project_id">
               @foreach ($projects as $project_id => $project_name)
                 <option value="{{ $project_id }}">{{ $project_name }}</option>
               @endforeach
             </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="start_date" class="form-label">Start Date</label>
+            <input type="date" class="form-control" id="start_date" name="start_date">
+          </div>
+
+          <div class="mb-3">
+            <label for="end_date" class="form-label">End Date</label>
+            <input type="date" class="form-control" id="end_date" name="end_date">
           </div>
         </form>
       </x-slot:body>

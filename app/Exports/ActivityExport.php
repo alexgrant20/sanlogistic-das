@@ -38,7 +38,7 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
           return $query->whereIn('activities.id', $this->ids);
         }
       })
-      ->orderByDesc('activities.created_at')
+      ->orderBy('activities.created_at')
       ->get(
         [
           'activities.do_number AS do_number',
@@ -47,12 +47,12 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
           'dep.name AS departure_address',
           DB::raw('DAY(departure_date) AS dep_date'),
           DB::raw('MONTHNAME(departure_date) AS dep_month'),
-          DB::raw('CAST(departure_date AS time) AS dep_time'), // lupa pakai apa tadi untuk hh:mm
+          DB::raw('TIME_FORMAT(departure_date,"%H:%i") AS dep_time'), // lupa pakai apa tadi untuk hh:mm
           'activities.departure_odo As dep_odo',
           'arr.name AS arrival_address',
           DB::raw('DAY(arrival_date) AS arr_date'),
           DB::raw('MONTHNAME(arrival_date) AS arr_month'),
-          DB::raw('CAST(arrival_date AS time) AS arr_time'), // lupa pakai apa tadi untuk hh:mm
+          DB::raw('TIME_FORMAT(arrival_date,"%H:%i") AS arr_time'), // lupa pakai apa tadi untuk hh:mm
           'activities.arrival_odo AS arr_odo',
           'vehicles.license_plate AS license_plate',
           'people.name AS person_name',
