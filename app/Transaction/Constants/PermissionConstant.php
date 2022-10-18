@@ -46,5 +46,11 @@ final class PermissionConstant
     'project-assign-person',
     'project-assign-address',
     'project-assign-vehicle',
+    'vehicle-create', //tambahan menu nt181022
+    'vehicle-edit',
+    'vehicle-view',
+    'vehicle-delete',
+    'vehicle-condition-view',
+
   ];
 }

@@ -152,7 +152,7 @@
       </li> --}}
     @endcan
 
-    @canany(['vehicle-create', 'vehicle-view'])
+    @canany(['vehicle-create', 'vehicle-view', 'vehicle-condition-view'])
       <li class="sidebar-item {{ Request::is('admin/vehicles*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#vehiclesDropDown" data-bs-toggle="collapse">
           <i class="bi bi-truck svg-icon svg-icon-sm svg-icon-heavy"></i>
@@ -175,12 +175,14 @@
               </a>
             </li>
           @endcan
+          @can('vehicle-condition-view')
           <li>
             <a class="sidebar-link {{ Route::is('admin.vehicles-last-statuses.index') ? 'text-primary' : '' }}"
               href="{{ route('admin.vehicles-last-statuses.index') }}">
               View Condition
             </a>
           </li>
+          @endcan
         </ul>
       </li>
     @endcanany
