@@ -14,6 +14,33 @@ class RoleController extends Controller
 {
   public function __construct()
   {
+    $currentPermission = Arr::flatten(Permission::get('name')->toArray());
+    $appPermissions = PermissionConstant::APP_PERMISSION;
+
+    $permissionsToAdd = array_diff($appPermissions, $currentPermission);
+    $permissionsToDelete = array_diff($currentPermission, $appPermissions);
+
+    if (count($permissionsToAdd) > 0) {
+      $permissionsNeedToCreate = [];
+
+      foreach ($permissionsToAdd as $permission) {
+        array_push($permissionsNeedToCreate, [
+          'name' => $permission,
+          'guard_name' => 'web',
+          'created_at' => now(),
+          'updated_at' => now(),
+        ]);
+      }
+
+      Permission::insert($permissionsNeedToCreate);
+    }
+
+    if (count($permissionsToDelete) > 0) {
+      foreach ($permissionsToDelete as $value) {
+        Permission::where('name', $value)->delete();
+      }
+    }
+
     $this->middleware('can:create-user-role-and-permission');
   }
 
@@ -50,33 +77,6 @@ class RoleController extends Controller
 
   public function edit(Role $role)
   {
-    $currentPermission = Arr::flatten(Permission::get('name')->toArray());
-    $appPermissions = PermissionConstant::APP_PERMISSION;
-
-    $permissionsToAdd = array_diff($appPermissions, $currentPermission);
-    $permissionsToDelete = array_diff($currentPermission, $appPermissions);
-
-    if (count($permissionsToAdd) > 0) {
-      $permissionsNeedToCreate = [];
-
-      foreach ($permissionsToAdd as $permission) {
-        array_push($permissionsNeedToCreate, [
-          'name' => $permission,
-          'guard_name' => 'web',
-          'created_at' => now(),
-          'updated_at' => now(),
-        ]);
-      }
-
-      Permission::insert($permissionsNeedToCreate);
-    }
-
-    if (count($permissionsToDelete) > 0) {
-      foreach ($permissionsToDelete as $value) {
-        Permission::where('name', $value)->delete();
-      }
-    }
-
     return view('admin.roles.edit', [
       'title' => 'Edit Roles',
       'role' => $role,

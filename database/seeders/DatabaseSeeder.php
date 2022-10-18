@@ -3,41 +3,16 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\Address;
 use App\Models\AddressType;
-use App\Models\Area;
-use App\Models\City;
-use App\Models\Company;
-use App\Models\CompanyType;
-use App\Models\Department;
-use App\Models\District;
-use App\Models\Driver;
-use App\Models\Person;
-use App\Models\PoolType;
-use App\Models\Project;
-use App\Models\Province;
-use App\Models\Regional;
-use App\Models\SimType;
-use App\Models\Subdistrict;
-use App\Models\Vehicle;
-use App\Models\VehicleBrand;
 use App\Models\VehicleLicensePlateColor;
-use App\Models\VehicleTowing;
-use App\Models\VehicleType;
-use App\Models\VehicleVariety;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
-  /**
-   * Seed the application's database.
-   *
-   * @return void
-   */
   public function run()
   {
-
     $this->call([
       ProvinceSeeder::class,
       CitySeeder::class,
@@ -45,69 +20,32 @@ class DatabaseSeeder extends Seeder
       SubdistrictSeeder::class,
     ]);
 
-    Role::create(['name' => 'super-admin']);
-    Role::create(['name' => 'driver']);
+    Role::firstOrCreate(['name' => 'super-admin']);
 
-    VehicleLicensePlateColor::create([
-      'name' => 'black'
-    ]);
-
-    VehicleLicensePlateColor::create(['name' => 'yellow']);
-
-    AddressType::create(['name' => 'Kantor Utama']);
-
-    AddressType::create([
-      'name' => 'Tujuan Pengiriman'
-    ]);
-
-    AddressType::create([
-      'name' => 'Pool'
-    ]);
-
-    AddressType::create([
-      'name' => 'Station'
-    ]);
-
-    AddressType::create([
-      'name' => 'Workshop'
-    ]);
-
-    AddressType::create([
-      'name' => 'PKB/SAMSAT'
-    ]);
-
-    Department::factory(10)->create();
-    SimType::factory(5)->create();
-    CompanyType::factory(5)->create();
-    VehicleBrand::factory(10)->create();
-    VehicleType::factory(30)->create();
-    VehicleVariety::factory(20)->create();
-    Regional::factory(20)->create();
-    Area::factory(30)->create();
-    Province::factory(20)->create();
-    City::factory(20)->create();
-    District::factory(20)->create();
-    Subdistrict::factory(20)->create();
-    PoolType::factory(10)->create();
-    Address::factory(20)->create();
-    Company::factory(20)->create();
-    Project::factory(20)->create();
-    Person::factory(20)->create();
-    VehicleTowing::factory(10)->create();
-    Vehicle::factory(20)->create();
-
-    User::create([
-      'person_id' => '1',
+    $user = User::firstOrCreate([
       'username' => 'admin',
-      'password' => bcrypt('admin')
-    ])->assignRole('super-admin');
+      'password' => Hash::make('admin')
+    ]);
 
-    User::create([
-      'person_id' => '2',
-      'username' => 'driver',
-      'password' => bcrypt('driver')
-    ])->assignRole('driver');
+    $user->assignRole('super-admin');
 
-    Driver::factory(1)->create();
+    VehicleLicensePlateColor::create(
+      ['name' => 'black']
+    );
+
+    VehicleLicensePlateColor::create(
+      ['name' => 'yellow']
+    );
+
+    AddressType::insert(
+      [
+        ['name' => 'Kantor Utama'],
+        ['name' => 'Tujuan Pengiriman'],
+        ['name' => 'Pool'],
+        ['name' => 'Station'],
+        ['name' => 'Workshop'],
+        ['name' => 'PKB/SAMSAT']
+      ]
+    );
   }
 }

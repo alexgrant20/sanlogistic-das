@@ -7,6 +7,7 @@ use App\Models\Activity;
 use App\Models\User;
 use App\Transaction\Constants\NotifactionTypeConstant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
@@ -19,7 +20,6 @@ class AuthController extends Controller
     $users = User::all();
 
     if ($users->count() === 0) {
-
       Role::firstOrCreate(['name' => 'super-admin']);
 
       $user = User::firstOrCreate([
