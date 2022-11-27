@@ -34,8 +34,7 @@ class ActivityController extends Controller
    {
       // Opsi sementara karena load list teralu berat
       // TO-DO: PINDAH KE YAJRA
-
-      $q_status = $request->status ?? 'pending';
+      $q_status = $request->status;
 
       $activities = DB::table('activities')
          ->leftJoin('activity_statuses', 'activities.activity_status_id', '=', 'activity_statuses.id')
@@ -58,6 +57,7 @@ class ActivityController extends Controller
                'activity_statuses.status AS status'
             ]
          );
+
 
       $activities_filtered = empty($q_status) ? $activities : $activities->filter(fn ($item) => $item->status === $q_status);
 

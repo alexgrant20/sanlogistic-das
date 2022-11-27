@@ -68,7 +68,7 @@
           @can('activity-view')
             <li>
               <a class="sidebar-link {{ Route::is('admin.activities.index') ? 'text-primary' : '' }}"
-                href="{{ route('admin.activities.index') }}">
+                href="{{ route('admin.activities.index') . '?status=pending' }}">
                 View
               </a>
             </li>
