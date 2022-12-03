@@ -9,7 +9,5 @@ class VehicleLicensePlateColor extends Model
 {
   use HasFactory;
 
-  protected $table = 'vehicles_license_plate_colors';
-
   protected $guarded = ['id'];
 }

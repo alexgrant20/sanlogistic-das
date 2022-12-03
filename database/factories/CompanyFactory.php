@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\City;
+use App\Models\CompanyType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -18,16 +20,17 @@ class CompanyFactory extends Factory
   public function definition()
   {
     return [
-      'address_id' => $this->faker->numberBetween(1, 100),
-      'company_type_id' => $this->faker->numberBetween(1, 5),
+      'company_type_id' => rand(1, 5),
       'name' => $this->faker->unique()->company(),
-      'phone_number' => $this->faker->phoneNumber(),
+      'phone_number' =>  $this->faker->randomNumber(6),
       'email' => $this->faker->email(),
       'note' => '',
       'website' => $this->faker->url(),
       'director' => $this->faker->name(),
-      'npwp' => Str::random(10),
-      'fax' => '1231245'
+      'npwp' => $this->faker->randomNumber(6),
+      'fax' =>  $this->faker->randomNumber(6),
+      'city_id' => rand(1, 20),
+      'full_address' => $this->faker->address(),
     ];
   }
 }

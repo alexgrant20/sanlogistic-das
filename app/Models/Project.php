@@ -2,24 +2,25 @@
 
 namespace App\Models;
 
+use App\Blameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
-  use HasFactory;
+	use HasFactory, Blameable;
 
-  protected $guarded = [
-    'id'
-  ];
+	protected $guarded = [
+		'id'
+	];
 
-  public function company()
-  {
-    return $this->belongsTo(Company::class);
-  }
+	public function company()
+	{
+		return $this->belongsTo(Company::class);
+	}
 
-  public function getRouteKeyName()
-  {
-    return 'name';
-  }
+	public function getRouteKeyName()
+	{
+		return 'name';
+	}
 }

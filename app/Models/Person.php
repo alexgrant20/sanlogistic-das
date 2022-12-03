@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Blameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Person extends Model
 {
-  use HasFactory;
+  use HasFactory, Blameable;
 
   protected $guarded = ['id'];
 
@@ -26,13 +27,18 @@ class Person extends Model
     return $this->belongsTo(Area::class);
   }
 
-  public function address()
+  public function city()
   {
-    return $this->belongsTo(Address::class);
+    return $this->belongsTo(City::class);
   }
 
   public function user()
   {
     return $this->hasOne(User::class);
+  }
+
+  public function personDocuments()
+  {
+    return $this->hasMany(PersonDocument::class);
   }
 }

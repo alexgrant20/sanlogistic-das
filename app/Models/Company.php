@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Blameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
 {
-  use HasFactory;
+  use HasFactory, Blameable;
 
   protected $guarded = [
     'id'
@@ -23,9 +24,9 @@ class Company extends Model
     return $this->hasMany(CompanyDocument::class);
   }
 
-  public function address()
+  public function city()
   {
-    return $this->belongsTo(Address::class);
+    return $this->belongsTo(City::class);
   }
 
   public function getRouteKeyName()

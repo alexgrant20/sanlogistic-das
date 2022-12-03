@@ -5,90 +5,57 @@ namespace App\Policies;
 use App\Models\Activity;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Session;
 
 class ActivityPolicy
 {
-    use HandlesAuthorization;
+  use HandlesAuthorization;
 
-    /**
-     * Determine whether the user can view any models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function viewAny(User $user)
-    {
-        //
+  public function viewAny(User $user)
+  {
+    return true;
+  }
+
+  public function view(User $user, Activity $activity)
+  {
+  }
+
+  public function create(User $user)
+  {
+    # Driver
+    if ($user->hasRole('driver')) {
+      return !Session::has('activity_id');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Activity  $activity
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function view(User $user, Activity $activity)
-    {
-        //
+    # Default
+    return true;
+  }
+
+  public function update(User $user, Activity $activity)
+  {
+    # Driver
+    if ($user->hasRole('driver')) {
+      return Session::has('activity_id')
+        && $activity->user_id === $user->id
+        && Session::get('activity_id') === $activity->id;
     }
 
-    /**
-     * Determine whether the user can create models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function create(User $user)
-    {
-        //
-    }
+    # Default
+    return true;
+  }
 
-    /**
-     * Determine whether the user can update the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Activity  $activity
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function update(User $user, Activity $activity)
-    {
-        //
-    }
+  public function delete(User $user, Activity $activity)
+  {
+    //
+  }
 
-    /**
-     * Determine whether the user can delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Activity  $activity
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function delete(User $user, Activity $activity)
-    {
-        //
-    }
+  public function restore(User $user, Activity $activity)
+  {
+    //
+  }
 
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Activity  $activity
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function restore(User $user, Activity $activity)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Activity  $activity
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function forceDelete(User $user, Activity $activity)
-    {
-        //
-    }
+  public function forceDelete(User $user, Activity $activity)
+  {
+    //
+  }
 }

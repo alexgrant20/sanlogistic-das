@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,7 @@ class ProjectFactory extends Factory
   public function definition()
   {
     return [
-      'company_id' => $this->faker->numberBetween(1, 200),
+      'company_id' => rand(1, 20),
       'name' => $this->faker->unique()->firstName(),
       'date_start' => '2022-02-02',
       'date_end' => '2022-12-12',

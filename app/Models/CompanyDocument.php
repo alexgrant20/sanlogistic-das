@@ -9,8 +9,6 @@ class CompanyDocument extends Model
 {
   use HasFactory;
 
-  protected $table = 'companies_documents';
-
   protected $guarded = [
     'id'
   ];

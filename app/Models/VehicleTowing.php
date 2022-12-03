@@ -9,7 +9,5 @@ class VehicleTowing extends Model
 {
   use HasFactory;
 
-  protected $table = 'vehicles_towings';
-
   protected $guarded = ['id'];
 }

@@ -1,0 +1,205 @@
+@import url("https://fonts.googleapis.com/css2?family=Heebo:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+:root {
+  --white: #e8e9ed;
+  --gray: #434257;
+  --blue: #18172c;
+  --green: #00d084;
+  --pink: #ff4b77;
+}
+
+body {
+  color: #d9d8d7;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+* {
+  font-family: "Heebo", sans-serif;
+  box-sizing: border-box;
+}
+
+p input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+a:hover {
+  color: inherit;
+}
+
+.background {
+  background: #121212;
+}
+
+.bg-primary {
+  background: #bb86fc;
+}
+
+.bg-surface {
+  background: #000;
+}
+
+.bg-transparent {
+  background-color: transparent;
+}
+
+.ba-secondary {
+  background-color: #262626;
+}
+
+.bg-blue {
+  background-color: #1b52c8;
+}
+
+.bg-softWhite {
+  background-color: #d9d8d7;
+}
+
+.bg-purplish {
+  background-color: #272129;
+}
+
+.bg-darkGreen {
+  background-color: #1c1c19;
+}
+
+.bg-green {
+  background-color: #47594c;
+}
+
+.bg-brown {
+  background-color: #473232;
+}
+
+.form-dark,
+.form-dark:focus {
+  background-color: transparent !important;
+  color: #d9d8d7 !important;
+}
+
+.border-top-3 {
+  border-top: 3px solid #aaa;
+}
+
+input[readonly],
+input[readonly]:focus,
+input[disabled],
+select[disabled] {
+  cursor: not-allowed;
+  background-color: #222 !important;
+  color: #d9d8d7 !important;
+}
+
+.form-dark option {
+  background-color: #262626;
+}
+
+.border-none {
+  border: none;
+}
+
+input {
+  color: inherit;
+  outline: none;
+  border: none;
+}
+
+input:focus {
+  border: 1px solid #1b52c8;
+}
+
+.text-blue {
+  color: #1b52c8;
+}
+
+.disable-div {
+  position: relative;
+  pointer-events: none;
+  background-color: rgb(49, 49, 49);
+  opacity: 0.25;
+  /* z-index: 5; */
+}
+
+.flip-icon {
+  transition: all 1s ease-in-out;
+  transform: scale(1, -1);
+}
+
+.switches span {
+  position: relative;
+  width: 50px;
+  height: 26px;
+  border-radius: 15px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.4);
+  background: var(--gray);
+  transition: all 0.3s;
+}
+
+.switches span::before,
+.switches span::after {
+  content: "";
+  position: absolute;
+}
+
+.switches span::before {
+  left: 1px;
+  top: 1px;
+  width: 24px;
+  height: 24px;
+  background: var(--white);
+  border-radius: 50%;
+  z-index: 1;
+  transition: transform 0.3s;
+}
+
+.switches span::after {
+  top: 50%;
+  right: 8px;
+  width: 12px;
+  height: 12px;
+  transform: translateY(-50%);
+  background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/uncheck-switcher.svg);
+  background-size: 12px 12px;
+}
+
+.switches [type="checkbox"]:checked+label span {
+  background: var(--green);
+}
+
+.switches [type="checkbox"]:checked+label span::before {
+  transform: translateX(24px);
+}
+
+.switches [type="checkbox"]:checked+label span::after {
+  width: 14px;
+  height: 14px;
+  /*right: auto;*/
+  left: 8px;
+  background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/checkmark-switcher.svg);
+  background-size: 14px 14px;
+}
+
+.switches [type="checkbox"] {
+  position: absolute;
+  left: -9999px;
+}

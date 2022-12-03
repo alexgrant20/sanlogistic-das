@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Regional;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,7 @@ class AreaFactory extends Factory
   public function definition()
   {
     return [
-      'regional_id' => $this->faker->numberBetween(1, 5),
+      'regional_id' => rand(1, 20),
       'name' => $this->faker->unique()->streetName(),
       'description' => $this->faker->paragraph(),
     ];

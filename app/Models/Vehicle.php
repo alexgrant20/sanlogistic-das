@@ -2,18 +2,24 @@
 
 namespace App\Models;
 
+use App\Blameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Vehicle extends Model
 {
-  use HasFactory;
+  use HasFactory, Blameable;
 
   protected $guarded = ['id'];
 
   public function vehiclesDocuments()
   {
     return $this->hasMany(VehicleDocument::class);
+  }
+
+  public function vehiclesLicensePlateColor()
+  {
+    return $this->belongsTo(VehicleLicensePlateColor::class, 'vehicle_license_plate_color_id');
   }
 
   public function project()
@@ -49,6 +55,16 @@ class Vehicle extends Model
   public function vehicleImages()
   {
     return $this->hasMany(VehicleImage::class);
+  }
+
+  public function vehicleLastStatus()
+  {
+    return $this->hasOne(VehicleLastStatus::class);
+  }
+
+  public function vehicleChecklist()
+  {
+    return $this->hasMany(VehicleChecklist::class);
   }
 
   public function getRouteKeyName()

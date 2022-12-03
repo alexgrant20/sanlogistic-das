@@ -9,8 +9,6 @@ class CompanyType extends Model
 {
   use HasFactory;
 
-  protected $table = 'companies_types';
-
   protected $guarded = [
     'id'
   ];

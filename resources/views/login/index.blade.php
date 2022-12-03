@@ -2,67 +2,95 @@
 <html>
 
 <head>
-  <title>DAS Login</title>
+  <title>Login</title>
+
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no,maximum-scale=1, user-scalable=0">
 
   <!-- Script -->
   <script src="https://kit.fontawesome.com/2d78a8b052.js" crossorigin="anonymous"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
-  <script type='text/javascript' src="/vendor/jquery/jquery-3.6.0.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="css/login.css" />
+  {{-- theme stylesheet --}}
+  <link rel="stylesheet" href="{{ asset('/css/style.default.css') }}" id="theme-stylesheet">
+  {{-- Custom Stylesheet --}}
+  <link rel="stylesheet" href="{{ asset('/css/custom.css') }}">
+  <script type='text/javascript' src="{{ asset('/vendor/jquery/jquery-3.6.0.min.js') }}"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
 </head>
 
+
 <body>
-  <div class="loginContainer">
-    <img src="/img/SAN LOGO.png" class="logo" alt="" />
-    <div class="imageBackground"></div>
-    <div class="login">
-      <div class="wrapper">
-        <div class="header">
-          <h1>DS LOGIN</h1>
-          <p>
-            Sejumlah godaan akan datang kepada mereka yang tekun dan rajin, tapi seluruh godaan akan menyerang mereka
-            yang bermalas-malasan.
-          </p>
+  <div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-dash-dark-3 px-3 pt-5">
+    <div class="row w-100">
+      <div class="col-xl-4 m-auto">
+        <div class="row flex-column align-items-center">
+          <div class="col-xxl-12">
+            <img src="https://www.freepnglogos.com/uploads/eagle-png-logo/lakes-eagles-png-logo-14.png"
+              class="img-fluid mb-5" style="max-height: 120px; max-width: 120px" alt="">
+          </div>
+          <div class="col-xxl-12">
+            <h1 class="fs-1 text-light">Welcome</h1>
+          </div>
+          <div class="col-xxl-12">
+            <h2 class="fs-2 text-light">Sign in to continue</h2>
+          </div>
         </div>
-        @if (session()->has('error'))
-          <div class="alert alert-danger" role="alert">
-            {{ session('error') }}
-          </div>
-        @endif
-        <form action="/login" method="post" class="loginForm needs-validation" id="loginForm">
+        <form action="{{ route('login') }}" id="loginForm" method="POST" class="w-100 mt-3" autocomplete="false">
           @csrf
-          <div class="inputControl mb-2">
-            <label for="username"><i class="fas fa-user-alt"></i></label>
-            <input class="form-control @error('username') is-invalid @enderror" type="text" name="username"
-              id="username" value="{{ old('username') }}" placeholder="Username" required autofocus />
-            @error('username')
-              <div class="invalid-feedback mb-2">
-                {{ $message }}
+          <div class="row flex-column align-items-center">
+            <div class="col-xxl-12">
+              <div class="mb-3 position-relative text-white">
+                <input type="text" class="w-100 border-none p-3 pe-5 bg-secondary rounded" placeholder="Username"
+                  name="username" id="username">
+                <span class="position-absolute" style="top: 16px; right:20px;">
+                  <i class="fas fa-lg fa-user"></i>
+                </span>
               </div>
-            @enderror
-          </div>
-          <div class="inputControl">
-            <label for="password"><i class="fas fa-lock"></i></label>
-            <input class="form-control @error('password') is-invalid @enderror" type="password" name="password"
-              id="password" placeholder="Password" required />
-            @error('password')
-              <div class="invalid-feedback mb-2">
-                {{ $message }}
+            </div>
+            <div class="col-xxl-12">
+              <div class="mb-5 position-relative text-white">
+                <input type="password" class="w-100 border-none p-3 pe-5 bg-secondary rounded" placeholder="Password"
+                  name="password" id="password">
+                <span class="position-absolute" style="top: 16px; right:20px;">
+                  <i class="fas fa-lg fa-key"></i>
+                </span>
               </div>
-            @enderror
+            </div>
+            <div class="col-xxl-12 d-grid">
+              <button type="submit" id="submitBtn" value="Login" class="btn btn-success fw-bold">Login</button>
+            </div>
           </div>
-          <input class="submitBtn my-5" type="submit" name="login" value="Login" />
         </form>
       </div>
     </div>
   </div>
 </body>
 
-<script>
-  $('#loginForm').on('submit', () => {
-    $('.submitBtn').attr('disabled', true);
-  })
-</script>
-
 </html>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+  $("form").on("submit", () => {
+    $("button").attr("disabled", true);
+    $("input, textarea").attr("readonly", true);
+    return true;
+  });
+
+  @if (Session::has('message'))
+    var type = "{{ Session::get('alert-type', 'info') }}"
+    switch (type) {
+      case 'info':
+        toastr.info(" {{ Session::get('message') }} ");
+        break;
+      case 'success':
+        toastr.success(" {{ Session::get('message') }} ");
+        break;
+      case 'warning':
+        toastr.warning(" {{ Session::get('message') }} ");
+        break;
+      case 'error':
+        toastr.error(" {{ Session::get('message') }} ");
+        break;
+    }
+  @endif
+</script>

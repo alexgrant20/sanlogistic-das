@@ -9,8 +9,6 @@ class VehicleImage extends Model
 {
   use HasFactory;
 
-  protected $table = 'vehicles_images';
-
   protected $guarded = ['id'];
 
   public function vehicle()

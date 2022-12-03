@@ -9,6 +9,10 @@ class VehicleChecklist extends Model
 {
   use HasFactory;
 
+  public $guarded = [
+    'id'
+  ];
+
   public function user()
   {
     return $this->belongsTo(User::class);
@@ -22,5 +26,10 @@ class VehicleChecklist extends Model
   public function address()
   {
     return $this->belongsTo(Address::class);
+  }
+
+  public function vehicleChecklistImage()
+  {
+    return $this->hasMany(VehicleChecklistImage::class);
   }
 }

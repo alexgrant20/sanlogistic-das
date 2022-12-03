@@ -1,6 +1,7 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", function () {
+  $(".openModal").modal("show");
   // ------------------------------------------------------- //
   // Transition Placeholders
   // ------------------------------------------------------ //
@@ -108,23 +109,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // ------------------------------------------------------- //
-  // Search Popup
-  // ------------------------------------------------------ //
-  var searchOpenBtn = document.querySelector(".search-open");
-  var searchPanel = document.querySelector(".search-panel");
-  var searchCloseBtn = document.querySelector(".search-panel .close-btn");
-  if (searchOpenBtn) {
-    searchOpenBtn.addEventListener("click", function (e) {
-      e.preventDefault();
-      searchPanel.style.display = "block";
-    });
-    searchCloseBtn.addEventListener("click", function (e) {
-      e.preventDefault();
-      searchPanel.style.display = "none";
-    });
-  }
-
-  // ------------------------------------------------------- //
   // Tooltips init
   // ------------------------------------------------------ //
   var tooltipTriggerList = [].slice.call(
@@ -141,17 +125,11 @@ document.addEventListener("DOMContentLoaded", function () {
   var sidebar = document.querySelector("#sidebar");
   var pageContent = document.querySelector(".page-content");
   var navBrand = document.querySelector(".navbar-brand");
+
   if (sidebarToggler) {
     sidebarToggler.addEventListener("click", function () {
       this.classList.toggle("active");
       navBrand.classList.toggle("active");
-
-      // document.querySelectorAll(".line").forEach((el) => {
-      //   el.style.display =
-      //     el.style.display == "" || el.style.display == "inline"
-      //       ? "none"
-      //       : "inline";
-      // });
 
       sidebar.classList.toggle("shrinked");
       pageContent.classList.toggle("active");
@@ -282,5 +260,28 @@ document.addEventListener("DOMContentLoaded", function () {
       msnry.layout();
     });
   }
-});
 
+  // ------------------------------------------------------- //
+  //  Currency JS
+  // ------------------------------------------------------ //
+
+  const target = document.querySelectorAll('[data="money"]');
+
+  if (target.length > 0) {
+    target.forEach((e) => {
+      const id = `#${e.id}`;
+
+      const value = $(id).val();
+
+      if (value) {
+        const formated = formatIDR(value);
+        $(id).val(formated);
+      }
+
+      $(id).on("keyup", (e) => {
+        const formated = formatIDR(e.target.value);
+        $(id).val(formated);
+      });
+    });
+  }
+});

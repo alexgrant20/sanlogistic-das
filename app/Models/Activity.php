@@ -2,18 +2,26 @@
 
 namespace App\Models;
 
+use App\Blameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Activity extends Model
 {
-  use HasFactory;
+  use HasFactory, Blameable;
 
-  protected $with = ['driver', 'vehicle', 'project', 'departureLocation', 'arrivalLocation'];
+  protected $guarded = ['id'];
+
+  protected $with = ['activityStatus'];
 
   public function driver()
   {
     return $this->belongsTo(User::class, 'user_id');
+  }
+
+  public function scopeStatus($query, $status)
+  {
+    return $query->whereRelation('activityStatus', 'status', $status);
   }
 
   public function vehicle()
@@ -34,5 +42,10 @@ class Activity extends Model
   public function arrivalLocation()
   {
     return $this->belongsTo(Address::class, 'arrival_location_id');
+  }
+
+  public function activityStatus()
+  {
+    return $this->belongsTo(ActivityStatus::class);
   }
 }

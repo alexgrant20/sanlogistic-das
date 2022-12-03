@@ -82,7 +82,7 @@ return [
     |
     */
 
-  'locale' => 'en',
+  'locale' => 'id',
 
   /*
     |--------------------------------------------------------------------------
@@ -95,7 +95,7 @@ return [
     |
     */
 
-  'fallback_locale' => 'en',
+  'fallback_locale' => 'id',
 
   /*
     |--------------------------------------------------------------------------
@@ -167,7 +167,9 @@ return [
     /*
          * Package Service Providers...
          */
-
+    Maatwebsite\Excel\ExcelServiceProvider::class,
+    Intervention\Image\ImageServiceProvider::class,
+    Barryvdh\DomPDF\ServiceProvider::class,
     /*
          * Application Service Providers...
          */
@@ -176,6 +178,7 @@ return [
     // App\Providers\BroadcastServiceProvider::class,
     App\Providers\EventServiceProvider::class,
     App\Providers\RouteServiceProvider::class,
+    Spatie\Permission\PermissionServiceProvider::class,
 
   ],
 
@@ -191,7 +194,8 @@ return [
     */
 
   'aliases' => Facade::defaultAliases()->merge([
-    // ...
+    'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+    'Image' => Intervention\Image\Facades\Image::class,
   ])->toArray(),
 
 ];
