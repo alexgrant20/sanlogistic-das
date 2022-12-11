@@ -18,16 +18,18 @@
     }
 
     body {
-      width: 100%;
+      width: 100vw;
       min-height: 100vh;
       position: relative;
       padding: 3rem;
+      font-size: 9px;
     }
 
     table {
       border: 1px solid black;
       border-collapse: collapse;
       margin: 30px 0;
+      width: 100%;
     }
 
     th,
@@ -49,7 +51,6 @@
     .sign__box {
       display: inline-block;
       text-align: center
-        /* flex-direction: column; */
     }
 
     .text-underline {
@@ -57,7 +58,7 @@
     }
 
     .ml-5 {
-      margin-left: 50px;
+      margin-left: 100px;
     }
 
     .mt-5 {
@@ -67,6 +68,10 @@
     footer {
       width: 100%;
       margin-top: 100px;
+    }
+
+    main {
+      width: 100%;
     }
   </style>
   <title>Address</title>

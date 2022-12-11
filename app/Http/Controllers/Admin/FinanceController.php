@@ -302,7 +302,7 @@ class FinanceController extends Controller
       ->selectRaw("projects.name as project_name, people.name as person_name, activities.user_id as user_id,
     activities.project_id as project_id, activity_statuses.status as status")
       ->groupBy('user_id')
-      ->orderByDesc('activity_payments.id')
+      ->orderBy('people.name')
       ->where('activity_statuses.status', '=', 'approved')
       ->where('activities.project_id', '=', $request->project_id)
       ->whereBetween('activities.created_at', array($startDate, $endDate))
