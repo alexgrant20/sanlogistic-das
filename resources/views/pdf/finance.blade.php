@@ -73,6 +73,10 @@
     main {
       width: 100%;
     }
+
+    .text-end {
+      text-align: right;
+    }
   </style>
   <title>Address</title>
 </head>
@@ -110,12 +114,12 @@
           @endphp
           <tr>
             <td>{{ $activity->person_name }}</td>
-            <td>@money($activity->total_bbm)</td>
-            <td>@money($activity->total_toll)</td>
-            <td>@money($activity->total_park)</td>
-            <td>@money($activity->total_load + $activity->total_unload)</td>
-            <td>@money($activity->total_maintenance)</td>
-            <td>
+            <td class="text-end">@money($activity->total_bbm)</td>
+            <td class="text-end">@money($activity->total_toll)</td>
+            <td class="text-end">@money($activity->total_park)</td>
+            <td class="text-end">@money($activity->total_load + $activity->total_unload)</td>
+            <td class="text-end">@money($activity->total_maintenance)</td>
+            <td class="text-end">
               @money($subTotal)
             </td>
           </tr>
