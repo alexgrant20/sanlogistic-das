@@ -107,19 +107,19 @@ class FinanceController extends Controller
   {
     $userIds = json_decode($request->getContent());
 
-    $activities = DB::table('activities')
-      ->leftJoin('activity_statuses', 'activities.activity_status_id', '=', 'activity_statuses.id')
-      ->leftJoin('activity_payments', 'activity_statuses.id', '=', 'activity_payments.activity_status_id')
-      ->whereIn('user_id', $userIds)
+    $activities = DB::table('activities AS ac')
+      ->join('activity_statuses AS acs', 'acs.id', 'ac.activity_status_id')
+      ->join('activity_payments AS ap', 'ap.activity_status_id', 'acs.id')
+      ->where('acs.status', 'approved')
+      ->whereIn('ac.user_id', $userIds)
       ->get([
-        'activities.id',
+        'ac.id',
         'bbm_amount',
         'parking_amount',
         'toll_amount',
         'load_amount',
         'unload_amount',
         'maintenance_amount',
-
       ]);
 
     foreach ($activities as $activity) {
@@ -141,12 +141,15 @@ class FinanceController extends Controller
           ]);
         });
       } catch (Exception $e) {
-        return to_route('admin.finances.payment')
-          ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'pay'));
+        return response()->json([
+          'error' => 500,
+          'message' => $e->getMessage()
+        ]);
       }
     }
-    return to_route('admin.finances.payment')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'paid'));
+    return response()->json([
+      'success' => 200
+    ]);
   }
 
   public function reject(Request $request)
@@ -162,7 +165,16 @@ class FinanceController extends Controller
       ->where('project_id', '=', $request->project_id)
       ->where('user_id', '=', $request->user_id)
       ->where('status', '=', 'approved')
-      ->get(['activities.id', 'bbm_amount', 'parking_amount', 'toll_amount', 'load_amount', 'unload_amount', 'maintenance_amount']);
+      ->get([
+        'activities.id',
+        'bbm_amount',
+        'parking_amount',
+        'toll_amount',
+        'load_amount',
+        'unload_amount',
+        'maintenance_amount'
+      ]);
+
     try {
       foreach ($activities as $activity) {
         DB::transaction(function () use ($activity) {
