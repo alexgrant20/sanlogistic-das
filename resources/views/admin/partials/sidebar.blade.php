@@ -50,7 +50,7 @@
       </li>
     @endcanany
 
-    @canany(['activity-create', 'activity-view'])
+    @canany(['activity-create', 'activity-view', 'finance-acceptance'])
       <li class="sidebar-item {{ Request::is('admin/activities*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#activitiesDropDown" data-bs-toggle="collapse">
           <i class="bi bi-list-task svg-icon svg-icon-sm svg-icon-heavy"></i>
@@ -70,6 +70,14 @@
               <a class="sidebar-link {{ Route::is('admin.activities.index') ? 'text-primary' : '' }}"
                 href="{{ route('admin.activities.index') . '?status=pending' }}">
                 View
+              </a>
+            </li>
+          @endcan
+          @can('finance-acceptance')
+            <li>
+              <a class="sidebar-link {{ Route::is('admin.activities.approval') ? 'text-primary' : '' }}"
+                href="{{ route('admin.activities.approval') }}">
+                Payment Submission
               </a>
             </li>
           @endcan
@@ -176,12 +184,12 @@
             </li>
           @endcan
           @can('vehicle-condition-view')
-          <li>
-            <a class="sidebar-link {{ Route::is('admin.vehicles-last-statuses.index') ? 'text-primary' : '' }}"
-              href="{{ route('admin.vehicles-last-statuses.index') }}">
-              View Condition
-            </a>
-          </li>
+            <li>
+              <a class="sidebar-link {{ Route::is('admin.vehicles-last-statuses.index') ? 'text-primary' : '' }}"
+                href="{{ route('admin.vehicles-last-statuses.index') }}">
+                View Condition
+              </a>
+            </li>
           @endcan
         </ul>
       </li>
@@ -241,21 +249,14 @@
       </li>
     @endcanany
 
-    @canany(['finance-acceptance', 'finance-payment'])
+    @canany(['finance-payment'])
       <li class="sidebar-item {{ Request::is('admin/finances*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#financesDropDown" data-bs-toggle="collapse">
           <i class="bi bi-currency-dollar svg-icon svg-icon-sm svg-icon-heavy"></i>
           <span>Finance</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/finances*') ? 'show' : '' }}" id="financesDropDown">
-          @can('finance-acceptance')
-            <li>
-              <a class="sidebar-link {{ Route::is('admin.finances.approval') ? 'text-primary' : '' }}"
-                href="{{ route('admin.finances.approval') }}">
-                Approval
-              </a>
-            </li>
-          @endcan
+
           @can('finance-payment')
             <li>
               <a class="sidebar-link {{ Route::is('admin.finances.payment') ? 'text-primary' : '' }}"

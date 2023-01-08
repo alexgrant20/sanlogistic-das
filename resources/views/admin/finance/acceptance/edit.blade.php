@@ -14,12 +14,33 @@
         <hr>
         <div class="row g-2 mb-5">
           <div class="col-xl-4">
-            <label for="do_number" class="form-label fs-4 fw-bold">Nama Pengendara</label>
-            <p class="fs-4" id="do_number">{{ $activity->driver->person->name }}</p>
+            <span class="form-label fs-4 fw-bold">Nama Pengendara</span>
+            <p class="fs-4">{{ $activity->driver->person->name }}</p>
           </div>
           <div class="col-xl-4">
-            <label for="do_number" class="form-label fs-4 fw-bold">DO Number</label>
-            <p class="fs-4" id="do_number">{{ $activity->do_number }}</p>
+            <label class="form-label fs-4 fw-bold">DO Number</label>
+            <p class="fs-4">{{ $activity->do_number }}</p>
+          </div>
+          <div class="col-xl-4">
+            <label class="form-label fs-4 fw-bold">Titik Awal</label>
+            <p class="fs-4">{{ $activity->departureLocation->name }}</p>
+          </div>
+          <div class="col-xl-4">
+            <label class="form-label fs-4 fw-bold">Titik Tujuan</label>
+            <p class="fs-4">{{ $activity->arrivalLocation->name }}</p>
+          </div>
+          <div class="col-xl-4">
+            <label class="form-label fs-4 fw-bold">Durasi Perjalanan</label>
+            @php
+              $departure_date = \Carbon\Carbon::parse($activity->departure_date);
+              $arrival_date = \Carbon\Carbon::parse($activity->arrival_date);
+              $diffrenceInSecond = $departure_date->diffInSeconds($arrival_date, false);
+            @endphp
+            <p class="fs-4">{{ gmdate('H:i:s', $diffrenceInSecond) }}</p>
+          </div>
+          <div class="col-xl-4">
+            <label class="form-label fs-4 fw-bold">Jarak Tempuh</label>
+            <p class="fs-4">{{ $activity->arrival_odo - $activity->departure_odo }} Km</p>
           </div>
         </div>
       </div>
@@ -66,6 +87,25 @@
             </div>
 
             <div class="col-xl-4">
+              <label for="parking_amount" class="form-label">Parkir</label>
+              <input type="text" class="form-control form-control-lg @error('parking_amount') is-invalid @enderror"
+                id="parking_amount" name="parking_amount"
+                value="{{ old('parking_amount', $activity->activityStatus->activityPayment->parking_amount) }}"
+                data="money">
+
+              @error('parking_amount')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
+
+              <img src="{{ asset('storage/' . $activity['parking_image']) }}"
+                class="img-fluid rounded zoom mw-100 mx-auto d-block mt-5" style="max-height: 200px"
+                id="parking_image-preview" alt="" data-action="zoom">
+            </div>
+
+
+            <div class="col-xl-4">
               <label for="maintenance_amount" class="form-label">Maintenance</label>
               <input type="text" class="form-control form-control-lg @error('maintenance_amount') is-invalid @enderror"
                 id="maintenance_amount" name="maintenance_amount"
@@ -107,21 +147,28 @@
             </div>
 
             <div class="col-xl-4">
-              <label for="parking_amount" class="form-label">Parkir</label>
-              <input type="text" class="form-control form-control-lg @error('parking_amount') is-invalid @enderror"
-                id="parking_amount" name="parking_amount"
-                value="{{ old('parking_amount', $activity->activityStatus->activityPayment->parking_amount) }}"
+              <label for="courier_amount" class="form-label">Courier</label>
+              <input type="text" class="form-control form-control-lg @error('courier_amount') is-invalid @enderror"
+                id="courier_amount" name="courier_amount"
+                value="{{ old('courier', $activity->activityStatus->activityPayment->courier_amount) }}"
                 data="money">
 
-              @error('parking_amount')
+              @error('courier_amount')
                 <div class="invalid-feedback">
                   {{ $message }}
                 </div>
               @enderror
+            </div>
 
-              <img src="{{ asset('storage/' . $activity['parking_image']) }}"
-                class="img-fluid rounded zoom mw-100 mx-auto d-block mt-5" style="max-height: 200px"
-                id="parking_image-preview" alt="" data-action="zoom">
+            <div class="col-xl-12">
+              <label for="note" class="form-label">Note</label>
+              <textarea class="form-control form-control-lg @error('note') is-invalid @enderror" id="note" name="note">{{ old('note', $activity->activityStatus->activityPayment->note) }}</textarea>
+
+              @error('note')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
             </div>
           </div>
       </form>

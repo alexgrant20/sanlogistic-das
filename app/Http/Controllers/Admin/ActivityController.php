@@ -19,6 +19,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\DataTables;
 
 class ActivityController extends Controller
 {
@@ -32,41 +33,48 @@ class ActivityController extends Controller
 
   public function index(Request $request)
   {
-    // Opsi sementara karena load list teralu berat
-    // TO-DO: PINDAH KE YAJRA
     $q_status = $request->status;
 
-    $activities = DB::table('activities')
-      ->leftJoin('activity_statuses', 'activities.activity_status_id', '=', 'activity_statuses.id')
-      ->leftJoin('users', 'activities.user_id', '=', 'users.id')
-      ->leftJoin('people', 'users.person_id', '=', 'people.id')
-      ->leftJoin('vehicles', 'activities.vehicle_id', '=', 'vehicles.id')
-      ->leftJoin(DB::raw('addresses dep'), 'activities.departure_location_id', '=', 'dep.id')
-      ->leftJoin(DB::raw('addresses arr'), 'activities.arrival_location_id', '=', 'arr.id')
-      ->orderByDesc('activities.created_at')
-      ->get(
-        [
-          'activities.id',
-          'activities.type',
-          'activities.departure_date',
-          'people.name AS person_name',
-          'vehicles.license_plate',
-          'activities.do_number',
-          'dep.name AS departure_name',
-          'arr.name AS arrival_name',
-          'activity_statuses.status AS status'
-        ]
-      );
-
-
-    $activities_filtered = empty($q_status) ? $activities : $activities->filter(fn ($item) => $item->status === $q_status);
+    $activities = Activity::with('activityStatus')->get();
 
     return view('admin.activities.index', [
       'title' => 'Activities',
       'activities' => $activities,
-      'activities_filtered' => $activities_filtered,
       'importPath' => route('admin.activities.export.excel'),
+      'status' => $q_status,
     ]);
+  }
+
+  public function getListIndex(Request $request)
+  {
+    $q_status = $request->status;
+
+    $activities = DB::table('activities')
+      ->leftJoin('activity_statuses', 'activities.activity_status_id', 'activity_statuses.id')
+      ->leftJoin('users', 'activities.user_id', 'users.id')
+      ->leftJoin('people', 'users.person_id', 'people.id')
+      ->leftJoin('vehicles', 'activities.vehicle_id', 'vehicles.id')
+      ->leftJoin(DB::raw('addresses dep'), 'activities.departure_location_id', 'dep.id')
+      ->leftJoin(DB::raw('addresses arr'), 'activities.arrival_location_id', 'arr.id')
+      ->when($q_status, function ($q) use ($q_status) {
+        $q->where('activity_statuses.status', $q_status);
+      })
+      ->orderByDesc('activities.created_at')
+      ->selectRaw(
+        'activities.id,
+         activities.type,
+         DATE_FORMAT(activities.departure_date, "%d %M %Y") AS departure_date,
+         people.name AS person_name,
+         vehicles.license_plate,
+         activities.do_number,
+         dep.name AS departure_name,
+         arr.name AS arrival_name,
+        activity_statuses.status AS status'
+      )
+
+      ->get();
+
+    return DataTables::of($activities)->addIndexColumn()->toJson();
   }
 
   public function create()
@@ -280,6 +288,59 @@ class ActivityController extends Controller
       ->where('activity_id', $activity->id)
       ->get(['status', 'people.name', 'activity_statuses.created_at', 'roles.name AS role']);
 
-    return to_route('admin.activities.index')->with('log_data', $activityStatus);
+    return response()->json($activityStatus);
+  }
+
+  public function cancel(Request $request)
+  {
+    $activity_id = $request->activity_id;
+
+    $activity = Activity::where('id', $activity_id)
+      ->whereRelation('activityStatus', 'status', 'draft')
+      ->first();
+
+    if (!$activity) return back()->with('error-swal', 'Activity not exists');
+
+    ActivityStatus::create([
+      'status' => 'cancel',
+      'activity_id' => $activity->id,
+    ]);
+
+    return back()->with('success-swal', 'Activity successfully canceled');
+  }
+
+
+  public function approval(Request $request)
+  {
+    $q_status = $request->status;
+
+    $activities = DB::table('activities')
+      ->leftJoin('users', 'activities.user_id', '=', 'users.id')
+      ->leftJoin('people', 'users.person_id', '=', 'people.id')
+      ->leftJoin('activity_statuses', 'activities.activity_status_id', '=', 'activity_statuses.id')
+      ->leftJoin('activity_payments', 'activity_statuses.id', '=', 'activity_payments.activity_status_id')
+      ->whereIn('activity_statuses.status', ['pending', 'rejected'])
+      ->get(
+        [
+          'activities.id',
+          'activities.departure_date',
+          'do_number', 'people.name',
+          'activity_payments.bbm_amount',
+          'activity_payments.toll_amount',
+          'activity_payments.parking_amount',
+          'activity_payments.load_amount',
+          'activity_payments.unload_amount',
+          'activity_payments.maintenance_amount',
+          'activity_statuses.status as status',
+        ]
+      );
+
+    $activities_filtered = empty($q_status) ?  $activities : $activities->filter(fn ($item) => $item->status === $q_status);
+
+    return view('admin.finance.acceptance.index', [
+      'activities' => $activities,
+      'activities_filtered' => $activities_filtered,
+      'title' => 'Acceptance'
+    ]);
   }
 }

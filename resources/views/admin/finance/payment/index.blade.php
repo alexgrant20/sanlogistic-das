@@ -1,85 +1,5 @@
 @extends('admin.layouts.index-custom')
 
-@section('add_headJS')
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const table = $('table[data-display="datatables"]').DataTable({
-        responsive: true,
-        columnDefs: [{
-          targets: [0],
-          visible: false,
-        }, {
-          targets: [0, 1, 2],
-          searchable: false,
-          orderable: false,
-        }],
-      });
-
-      $.fn.dataTable.Buttons.defaults.dom.button.className =
-        "btn";
-
-      const totalRow = table.rows().data().length;
-
-      new $.fn.dataTable.Buttons(table, {
-        buttons: [{
-          extend: "collection",
-          text: "Export",
-          className: "btn-outline-primary",
-          buttons: [{
-              text: "Excel",
-              action: function() {
-                $("#exportExcel").modal("show");
-              }
-            },
-            {
-              text: "PDF",
-              action: function() {
-                $("#exportPDF").modal("show");
-              }
-            },
-          ],
-        }, ],
-      });
-
-      if (totalRow) {
-        table.button().add(0, {
-          text: "Pay Activity",
-          className: "btn-primary",
-          action: function(e, dt, button, config) {
-            $("#modal").modal("show");
-
-            $('#modal button.ok').off().on('click', function() {
-              $('#modal').modal('hide');
-
-              paidHandler(e)
-            });
-          },
-        })
-      }
-      table.buttons(0, null).containers().appendTo("#actionContainer");
-
-      async function paidHandler(e) {
-        const ids = [];
-        table.rows().data().map((e) => ids.push(e[0]));
-        const uniqueIds = [...new Set(ids)];
-
-        const data = JSON.stringify(uniqueIds);
-
-        await fetch("{{ route('admin.finances.pay') }}", {
-          method: "post",
-          headers: {
-            "X-CSRF-Token": $("input[name=_token]").val(),
-          },
-          body: data,
-        });
-
-        location.reload();
-
-      }
-    });
-  </script>
-@endsection
-
 @section('container')
   <div class="page-content">
     <!-- Page Header-->
@@ -197,6 +117,7 @@
             <th>Load</th>
             <th>Unload</th>
             <th>Maintenance</th>
+            <th>Courier</th>
             <th>Total</th>
           </tr>
         </thead>
@@ -223,11 +144,92 @@
               <td>@money($activity->total_load)</td>
               <td>@money($activity->total_unload)</td>
               <td>@money($activity->total_maintenance)</td>
-              <td>@money($activity->total_bbm + $activity->total_toll + $activity->total_park + $activity->total_load + $activity->total_unload + $activity->total_maintenance)</td>
+              <td>@money($activity->total_courier)</td>
+              <td>@money($activity->total_bbm + $activity->total_toll + $activity->total_park + $activity->total_load + $activity->total_unload + $activity->total_maintenance + $activity->total_courier)</td>
             </tr>
           @endforeach
         </tbody>
       </table>
     </section>
   </div>
+@endsection
+
+@section('add_headJS')
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const table = $('table[data-display="datatables"]').DataTable({
+        responsive: true,
+        columnDefs: [{
+          targets: [0],
+          visible: false,
+        }, {
+          targets: [0, 1, 2],
+          searchable: false,
+          orderable: false,
+        }],
+      });
+
+      $.fn.dataTable.Buttons.defaults.dom.button.className =
+        "btn";
+
+      const totalRow = table.rows().data().length;
+
+      new $.fn.dataTable.Buttons(table, {
+        buttons: [{
+          extend: "collection",
+          text: "Export",
+          className: "btn-outline-primary",
+          buttons: [{
+              text: "Excel",
+              action: function() {
+                $("#exportExcel").modal("show");
+              }
+            },
+            {
+              text: "PDF",
+              action: function() {
+                $("#exportPDF").modal("show");
+              }
+            },
+          ],
+        }, ],
+      });
+
+      if (totalRow) {
+        table.button().add(0, {
+          text: "Pay Activity",
+          className: "btn-primary",
+          action: function(e, dt, button, config) {
+            $("#modal").modal("show");
+
+            $('#modal button.ok').off().on('click', function() {
+              $('#modal').modal('hide');
+
+              paidHandler(e)
+            });
+          },
+        })
+      }
+      table.buttons(0, null).containers().appendTo("#actionContainer");
+
+      async function paidHandler(e) {
+        const ids = [];
+        table.rows().data().map((e) => ids.push(e[0]));
+        const uniqueIds = [...new Set(ids)];
+
+        const data = JSON.stringify(uniqueIds);
+
+        await fetch("{{ route('admin.finances.pay') }}", {
+          method: "post",
+          headers: {
+            "X-CSRF-Token": $("input[name=_token]").val(),
+          },
+          body: data,
+        });
+
+        // location.reload();
+
+      }
+    });
+  </script>
 @endsection

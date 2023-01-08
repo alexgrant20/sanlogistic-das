@@ -24,40 +24,6 @@ class FinanceController extends Controller
     $this->middleware('can:finance-payment', ['only' => ['payment', 'pay', 'edit', 'audit', 'reject']]);
   }
 
-  public function approval(Request $request)
-  {
-    $q_status = $request->status;
-
-    $activities = DB::table('activities')
-      ->leftJoin('users', 'activities.user_id', '=', 'users.id')
-      ->leftJoin('people', 'users.person_id', '=', 'people.id')
-      ->leftJoin('activity_statuses', 'activities.activity_status_id', '=', 'activity_statuses.id')
-      ->leftJoin('activity_payments', 'activity_statuses.id', '=', 'activity_payments.activity_status_id')
-      ->whereIn('activity_statuses.status', ['pending', 'rejected'])
-      ->get(
-        [
-          'activities.id',
-          'activities.departure_date',
-          'do_number', 'people.name',
-          'activity_payments.bbm_amount',
-          'activity_payments.toll_amount',
-          'activity_payments.parking_amount',
-          'activity_payments.load_amount',
-          'activity_payments.unload_amount',
-          'activity_payments.maintenance_amount',
-          'activity_statuses.status as status',
-        ]
-      );
-
-    $activities_filtered = empty($q_status) ?  $activities : $activities->filter(fn ($item) => $item->status === $q_status);
-
-    return view('admin.finance.acceptance.index', [
-      'activities' => $activities,
-      'activities_filtered' => $activities_filtered,
-      'title' => 'Acceptance'
-    ]);
-  }
-
   public function approve(Request $request)
   {
     $activityIds = json_decode($request->getContent());
@@ -95,11 +61,11 @@ class FinanceController extends Controller
           ]);
         });
       } catch (Exception $e) {
-        return to_route('admin.finances.approval')
+        return to_route('admin.activities.approval')
           ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'approve'));
       }
     }
-    return to_route('admin.finances.approval')
+    return to_route('admin.activities.approval')
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'approved'));
   }
 
@@ -206,10 +172,9 @@ class FinanceController extends Controller
   {
     $activityStatus = $activity->activityStatus->status;
 
-    if ($activityStatus !== 'rejected' && $activityStatus !== 'pending') abort(404);
+    if (!in_array($activityStatus, ['rejected', 'pending'])) abort(404);
 
     return view('admin.finance.acceptance.edit', [
-      'activities' => Activity::status('pending')->get(),
       'importPath' =>  route('admin.finances.export.excel'),
       'title' => 'Acceptance',
       'activity' => $activity,
@@ -233,6 +198,8 @@ class FinanceController extends Controller
         'load_amount' => $request->load_amount,
         'unload_amount' => $request->unload_amount,
         'maintenance_amount' => $request->maintenance_amount,
+        'courier_amount' => $request->courier_amount,
+        'description' => $request->description,
       ]);
     } catch (Exception $e) {
       DB::rollBack();
@@ -242,7 +209,7 @@ class FinanceController extends Controller
     }
     DB::commit();
 
-    return to_route('admin.finances.approval')
+    return to_route('admin.activities.approval')
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'audited'));
   }
 
@@ -260,6 +227,7 @@ class FinanceController extends Controller
       ->selectRaw("SUM(activity_payments.load_amount) total_load")
       ->selectRaw("SUM(activity_payments.unload_amount) total_unload")
       ->selectRaw("SUM(activity_payments.maintenance_amount) total_maintenance")
+      ->selectRaw("SUM(activity_payments.courier_amount) total_courier")
       ->selectRaw("projects.name as project_name, projects.id as project_id, people.name as person_name, activities.user_id as user_id,
       activities.project_id as project_id, activity_statuses.status as status")
       ->groupBy('activities.project_id')

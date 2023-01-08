@@ -1,201 +1,268 @@
 @extends('admin.layouts.index-custom')
 
 @section('container')
-   <div class="page-content">
-      <!-- Page Header-->
-      <div class="bg-dash-dark-2 py-4">
-         <div class="container-fluid">
-            <h2 class="h5 mb-0">Activities</h2>
-         </div>
+  <div class="page-content">
+    <!-- Page Header-->
+    <div class="bg-dash-dark-2 py-4">
+      <div class="container-fluid">
+        <h2 class="h5 mb-0">Activities</h2>
       </div>
-      <section class="container-fluid">
-         <div class="row mb-4 g-3">
-            <x-summary-box summaryTitle="Total Activity" summaryTotal="{{ $activities->count() }}" icon="bi bi-journal-text"
-               id="total-activity" link="{{ route('admin.activities.index') }}" :active="empty(Request::getQueryString()) ? true : false" />
+    </div>
+    <section class="container-fluid">
+      <div class="row mb-4 g-3">
+        <x-summary-box summaryTitle="Total Activity" summaryTotal="{{ $activities->count() }}" icon="bi bi-journal-text"
+          id="total-activity" link="{{ route('admin.activities.index') }}" :active="empty(Request::getQueryString()) ? true : false" />
 
-            <x-summary-box summaryTitle="On Going"
-               summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'draft')->count() }}"
-               icon="bi bi-journal-arrow-up" id="total-ongoing-activity"
-               link="{{ route('admin.activities.index') . '?status=draft' }}" :active="Request::getQueryString() === 'status=draft' ? true : false" />
+        <x-summary-box summaryTitle="On Going"
+          summaryTotal="{{ $activities->filter(fn($item) => $item->activityStatus->status === 'draft')->count() }}"
+          icon="bi bi-journal-arrow-up" id="total-ongoing-activity"
+          link="{{ route('admin.activities.index') . '?status=draft' }}" :active="Request::getQueryString() === 'status=draft' ? true : false" />
 
-            <x-summary-box summaryTitle="Pending"
-               summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'pending')->count() }}"
-               icon="bi bi-journal-medical" id="total-pending-activity"
-               link="{{ route('admin.activities.index') . '?status=pending' }}" :active="Request::getQueryString() === 'status=pending' ? true : false" />
+        <x-summary-box summaryTitle="Pending"
+          summaryTotal="{{ $activities->filter(fn($item) => $item->activityStatus->status === 'pending')->count() }}"
+          icon="bi bi-journal-medical" id="total-pending-activity"
+          link="{{ route('admin.activities.index') . '?status=pending' }}" :active="Request::getQueryString() === 'status=pending' ? true : false" />
 
-            <x-summary-box summaryTitle="Approved"
-               summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'approved')->count() }}"
-               icon="bi bi-journal-check" id="total-approved-activity"
-               link="{{ route('admin.activities.index') . '?status=approved' }}" :active="Request::getQueryString() === 'status=approved' ? true : false" />
+        <x-summary-box summaryTitle="Approved"
+          summaryTotal="{{ $activities->filter(fn($item) => $item->activityStatus->status === 'approved')->count() }}"
+          icon="bi bi-journal-check" id="total-approved-activity"
+          link="{{ route('admin.activities.index') . '?status=approved' }}" :active="Request::getQueryString() === 'status=approved' ? true : false" />
 
-            <x-summary-box summaryTitle="Rejected"
-               summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'rejected')->count() }}"
-               icon="bi bi-journal-x" id="total-rejected-activity"
-               link="{{ route('admin.activities.index') . '?status=rejected' }}" :active="Request::getQueryString() === 'status=rejected' ? true : false" />
+        <x-summary-box summaryTitle="Rejected"
+          summaryTotal="{{ $activities->filter(fn($item) => $item->activityStatus->status === 'rejected')->count() }}"
+          icon="bi bi-journal-x" id="total-rejected-activity"
+          link="{{ route('admin.activities.index') . '?status=rejected' }}" :active="Request::getQueryString() === 'status=rejected' ? true : false" />
 
-            <x-summary-box summaryTitle="Paid"
-               summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'paid')->count() }}"
-               icon="bi bi-wallet-fill" id="total-paid-activity"
-               link="{{ route('admin.activities.index') . '?status=paid' }}" :active="Request::getQueryString() === 'status=paid' ? true : false" />
-         </div>
+        <x-summary-box summaryTitle="Paid"
+          summaryTotal="{{ $activities->filter(fn($item) => $item->activityStatus->status === 'paid')->count() }}"
+          icon="bi bi-wallet-fill" id="total-paid-activity" link="{{ route('admin.activities.index') . '?status=paid' }}"
+          :active="Request::getQueryString() === 'status=paid' ? true : false" />
+      </div>
 
-         {{-- EXCEL MODAL --}}
-         <x-modal id="exportExcel" size="modal-lg" title="Export">
-            <x-slot:body>
-               <form id="exportExcelForm" method="post" action="{{ route('admin.activities.export.excel') }}">
-                  @csrf
+      {{-- EXCEL MODAL --}}
+      <x-modal id="exportExcel" size="modal-lg" title="Export">
+        <x-slot:body>
+          <form id="exportExcelForm" method="post" action="{{ route('admin.activities.export.excel') }}">
+            @csrf
 
-                  <div class="mb-3">
-                     <label for="start_date" class="form-label">Start Date</label>
-                     <input type="date" class="form-control" id="start_date" name="start_date">
-                  </div>
+            <div class="mb-3">
+              <label for="start_date" class="form-label">Start Date</label>
+              <input type="date" class="form-control" id="start_date" name="start_date">
+            </div>
 
-                  <div class="mb-3">
-                     <label for="end_date" class="form-label">End Date</label>
-                     <input type="date" class="form-control" id="end_date" name="end_date">
-                  </div>
-               </form>
-            </x-slot:body>
-            <x-slot:footer>
-               <button type="button" class="btn btn-success" onclick="$('#exportExcelForm').submit()">Export</button>
-            </x-slot:footer>
-         </x-modal>
+            <div class="mb-3">
+              <label for="end_date" class="form-label">End Date</label>
+              <input type="date" class="form-control" id="end_date" name="end_date">
+            </div>
+          </form>
+        </x-slot:body>
+        <x-slot:footer>
+          <button type="button" class="btn btn-success" onclick="$('#exportExcelForm').submit()">Export</button>
+        </x-slot:footer>
+      </x-modal>
 
-         @if (session()->has('log_data'))
-            <x-modal id="my-modal" title="Activity Log" class="openModal" size="modal-lg">
-               <x-slot:body>
-                  <table class="table table-hover table-dark text-center nowrap" style="widths: 100%">
-                     <tr>
-                        <th>Status</th>
-                        <th>By</th>
-                        <th>Time</th>
-                        <th>Role</th>
-                     </tr>
-                     @foreach (session('log_data') as $log)
-                        <tr>
-                           <td>{{ $log->status }}</td>
-                           <td>{{ $log->name }}</td>
-                           <td>{{ $log->created_at }}</td>
-                           <td>{{ $log->role }}</td>
-                        </tr>
-                     @endforeach
-                  </table>
-               </x-slot:body>
-               <x-slot:footer>
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-               </x-slot:footer>
-            </x-modal>
-         @endif
+      <x-modal id="logModal" title="Activity Log" size="modal-lg">
+        <x-slot:body>
+          <table class="table table-hover table-dark text-center nowrap" style="widths: 100%">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>By</th>
+                <th>Time</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </x-slot:body>
+        <x-slot:footer>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </x-slot:footer>
+      </x-modal>
 
-         <h4 class="text-primary fw-bold">Action</h4>
-         <hr>
-         <input type="hidden" id="tableName" value="activities">
-         <div class="d-flex mb-5" id="actionContainer"></div>
+      <h4 class="text-primary fw-bold">Action</h4>
+      <hr>
+      <input type="hidden" id="tableName" value="activities">
 
-         <h4 class="text-primary fw-bold">Table</h4>
-         <hr>
-         <div class="table-responsive">
-            <table class="table table-striped table-dark text-center" data-display="datatables">
-               <thead>
-                  <tr class="header">
-                     <th>ID</th>
-                     <th></th>
-                     <th></th>
-                     <th>Tanggal</th>
-                     <th>Nama Pengendara</th>
-                     <th>Nomor Kendaraan</th>
-                     <th>Nomor DO</th>
-                     <th>Lokasi Keberangkatan</th>
-                     <th>Lokasi Tujuan</th>
-                     <th>Jenis Aktifitas</th>
-                     <th>Status</th>
-                  </tr>
-               </thead>
-               <tbody>
-                  @foreach ($activities_filtered as $activity)
-                     <tr>
-                        <td>{{ $activity->id }}</td>
-                        <td></td>
-                        <td>
-                           <div class="dropdown">
-                              <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                 <i class="bi bi-three-dots"></i>
-                              </button>
-                              <ul class="dropdown-menu">
-                                 @can('activity-edit')
-                                    <li>
-                                       <a href="{{ route('admin.activities.edit', $activity->id) }}" class="dropdown-item">
-                                          Edit
-                                       </a>
-                                    </li>
-                                 @endcan
-                                 <li>
-                                    <a href="{{ route('admin.activities.logs', $activity->id) }}" class="dropdown-item">
-                                       History Log
-                                    </a>
-                                 </li>
-                              </ul>
-                           </div>
-                        </td>
-                        <td>{{ $activity->departure_date }}</td>
-                        <td>{{ $activity->person_name }}</td>
-                        <td>{{ $activity->license_plate }}</td>
-                        <td>{{ $activity->do_number }}</td>
-                        <td>{{ $activity->departure_name }}</td>
-                        <td>{{ $activity->arrival_name }}</td>
-                        <td>{{ $activity->type }}</td>
-                        <td>{{ $activity->status }}</td>
-                     </tr>
-                  @endforeach
-               </tbody>
-            </table>
-         </div>
-      </section>
-   </div>
+      <div class="d-flex mb-5" id="actionContainer">
+        <button class="btn btn-primary" type="button" id="exportExcelBtn">Export Excel</button>
+      </div>
+
+      <h4 class="text-primary fw-bold">Table</h4>
+      <hr>
+      <div class="table-responsive">
+        <table class="table table-striped table-dark text-center" data-display="datatables" id="activities">
+          <thead>
+            <tr class="header">
+              <th>ID</th>
+              <th>Tanggal</th>
+              <th>Nama Pengendara</th>
+              <th>Nomor Kendaraan</th>
+              <th>Nomor DO</th>
+              <th>Lokasi Keberangkatan</th>
+              <th>Lokasi Tujuan</th>
+              <th>Jenis Aktifitas</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
 @endsection
 
 @section('add_headJS')
-   <script>
-      document.addEventListener("DOMContentLoaded", function() {
-         const table = $('table[data-display="datatables"]').DataTable({
-            responsive: true,
-            columnDefs: [{
-               targets: [0],
-               visible: false,
-            }, {
-               targets: [0, 1, 2],
-               searchable: false,
-               orderable: false,
-            }],
-         });
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      $('#activities').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('admin.activities.list', $status) }}",
+        columns: [{
+            data: 'action',
+            searchable: 'false',
+            orderable: false,
+            render: function(row, display, data) {
+              let edit = "{{ route('admin.activities.edit', 'id') }}";
+              edit = edit.replace('id', data.id);
 
-         $.fn.dataTable.Buttons.defaults.dom.button.className =
-            "btn";
+              let templateActionForm = `
+              <div class="dropdown">
+                <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-three-dots"></i>
+                </button>
+                <ul class="dropdown-menu">
+                    @can('activity-edit')
+                      <li>
+                          <a href="${edit}" class="dropdown-item">
+                            Edit
+                          </a>
+                      </li>
+                    @endcan
+                    <li>
+                      <form method="post" class="logForm">
+                        @csrf
+                        <input type="hidden" name="id" value=${data.id} />
+                        <button class="dropdown-item">
+                            History Log
+                        </button>
+                      </form>
+                    </li>
+                    {addon}
+                </ul>
+              </div>`
 
-         const totalRow = table.rows().data().length;
+              let replaceTemp = '';
 
-         new $.fn.dataTable.Buttons(table, {
-            buttons: [{
-               extend: "collection",
-               text: "Export",
-               className: "btn-outline-primary",
-               buttons: [{
-                     text: "Excel",
-                     action: function() {
-                        $("#exportExcel").modal("show");
-                     }
-                  },
-                  {
-                     text: "PDF",
-                     action: function() {
-                        $("#exportPDF").modal("show");
-                     }
-                  },
-               ],
-            }, ],
-         });
+              if(data.status === 'draft'){
+                replaceTemp = `
+                <li>
+                    <form method="post" class="abortActivity" action={{ route('admin.activities.cancel') }}>
+                      @csrf
+                      <input type="hidden" name="activity_id" value=${data.id} />
+                      <button class="dropdown-item abort-btn">
+                          Abort Activity
+                      </button>
+                    </form>
+                  </li>
+                `
+              }
 
-         table.buttons(0, null).containers().appendTo("#actionContainer");
+              templateActionForm = templateActionForm.replace('{addon}', replaceTemp);
+              return templateActionForm;
+            }
+          },
+          {
+            data: 'departure_date',
+            name: 'departure_date'
+          },
+          {
+            data: 'person_name',
+            name: 'person_name'
+          },
+          {
+            data: 'license_plate',
+            name: 'license_plate'
+          },
+          {
+            data: 'do_number',
+            name: 'do_number'
+          },
+          {
+            data: 'departure_name',
+            name: 'departure_name'
+          },
+          {
+            data: 'arrival_name',
+            name: 'arrival_name'
+          },
+          {
+            data: 'type',
+            name: 'type'
+          },
+          {
+            data: 'status',
+            name: 'status'
+          },
+        ],
+        "drawCallback": function( settings ) {
+          $('.logForm').on('submit',async function (e) {
+            e.preventDefault();
+            const id = $(this).serializeArray()[1].value;
+            let url = "{{ route('admin.activities.logs', 'id') }}";
+            url = url.replace('id', id);
+
+            const res = await $.ajax({
+              method: 'GET',
+              url,
+            })
+
+            $('#logModal tbody').empty();
+
+            let template = '';
+
+            res.forEach(el => {
+              template += `<tr>
+                    <td>${el.status} </td>
+                    <td>${el.name}</td>
+                    <td>${el.created_at}</td>
+                    <td>${el.role}</td>
+                  </tr>`
+            });
+
+            $('#logModal tbody').append(template);
+
+            $('#logModal').modal('show');
+          });
+
+          $('.abort-btn').click(function (e) {
+            e.preventDefault();
+            swal({
+               title: "Apakah Anda Yakin?",
+               icon: "info",
+               text: "Anda tidak dapat membatalkan aksi ini",
+               buttons: {
+                  cancel: "Batal",
+                  confirm: {
+                     'text': 'Kirim',
+                     'closeModal': true,
+                  }
+               }
+            }).then((result) => {
+               if (result) {
+                $(this).parent().submit();
+               }
+            });
+          })
+        }
       });
-   </script>
+
+      $('#exportExcelBtn').click(function () {
+        $('#exportExcel').modal('show');
+      })
+    });
+  </script>
 @endsection
