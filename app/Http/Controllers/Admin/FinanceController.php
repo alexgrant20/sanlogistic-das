@@ -263,8 +263,6 @@ class FinanceController extends Controller
     ]);
 
     $params = $request->input('ids');
-    $startDate = $request->input('start_date');
-    $endDate = $request->input('end_date');
 
     $ids = preg_split("/[,]/", $params);
     $data = DB::table('activities')
@@ -285,7 +283,6 @@ class FinanceController extends Controller
       ->orderBy('people.name')
       ->where('activity_statuses.status', '=', 'approved')
       ->where('activities.project_id', '=', $request->project_id)
-      ->whereBetween('activities.created_at', array($startDate, $endDate))
       ->get();
 
     if ($data->isEmpty()) return back()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'No Data Found!'));
