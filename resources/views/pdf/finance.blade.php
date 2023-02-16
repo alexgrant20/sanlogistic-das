@@ -100,10 +100,10 @@
                <th>Nama Pengendara</th>
                <th>BBM</th>
                <th>Toll</th>
-               <th>Parkir</th>
-               <th>Kurir</th>
+               <th>Park</th>
+               <th>Courier</th>
                <th>Un/Load</th>
-               <th>Maint</th>
+               <th>Maintenance</th>
                <th>Total</th>
             </tr>
          </thead>
