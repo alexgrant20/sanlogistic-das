@@ -31,7 +31,7 @@ class ActivityRecapExport implements FromCollection, WithHeadings, ShouldAutoSiz
       ->selectRaw("SUM(activity_payments.load_amount) + SUM(activity_payments.unload_amount) total_load")
       ->selectRaw("SUM(activity_payments.maintenance_amount) total_maintenance")
       ->selectRaw("SUM(activity_payments.courier_amount) total_courier")
-      ->selectRaw("SUM(activity_payments.bbm_amount) + SUM(activity_payments.toll_amount) + SUM(activity_payments.parking_amount) + SUM(activity_payments.load_amount) + SUM(activity_payments.unload_amount) + SUM(activity_payments.maintenance_amount)  as total")
+      ->selectRaw("SUM(activity_payments.bbm_amount) + SUM(activity_payments.toll_amount) + SUM(activity_payments.parking_amount) + SUM(activity_payments.load_amount) + SUM(activity_payments.unload_amount) + SUM(activity_payments.maintenance_amount) + SUM(activity_payments.courier_amount)  as total")
       ->where('activities.project_id', $this->params['project_id'])
       ->where('activity_statuses.status', 'approved');
 

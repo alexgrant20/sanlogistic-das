@@ -277,7 +277,7 @@ class FinanceController extends Controller
       ->selectRaw("SUM(activity_payments.load_amount) total_load")
       ->selectRaw("SUM(activity_payments.unload_amount) total_unload")
       ->selectRaw("SUM(activity_payments.maintenance_amount) total_maintenance")
-      ->selectRaw("SUM(activity_payments.maintenance_amount) total_courier")
+      ->selectRaw("SUM(activity_payments.courier_amount) total_courier")
       ->selectRaw("projects.name as project_name, people.name as person_name, activities.user_id as user_id,
     activities.project_id as project_id, activity_statuses.status as status")
       ->groupBy('user_id')
