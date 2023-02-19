@@ -174,7 +174,7 @@
       </form>
     </section>
     <div class="container-fluid">
-      <button class="btn btn-lg btn-primary" id="submit">Audit Activity</button>
+      <button class="btn btn-lg btn-success" id="submit">Approve</button>
     </div>
   </div>
 @endsection
