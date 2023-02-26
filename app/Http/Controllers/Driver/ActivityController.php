@@ -339,7 +339,7 @@ class ActivityController extends Controller
           break;
 
         case "STATION":
-          if ($d_name == "Station") {
+          if ($d_name == "STATION") {
             $activityType = 'manuver';
           } else {
 
