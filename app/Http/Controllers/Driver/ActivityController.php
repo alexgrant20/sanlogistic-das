@@ -19,7 +19,9 @@ use App\Models\VehicleChecklistImage;
 use App\Models\VehicleLastStatus;
 use App\Transaction\Constants\NotifactionTypeConstant;
 use Exception;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 // TO-DO Make Gate
 class ActivityController extends Controller
@@ -339,7 +341,7 @@ class ActivityController extends Controller
           break;
 
         case "STATION":
-          if ($d_name == "Station") {
+          if ($d_name == "STATION") {
             $activityType = 'manuver';
           } else {
 
@@ -423,5 +425,136 @@ class ActivityController extends Controller
 
     return to_route('index')
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'finished'));;
+  }
+
+  public function createGojek()
+  {
+    $user = auth()->user();
+
+    $departureAddress = $user->driver->lastActivity->departureLocation ?? Address::find(135);
+
+    $arrivalAddresses =  AddressProject::where([
+      ['project_id', $user->person->project_id],
+      ['address_id', '!=', $departureAddress->id],
+    ])
+      ->with('address')
+      ->get()
+      ->sortBy('address.name');
+
+    return view('driver.activities.create-gojek', [
+      'title' => 'Create Activity',
+      'arrivalAddresses' => $arrivalAddresses,
+      'departureAddress' => $departureAddress,
+    ]);
+  }
+
+  public function storeGojek(Request $request)
+  {
+    $departureLocationId = null;
+
+    try {
+      $departureLocationId = Crypt::decryptString($request->departure_location_id);
+    } catch (\Exception $e) {
+    }
+
+    $d_name = Address::find($departureLocationId)->addressType->name;
+    $a_name = Address::find($request->arrival_location_id)->addressType->name;
+    $totalCustTrip = auth()->user()->driver->total_cust_trip;
+
+
+    DB::beginTransaction();
+    $activity = Activity::create([
+      'user_id' => auth()->user()->id,
+      'departure_location_id' => $departureLocationId,
+      'arrival_location_id' => $request->arrival_location_id,
+
+    ]);
+
+    $driver = Driver::where('user_id', auth()->user()->id)->first();
+
+    try {
+      switch ($a_name) {
+        case "TUJUAN PENGIRIMAN":
+          $totalCustTrip += 1;
+
+          Driver::where('user_id', auth()->user()->id)->update([
+            'total_cust_trip' => $totalCustTrip,
+            'last_activity_id' => $activity->id
+          ]);
+
+          $activityType = "mdp-" . $totalCustTrip;
+          break;
+
+        case "KANTOR UTAMA":
+        case "POOL":
+          $activityType = "pool";
+          break;
+
+        case "STATION":
+          if ($d_name == "STATION") {
+            $activityType = 'manuver';
+          } else {
+
+            $activityType = 'return';
+
+            if ($totalCustTrip == 0) {
+              break;
+            }
+
+            $type = $totalCustTrip > 1 ? 'mdp-e' : 'sdp';
+
+            $driver->lastActivity->update([
+              'type' => $type
+            ]);
+
+            $driver->update([
+              'total_cust_trip' => 0,
+              'last_activity_id' => NULL
+            ]);
+          }
+          break;
+
+        case "WORKSHOP":
+          $activityType = "maintenance";
+          break;
+
+        case "PKB/SAMSAT":
+          $activityType = "kir";
+          break;
+      }
+
+      $data = [
+        'type' => $activityType,
+      ];
+
+      DB::transaction(function () use ($activity, $data, $request) {
+        $activity->update($data);
+
+        $activityStatus = ActivityStatus::create([
+          'status' => 'pending',
+          'activity_id' => $activity->id
+        ]);
+
+        $activity->vehicle->update([
+          'odo' => $request->arrival_odo,
+          'address_id' => $request->arrival_location_id,
+          // 'last_do_number' => NULL,
+          // 'last_do_date' => NULL,
+        ]);
+
+
+
+        ActivityPayment::create([
+          'activity_status_id' => $activityStatus->id,
+          'bbm_amount' => $request->bbm_amount,
+          'toll_amount' => $request->toll_amount,
+          'parking_amount' => $request->parking_amount,
+        ]);
+      });
+    } catch (Exception $e) {
+      DB::rollBack();
+      return to_route('driver.activity.edit', $activity->id)->withInput();
+    }
+    DB::commit();
   }
 }
