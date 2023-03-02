@@ -455,19 +455,21 @@ class ActivityController extends Controller
     try {
       $departureLocationId = Crypt::decryptString($request->departure_location_id);
     } catch (\Exception $e) {
+      return back()->withInput();
     }
 
-    $d_name = Address::find($departureLocationId)->addressType->name;
-    $a_name = Address::find($request->arrival_location_id)->addressType->name;
+    $d_name = strtoupper(Address::find($departureLocationId)->addressType->name);
+    $a_name = strtoupper(Address::find($request->arrival_location_id)->addressType->name);
     $totalCustTrip = auth()->user()->driver->total_cust_trip;
 
+    $activityType = null;
 
     DB::beginTransaction();
+
     $activity = Activity::create([
       'user_id' => auth()->user()->id,
       'departure_location_id' => $departureLocationId,
       'arrival_location_id' => $request->arrival_location_id,
-
     ]);
 
     $driver = Driver::where('user_id', auth()->user()->id)->first();
@@ -477,7 +479,7 @@ class ActivityController extends Controller
         case "TUJUAN PENGIRIMAN":
           $totalCustTrip += 1;
 
-          Driver::where('user_id', auth()->user()->id)->update([
+          $driver->update([
             'total_cust_trip' => $totalCustTrip,
             'last_activity_id' => $activity->id
           ]);
@@ -523,37 +525,24 @@ class ActivityController extends Controller
           break;
       }
 
-      $data = [
+      $activity->update([
         'type' => $activityType,
-      ];
+      ]);
 
-      DB::transaction(function () use ($activity, $data, $request) {
-        $activity->update($data);
+      $activityStatus = ActivityStatus::create([
+        'status' => 'pending',
+        'activity_id' => $activity->id
+      ]);
 
-        $activityStatus = ActivityStatus::create([
-          'status' => 'pending',
-          'activity_id' => $activity->id
-        ]);
-
-        $activity->vehicle->update([
-          'odo' => $request->arrival_odo,
-          'address_id' => $request->arrival_location_id,
-          // 'last_do_number' => NULL,
-          // 'last_do_date' => NULL,
-        ]);
-
-
-
-        ActivityPayment::create([
-          'activity_status_id' => $activityStatus->id,
-          'bbm_amount' => $request->bbm_amount,
-          'toll_amount' => $request->toll_amount,
-          'parking_amount' => $request->parking_amount,
-        ]);
-      });
+      ActivityPayment::create([
+        'activity_status_id' => $activityStatus->id,
+        'bbm_amount' => 0,
+        'toll_amount' => 0,
+        'parking_amount' => 0,
+      ]);
     } catch (Exception $e) {
       DB::rollBack();
-      return to_route('driver.activity.edit', $activity->id)->withInput();
+      return back()->withInput();
     }
     DB::commit();
   }
