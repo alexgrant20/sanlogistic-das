@@ -545,5 +545,6 @@ class ActivityController extends Controller
       return back()->withInput();
     }
     DB::commit();
+    return to_route('index')->with('success-swal', 'Aktivitas Sukses Dibuat!');
   }
 }
