@@ -62,23 +62,20 @@ class ActivityController extends Controller
 
   public function create()
   {
-    $projectId = auth()->user()->person->project_id;
+    $user = auth()->user();
+    $lastLocationId = $user->driver->lastActivity->arrivalLocation->id;
+    $projectId = $user->person->project_id;
 
-    $vehicleIdOnDuty = Activity::whereRelation('activityStatus', 'status', 'draft')
-      ->where('project_id', $projectId)
-      ->select(['vehicle_id'])
-      ->get()
-      ->toArray();
-
-    $vehicleIdsOnJob = array_map(function ($array) {
-      unset($array['activity_status']);
-      return $array;
-    }, $vehicleIdOnDuty);
-
-    $vehicles = Vehicle::where('project_id', $projectId)
-      ->whereNotIn('id', $vehicleIdsOnJob)
+    $vehicles = Vehicle::where('address_id', $lastLocationId)
       ->orderBy('license_plate')
       ->get();
+
+    $vehicleIdOnDuty = Activity::whereRelation('activityStatus', 'status', 'draft')
+      ->whereIn('vehicle_id', $vehicles->pluck('id')->toArray())
+      ->pluck('vehicle_id')
+      ->toArray();
+
+    $vehicles = $vehicles->whereNotIn('id', $vehicleIdOnDuty);
 
     return view('driver.activities.create', [
       'title' => 'Create Activity',
@@ -527,6 +524,10 @@ class ActivityController extends Controller
 
       $activity->update([
         'type' => $activityType,
+      ]);
+
+      $driver->update([
+        'last_activity_id' => $activity->id
       ]);
 
       $activityStatus = ActivityStatus::create([
