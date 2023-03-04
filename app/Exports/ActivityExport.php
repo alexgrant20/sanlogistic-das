@@ -100,7 +100,11 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
                DB::raw('arrival_odo - departure_odo AS DISTANCE'),
                //'TOTAL COST',
                DB::raw('activity_payments.bbm_amount + activity_payments.toll_amount
-          + activity_payments.parking_amount + activity_payments.load_amount + activity_payments.unload_amount + activity_payments.maintenance_amount AS total_cost')
+          + activity_payments.parking_amount + activity_payments.load_amount + activity_payments.unload_amount + activity_payments.maintenance_amount AS total_cost'),
+               //Projectname
+               'projects.name AS projects_name',
+               //DDateTime
+               DB::raw('(departure_date) AS dep_datetime')
             ]
          );
 
@@ -149,6 +153,9 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
          'DCODE',
          'DISTANCE',
          'TOTAL COST',
+         'PROJECT',
+         'DDateTime',
+
 
       ];
    }
