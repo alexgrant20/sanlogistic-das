@@ -118,7 +118,7 @@
             <div class="col-md-6">
               <label for="arrival_location_id" class="form-label fs-5 text-primary">Lokasi Tujuan</label>
               <select id="arrival_location_id" name="arrival_location_id"
-                class="form-dark form-select form-select-lg @error('arrival_location_id') is-invalid @enderror select2">
+                class="form-dark form-select form-select-lg @error('arrival_location_id') is-invalid @enderror">
                 @foreach ($arrival_addresses as $arrival_address)
                   @if ($arrival_address->address->id == old('arrival_location_id', $activity->arrival_location_id))
                     <option value="{{ $arrival_address->address->id }}" selected>
