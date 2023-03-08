@@ -63,7 +63,7 @@ class ActivityController extends Controller
   public function create()
   {
     $user = auth()->user();
-    $lastLocationId = $user->driver->lastActivity->arrivalLocation->id;
+    $lastLocationId = $user->driver->lastActivity->arrivalLocation->id ?? 135;
     $projectId = $user->person->project_id;
 
     $vehicles = Vehicle::where('address_id', $lastLocationId)

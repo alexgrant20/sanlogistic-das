@@ -62,6 +62,12 @@
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
   <script>
+    $(document).ready(function() {
+      $('.select2').select2({
+        width: 'resolve'
+      });
+    });
+
     @if ($message = Session::has('message'))
       var type = "{{ Session::get('alert-type', 'info') }}"
       switch (type) {
@@ -80,6 +86,8 @@
       }
     @endif
   </script>
+
+
 
   @if ($message = Session::get('success-swal'))
     <script>
