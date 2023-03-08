@@ -428,7 +428,7 @@ class ActivityController extends Controller
   {
     $user = auth()->user();
 
-    $departureAddress = $user->driver->lastActivity->departureLocation ?? Address::find(135);
+    $departureAddress = $user->driver->lastActivity->arrivalLocation ?? Address::find(135);
 
     $arrivalAddresses =  AddressProject::where([
       ['project_id', $user->person->project_id],
