@@ -450,6 +450,11 @@ class ActivityController extends Controller
   {
     $departureLocationId = null;
 
+    $request->validate([
+      'arrival_location_id' => 'required',
+      'departure_location_id' => 'required',
+    ]);
+
     try {
       $departureLocationId = Crypt::decryptString($request->departure_location_id);
     } catch (\Exception $e) {
