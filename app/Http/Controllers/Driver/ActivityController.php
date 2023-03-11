@@ -14,6 +14,7 @@ use App\Http\Requests\Driver\UpdateActivityRequest;
 use App\Models\ActivityPayment;
 use App\Models\Address;
 use App\Models\Driver;
+use App\Models\User;
 use App\Models\VehicleChecklist;
 use App\Models\VehicleChecklistImage;
 use App\Models\VehicleLastStatus;
@@ -63,7 +64,7 @@ class ActivityController extends Controller
   public function create()
   {
     $user = auth()->user();
-    $lastLocationId = $user->driver->lastActivity->arrivalLocation->id ?? 135;
+    $lastLocationId = $user->activities->sortByDesc('created_at')->first()->arrivalLocation->id ?? 135;
     $projectId = $user->person->project_id;
 
     $vehicles = Vehicle::where('address_id', $lastLocationId)
@@ -318,19 +319,16 @@ class ActivityController extends Controller
     $a_name =  strtoupper(Address::find($request->arrival_location_id)->addressType->name);
     $d_name = strtoupper($activity->departureLocation->addressType->name);
 
-    $activityType = null;
-
-    $driverPayload = [
-      'last_activity_id' => $activity->id
-    ];
-
     DB::beginTransaction();
     try {
       switch ($a_name) {
         case "TUJUAN PENGIRIMAN":
           $totalCustTrip += 1;
 
-          $driverPayload['total_cust_trip'] = $totalCustTrip;
+          $driver->update([
+            'last_activity_id' => $activity->id,
+            'total_cust_trip' => $totalCustTrip,
+          ]);
 
           $activityType = "mdp-" . $totalCustTrip;
           break;
@@ -357,8 +355,10 @@ class ActivityController extends Controller
               'type' => $type
             ]);
 
-            $driverPayload['total_cust_trip'] = 0;
-            $driverPayload['last_activity_id'] = NULL;
+            $driver->update([
+              'last_activity_id' => NULL,
+              'total_cust_trip' => 0,
+            ]);
           }
           break;
 
@@ -389,10 +389,8 @@ class ActivityController extends Controller
       $listOfPath = uploadImages($images, $activity->do_number, $timestamp);
       $data = array_merge($data, $listOfPath);
 
-      DB::transaction(function () use ($activity, $data, $request, $driverPayload, $driver) {
+      DB::transaction(function () use ($activity, $data, $request) {
         $activity->update($data);
-
-        $driver->update($driverPayload);
 
         $activityStatus = ActivityStatus::create([
           'status' => 'pending',
@@ -402,8 +400,6 @@ class ActivityController extends Controller
         $activity->vehicle->update([
           'odo' => $request->arrival_odo,
           'address_id' => $request->arrival_location_id,
-          // 'last_do_number' => NULL,
-          // 'last_do_date' => NULL,
         ]);
 
         ActivityPayment::create([
@@ -429,7 +425,7 @@ class ActivityController extends Controller
   {
     $user = auth()->user();
 
-    $departureAddress = $user->driver->lastActivity->arrivalLocation ?? Address::find(135);
+    $departureAddress = auth()->user()->activities->sortByDesc('created_at')->first()->arrivalLocation;
 
     $arrivalAddresses =  AddressProject::where([
       ['project_id', $user->person->project_id],
@@ -486,7 +482,10 @@ class ActivityController extends Controller
         case "TUJUAN PENGIRIMAN":
           $totalCustTrip += 1;
 
-          $driverPayload['total_cust_trip'] = $totalCustTrip;
+          $driver->update([
+            'last_activity_id' => $activity->id,
+            'total_cust_trip' => $totalCustTrip,
+          ]);
 
           $activityType = "mdp-" . $totalCustTrip;
           break;
@@ -532,8 +531,6 @@ class ActivityController extends Controller
       $activity->update([
         'type' => $activityType,
       ]);
-
-      $driver->update($driverPayload);
 
       $activityStatus = ActivityStatus::create([
         'status' => 'pending',
