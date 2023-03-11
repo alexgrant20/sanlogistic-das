@@ -478,7 +478,7 @@ class ActivityController extends Controller
     $driver = Driver::where('user_id', auth()->user()->id)->first();
 
     $driverPayload = [
-      'activity_id' => $activity->id
+      'last_activity_id' => $activity->id
     ];
 
     try {
