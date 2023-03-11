@@ -310,6 +310,8 @@ class ActivityController extends Controller
 
   public function update(UpdateActivityRequest $request, Activity $activity)
   {
+    $driver = auth()->user()->driver;
+
     $vehicle = Vehicle::where('id', $activity->vehicle_id)->first();
     $totalCustTrip = auth()->user()->driver->total_cust_trip;
 
@@ -318,16 +320,17 @@ class ActivityController extends Controller
 
     $activityType = null;
 
+    $driverPayload = [
+      'last_activity_id' => $activity->id
+    ];
+
     DB::beginTransaction();
     try {
       switch ($a_name) {
         case "TUJUAN PENGIRIMAN":
           $totalCustTrip += 1;
 
-          Driver::where('user_id', auth()->user()->id)->update([
-            'total_cust_trip' => $totalCustTrip,
-            'last_activity_id' => $activity->id
-          ]);
+          $driverPayload['total_cust_trip'] = $totalCustTrip;
 
           $activityType = "mdp-" . $totalCustTrip;
           break;
@@ -350,16 +353,12 @@ class ActivityController extends Controller
 
             $type = $totalCustTrip > 1 ? 'mdp-e' : 'sdp';
 
-            $driver = Driver::where('user_id', auth()->user()->id)->first();
-
             $driver->lastActivity->update([
               'type' => $type
             ]);
 
-            $driver->update([
-              'total_cust_trip' => 0,
-              'last_activity_id' => NULL
-            ]);
+            $driverPayload['total_cust_trip'] = 0;
+            $driverPayload['last_activity_id'] = NULL;
           }
           break;
 
@@ -390,8 +389,10 @@ class ActivityController extends Controller
       $listOfPath = uploadImages($images, $activity->do_number, $timestamp);
       $data = array_merge($data, $listOfPath);
 
-      DB::transaction(function () use ($activity, $data, $request) {
+      DB::transaction(function () use ($activity, $data, $request, $driverPayload, $driver) {
         $activity->update($data);
+
+        $driver->update($driverPayload);
 
         $activityStatus = ActivityStatus::create([
           'status' => 'pending',
@@ -471,15 +472,16 @@ class ActivityController extends Controller
 
     $driver = Driver::where('user_id', auth()->user()->id)->first();
 
+    $driverPayload = [
+      'activity_id' => $activity->id
+    ];
+
     try {
       switch ($a_name) {
         case "TUJUAN PENGIRIMAN":
           $totalCustTrip += 1;
 
-          $driver->update([
-            'total_cust_trip' => $totalCustTrip,
-            'last_activity_id' => $activity->id
-          ]);
+          $driverPayload['total_cust_trip'] = $totalCustTrip;
 
           $activityType = "mdp-" . $totalCustTrip;
           break;
@@ -526,9 +528,7 @@ class ActivityController extends Controller
         'type' => $activityType,
       ]);
 
-      $driver->update([
-        'last_activity_id' => $activity->id
-      ]);
+      $driver->update($driverPayload);
 
       $activityStatus = ActivityStatus::create([
         'status' => 'pending',
