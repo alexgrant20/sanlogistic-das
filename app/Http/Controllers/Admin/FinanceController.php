@@ -304,7 +304,7 @@ class FinanceController extends Controller
         return collect([
           'total_bbm' => $item->sum('bbm_amount'),
           'total_toll' => $item->sum('toll_amount'),
-          'total_park' => $item->sum('park_amount'),
+          'total_park' => $item->sum('parking_amount'),
           'total_load_unload' => $item->sum('load_amount') + $item->sum('unload_amount'),
           'total_maintenance' => $item->sum('maintenance_amount'),
           'total_courier' => $item->sum('courier_amount'),
