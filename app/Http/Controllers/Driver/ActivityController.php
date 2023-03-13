@@ -14,6 +14,7 @@ use App\Http\Requests\Driver\UpdateActivityRequest;
 use App\Models\ActivityPayment;
 use App\Models\Address;
 use App\Models\Driver;
+use App\Models\User;
 use App\Models\VehicleChecklist;
 use App\Models\VehicleChecklistImage;
 use App\Models\VehicleLastStatus;
@@ -63,7 +64,7 @@ class ActivityController extends Controller
   public function create()
   {
     $user = auth()->user();
-    $lastLocationId = $user->driver->lastActivity->arrivalLocation->id;
+    $lastLocationId = $user->activities->sortByDesc('created_at')->first()->arrivalLocation->id ?? 135;
     $projectId = $user->person->project_id;
 
     $vehicles = Vehicle::where('address_id', $lastLocationId)
@@ -310,13 +311,13 @@ class ActivityController extends Controller
 
   public function update(UpdateActivityRequest $request, Activity $activity)
   {
+    $driver = auth()->user()->driver;
+
     $vehicle = Vehicle::where('id', $activity->vehicle_id)->first();
     $totalCustTrip = auth()->user()->driver->total_cust_trip;
 
     $a_name =  strtoupper(Address::find($request->arrival_location_id)->addressType->name);
     $d_name = strtoupper($activity->departureLocation->addressType->name);
-
-    $activityType = null;
 
     DB::beginTransaction();
     try {
@@ -324,9 +325,9 @@ class ActivityController extends Controller
         case "TUJUAN PENGIRIMAN":
           $totalCustTrip += 1;
 
-          Driver::where('user_id', auth()->user()->id)->update([
+          $driver->update([
+            'last_activity_id' => $activity->id,
             'total_cust_trip' => $totalCustTrip,
-            'last_activity_id' => $activity->id
           ]);
 
           $activityType = "mdp-" . $totalCustTrip;
@@ -350,15 +351,13 @@ class ActivityController extends Controller
 
             $type = $totalCustTrip > 1 ? 'mdp-e' : 'sdp';
 
-            $driver = Driver::where('user_id', auth()->user()->id)->first();
-
             $driver->lastActivity->update([
               'type' => $type
             ]);
 
             $driver->update([
+              'last_activity_id' => NULL,
               'total_cust_trip' => 0,
-              'last_activity_id' => NULL
             ]);
           }
           break;
@@ -401,8 +400,6 @@ class ActivityController extends Controller
         $activity->vehicle->update([
           'odo' => $request->arrival_odo,
           'address_id' => $request->arrival_location_id,
-          // 'last_do_number' => NULL,
-          // 'last_do_date' => NULL,
         ]);
 
         ActivityPayment::create([
@@ -428,7 +425,7 @@ class ActivityController extends Controller
   {
     $user = auth()->user();
 
-    $departureAddress = $user->driver->lastActivity->departureLocation ?? Address::find(135);
+    $departureAddress = auth()->user()->activities->sortByDesc('created_at')->first()->arrivalLocation;
 
     $arrivalAddresses =  AddressProject::where([
       ['project_id', $user->person->project_id],
@@ -448,6 +445,11 @@ class ActivityController extends Controller
   public function storeGojek(Request $request)
   {
     $departureLocationId = null;
+
+    $request->validate([
+      'arrival_location_id' => 'required',
+      'departure_location_id' => 'required',
+    ]);
 
     try {
       $departureLocationId = Crypt::decryptString($request->departure_location_id);
@@ -471,14 +473,18 @@ class ActivityController extends Controller
 
     $driver = Driver::where('user_id', auth()->user()->id)->first();
 
+    $driverPayload = [
+      'last_activity_id' => $activity->id
+    ];
+
     try {
       switch ($a_name) {
         case "TUJUAN PENGIRIMAN":
           $totalCustTrip += 1;
 
           $driver->update([
+            'last_activity_id' => $activity->id,
             'total_cust_trip' => $totalCustTrip,
-            'last_activity_id' => $activity->id
           ]);
 
           $activityType = "mdp-" . $totalCustTrip;
@@ -524,10 +530,6 @@ class ActivityController extends Controller
 
       $activity->update([
         'type' => $activityType,
-      ]);
-
-      $driver->update([
-        'last_activity_id' => $activity->id
       ]);
 
       $activityStatus = ActivityStatus::create([

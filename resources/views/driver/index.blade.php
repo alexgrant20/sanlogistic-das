@@ -21,9 +21,11 @@
         <x-ui.menu-item backgroundColor="bg-purplish" icon="bi bi-map" :label="__('Location')" description="All delivery locations"
           :link="route('driver.menu.location')" />
 
+        @if ($activityId)
+          <x-ui.menu-item backgroundColor="bg-primary" icon="fa-solid fa-motorcycle" :label="__('Public Transport')"
+            description="Only use if using public transport" :link="route('driver.activity.create-gojek')" />
+        @endif
         {{-- Location --}}
-        <x-ui.menu-item backgroundColor="bg-primary" icon="fa-solid fa-motorcycle" :label="__('Public Transport')"
-          description="Only use if using public transport" :link="route('driver.activity.create-gojek')" />
 
         {{-- Finance --}}
         <x-ui.menu-item backgroundColor="bg-darkGreen" icon="bi bi-cash-coin" :label="__('Finance')"

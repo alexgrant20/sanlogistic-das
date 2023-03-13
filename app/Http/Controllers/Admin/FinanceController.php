@@ -265,31 +265,80 @@ class FinanceController extends Controller
     $params = $request->input('ids');
 
     $ids = preg_split("/[,]/", $params);
-    $data = DB::table('activities')
-      ->leftJoin('projects', 'activities.project_id', '=', 'projects.id')
-      ->leftJoin('users', 'activities.user_id', '=', 'users.id')
-      ->leftJoin('people', 'users.person_id', '=', 'people.id')
-      ->leftJoin('activity_statuses', 'activities.activity_status_id', '=', 'activity_statuses.id')
-      ->leftJoin('activity_payments', 'activity_statuses.id', '=', 'activity_payments.activity_status_id')
-      ->selectRaw("SUM(activity_payments.bbm_amount) total_bbm")
-      ->selectRaw("SUM(activity_payments.toll_amount) total_toll")
-      ->selectRaw("SUM(activity_payments.parking_amount) total_park")
-      ->selectRaw("SUM(activity_payments.load_amount) total_load")
-      ->selectRaw("SUM(activity_payments.unload_amount) total_unload")
-      ->selectRaw("SUM(activity_payments.maintenance_amount) total_maintenance")
-      ->selectRaw("SUM(activity_payments.courier_amount) total_courier")
-      ->selectRaw("projects.name as project_name, people.name as person_name, activities.user_id as user_id,
-    activities.project_id as project_id, activity_statuses.status as status")
-      ->groupBy('user_id')
-      ->orderBy('people.name')
-      ->where('activity_statuses.status', '=', 'approved')
-      ->where('activities.project_id', '=', $request->project_id)
+
+    $data = DB::table('activities AS a')
+      ->leftJoin('projects AS pro', 'a.project_id', '=', 'pro.id')
+      ->leftJoin('users AS u', 'a.user_id', '=', 'u.id')
+      ->leftJoin('people AS peo', 'u.person_id', '=', 'peo.id')
+      ->leftJoin('activity_statuses AS as', 'a.activity_status_id', '=', 'as.id')
+      ->leftJoin('activity_payments AS ap', 'as.id', '=', 'ap.activity_status_id')
+      ->selectRaw(
+        "
+        pro.name as project_name,
+        peo.name as person_name,
+        a.user_id as user_id,
+        a.project_id as project_id,
+        as.status as status,
+        do_date,
+        ap.bbm_amount,
+        ap.toll_amount,
+        ap.parking_amount,
+        ap.load_amount,
+        ap.unload_amount,
+        ap.maintenance_amount,
+        ap.courier_amount,
+        a.do_date,
+        MONTHNAME(a.do_date) AS activity_month,
+        ap.description
+        "
+      )
+      ->orderBy('peo.name')
+      ->where('as.status', 'approved')
+      ->where('a.project_id', $request->project_id)
       ->get();
+
+    $projectName = $data[0]->project_name;
+
+    $groupedByMonth = $data->groupBy('activity_month')->map(function ($item) {
+      return $item->groupBy('person_name')->map(function ($item) {
+        return collect([
+          'total_bbm' => $item->sum('bbm_amount'),
+          'total_toll' => $item->sum('toll_amount'),
+          'total_park' => $item->sum('park_amount'),
+          'total_load_unload' => $item->sum('load_amount') + $item->sum('unload_amount'),
+          'total_maintenance' => $item->sum('maintenance_amount'),
+          'total_courier' => $item->sum('courier_amount'),
+          'description' => $item->whereNotNull('description')->pluck('description'),
+        ]);
+      });
+    });
+
+    $subtotal = $groupedByMonth->map(function ($data) {
+      return $data->pipe(function ($data) {
+        return collect([
+          'subtotal_bbm' => $data->sum('total_bbm'),
+          'subtotal_toll' => $data->sum('total_toll'),
+          'subtotal_park' => $data->sum('total_park'),
+          'subtotal_load_unload' => $data->sum('total_load_unload'),
+          'subtotal_maintenance' => $data->sum('total_maintenance'),
+          'subtotal_courier' => $data->sum('total_courier')
+        ]);
+      });
+    });
+
+    $summaryTotal = $subtotal->map(function ($item) {
+      return $item->get('subtotal_bbm') +
+        $item->get('subtotal_toll') +
+        $item->get('subtotal_park') +
+        $item->get('subtotal_load_unload') +
+        $item->get('subtotal_maintenance') +
+        $item->get('subtotal_courier');
+    });
 
     if ($data->isEmpty()) return back()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'No Data Found!'));
 
-    $pdf = Pdf::loadView('pdf.finance', compact('data'));
+    $pdf = Pdf::loadView('pdf.finance', compact('groupedByMonth', 'subtotal', 'summaryTotal', 'projectName'));
 
-    return  $pdf->download('Finance-' .  now()->timestamp . '.pdf');
+    return $pdf->download('Finance-' .  now()->timestamp . '.pdf');
   }
 }

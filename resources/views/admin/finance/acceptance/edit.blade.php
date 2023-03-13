@@ -161,10 +161,11 @@
             </div>
 
             <div class="col-xl-12">
-              <label for="note" class="form-label">Note</label>
-              <textarea class="form-control form-control-lg @error('note') is-invalid @enderror" id="note" name="note">{{ old('note', $activity->activityStatus->activityPayment->note) }}</textarea>
+              <label for="description" class="form-label">description</label>
+              <textarea class="form-control form-control-lg @error('description') is-invalid @enderror" id="description"
+                name="description">{{ old('description', $activity->activityStatus->activityPayment->description) }}</textarea>
 
-              @error('note')
+              @error('description')
                 <div class="invalid-feedback">
                   {{ $message }}
                 </div>
