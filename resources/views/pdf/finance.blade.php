@@ -151,7 +151,7 @@
                   <td>Total</td>
                   <td class="text-end">@money($subtotal[$month]['subtotal_bbm'])</td>
                   <td class="text-end">@money($subtotal[$month]['subtotal_toll'])</td>
-                  <td class="text-end">@money($subtotal[$month]['subtotal_parking'])</td>
+                  <td class="text-end">@money($subtotal[$month]['subtotal_park'])</td>
                   <td class="text-end">@money($subtotal[$month]['subtotal_courier'])</td>
                   <td class="text-end">@money($subtotal[$month]['subtotal_load_unload'])</td>
                   <td class="text-end">@money($subtotal[$month]['subtotal_maintenance'])</td>
