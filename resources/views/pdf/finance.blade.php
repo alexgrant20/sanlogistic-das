@@ -138,7 +138,7 @@
                      <td>{{ $personName }}</td>
                      <td class="text-end">@money($activity->get('total_bbm'))</td>
                      <td class="text-end">@money($activity->get('total_toll'))</td>
-                     <td class="text-end">@money($activity->get('total_parking'))</td>
+                     <td class="text-end">@money($activity->get('total_park'))</td>
                      <td class="text-end">@money($activity->get('total_courier'))</td>
                      <td class="text-end">@money($activity->get('total_load_unload'))</td>
                      <td class="text-end">@money($activity->get('total_maintenance'))</td>
