@@ -110,14 +110,14 @@
          <tbody>
             @foreach ($data as $activity)
                @php
-                  $subTotal = $activity->total_bbm + $activity->total_toll + $activity->total_park + $activity->total_maintenance + $activity->total_load + $activity->total_unload + $activity->total_courier;
+                  $subTotal = $activity->total_bbm + $activity->total_toll + $activity->total_parking + $activity->total_maintenance + $activity->total_load + $activity->total_unload + $activity->total_courier;
                   $total += $subTotal;
                @endphp
                <tr>
                   <td>{{ $activity->person_name }}</td>
                   <td class="text-end">@money($activity->total_bbm)</td>
                   <td class="text-end">@money($activity->total_toll)</td>
-                  <td class="text-end">@money($activity->total_park)</td>
+                  <td class="text-end">@money($activity->total_parking)</td>
                   <td class="text-end">@money($activity->total_courier)</td>
                   <td class="text-end">@money($activity->total_load + $activity->total_unload)</td>
                   <td class="text-end">@money($activity->total_maintenance)</td>
