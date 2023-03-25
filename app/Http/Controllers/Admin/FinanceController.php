@@ -287,7 +287,6 @@ class FinanceController extends Controller
         ap.unload_amount,
         ap.maintenance_amount,
         ap.courier_amount,
-        a.do_date,
         MONTHNAME(a.do_date) AS activity_month,
         ap.description
         "
