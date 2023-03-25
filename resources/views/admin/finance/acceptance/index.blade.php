@@ -9,7 +9,7 @@
           targets: [0],
           visible: false,
         }, {
-          targets: [0, 1, 2, 3],
+          targets: [0, 1, 2],
           searchable: false,
           orderable: false,
         }],
