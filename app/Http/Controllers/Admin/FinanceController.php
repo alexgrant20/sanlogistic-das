@@ -24,40 +24,6 @@ class FinanceController extends Controller
     $this->middleware('can:finance-payment', ['only' => ['payment', 'pay', 'edit', 'audit', 'reject']]);
   }
 
-  public function approval(Request $request)
-  {
-    $q_status = $request->status;
-
-    $activities = DB::table('activities')
-      ->leftJoin('users', 'activities.user_id', '=', 'users.id')
-      ->leftJoin('people', 'users.person_id', '=', 'people.id')
-      ->leftJoin('activity_statuses', 'activities.activity_status_id', '=', 'activity_statuses.id')
-      ->leftJoin('activity_payments', 'activity_statuses.id', '=', 'activity_payments.activity_status_id')
-      ->whereIn('activity_statuses.status', ['pending', 'rejected'])
-      ->get(
-        [
-          'activities.id',
-          'activities.departure_date',
-          'do_number', 'people.name',
-          'activity_payments.bbm_amount',
-          'activity_payments.toll_amount',
-          'activity_payments.parking_amount',
-          'activity_payments.load_amount',
-          'activity_payments.unload_amount',
-          'activity_payments.maintenance_amount',
-          'activity_statuses.status as status',
-        ]
-      );
-
-    $activities_filtered = empty($q_status) ?  $activities : $activities->filter(fn ($item) => $item->status === $q_status);
-
-    return view('admin.finance.acceptance.index', [
-      'activities' => $activities,
-      'activities_filtered' => $activities_filtered,
-      'title' => 'Acceptance'
-    ]);
-  }
-
   public function approve(Request $request)
   {
     $activityIds = json_decode($request->getContent());
@@ -95,11 +61,11 @@ class FinanceController extends Controller
           ]);
         });
       } catch (Exception $e) {
-        return to_route('admin.finances.approval')
+        return to_route('admin.activities.approval')
           ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'approve'));
       }
     }
-    return to_route('admin.finances.approval')
+    return to_route('admin.activities.approval')
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'approved'));
   }
 
@@ -107,19 +73,19 @@ class FinanceController extends Controller
   {
     $userIds = json_decode($request->getContent());
 
-    $activities = DB::table('activities')
-      ->leftJoin('activity_statuses', 'activities.activity_status_id', '=', 'activity_statuses.id')
-      ->leftJoin('activity_payments', 'activity_statuses.id', '=', 'activity_payments.activity_status_id')
-      ->whereIn('user_id', $userIds)
+    $activities = DB::table('activities AS ac')
+      ->join('activity_statuses AS acs', 'acs.id', 'ac.activity_status_id')
+      ->join('activity_payments AS ap', 'ap.activity_status_id', 'acs.id')
+      ->where('acs.status', 'approved')
+      ->whereIn('ac.user_id', $userIds)
       ->get([
-        'activities.id',
+        'ac.id',
         'bbm_amount',
         'parking_amount',
         'toll_amount',
         'load_amount',
         'unload_amount',
         'maintenance_amount',
-
       ]);
 
     foreach ($activities as $activity) {
@@ -141,12 +107,15 @@ class FinanceController extends Controller
           ]);
         });
       } catch (Exception $e) {
-        return to_route('admin.finances.payment')
-          ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'pay'));
+        return response()->json([
+          'error' => 500,
+          'message' => $e->getMessage()
+        ]);
       }
     }
-    return to_route('admin.finances.payment')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'paid'));
+    return response()->json([
+      'success' => 200
+    ]);
   }
 
   public function reject(Request $request)
@@ -162,7 +131,16 @@ class FinanceController extends Controller
       ->where('project_id', '=', $request->project_id)
       ->where('user_id', '=', $request->user_id)
       ->where('status', '=', 'approved')
-      ->get(['activities.id', 'bbm_amount', 'parking_amount', 'toll_amount', 'load_amount', 'unload_amount', 'maintenance_amount']);
+      ->get([
+        'activities.id',
+        'bbm_amount',
+        'parking_amount',
+        'toll_amount',
+        'load_amount',
+        'unload_amount',
+        'maintenance_amount'
+      ]);
+
     try {
       foreach ($activities as $activity) {
         DB::transaction(function () use ($activity) {
@@ -194,10 +172,9 @@ class FinanceController extends Controller
   {
     $activityStatus = $activity->activityStatus->status;
 
-    if ($activityStatus !== 'rejected' && $activityStatus !== 'pending') abort(404);
+    if (!in_array($activityStatus, ['rejected', 'pending'])) abort(404);
 
     return view('admin.finance.acceptance.edit', [
-      'activities' => Activity::status('pending')->get(),
       'importPath' =>  route('admin.finances.export.excel'),
       'title' => 'Acceptance',
       'activity' => $activity,
@@ -221,6 +198,8 @@ class FinanceController extends Controller
         'load_amount' => $request->load_amount,
         'unload_amount' => $request->unload_amount,
         'maintenance_amount' => $request->maintenance_amount,
+        'courier_amount' => $request->courier_amount,
+        'description' => $request->description,
       ]);
     } catch (Exception $e) {
       DB::rollBack();
@@ -230,7 +209,7 @@ class FinanceController extends Controller
     }
     DB::commit();
 
-    return to_route('admin.finances.approval')
+    return to_route('admin.activities.approval')
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'audited'));
   }
 
@@ -248,6 +227,7 @@ class FinanceController extends Controller
       ->selectRaw("SUM(activity_payments.load_amount) total_load")
       ->selectRaw("SUM(activity_payments.unload_amount) total_unload")
       ->selectRaw("SUM(activity_payments.maintenance_amount) total_maintenance")
+      ->selectRaw("SUM(activity_payments.courier_amount) total_courier")
       ->selectRaw("projects.name as project_name, projects.id as project_id, people.name as person_name, activities.user_id as user_id,
       activities.project_id as project_id, activity_statuses.status as status")
       ->groupBy('activities.project_id')
@@ -283,35 +263,82 @@ class FinanceController extends Controller
     ]);
 
     $params = $request->input('ids');
-    $startDate = $request->input('start_date');
-    $endDate = $request->input('end_date');
 
     $ids = preg_split("/[,]/", $params);
-    $data = DB::table('activities')
-      ->leftJoin('projects', 'activities.project_id', '=', 'projects.id')
-      ->leftJoin('users', 'activities.user_id', '=', 'users.id')
-      ->leftJoin('people', 'users.person_id', '=', 'people.id')
-      ->leftJoin('activity_statuses', 'activities.activity_status_id', '=', 'activity_statuses.id')
-      ->leftJoin('activity_payments', 'activity_statuses.id', '=', 'activity_payments.activity_status_id')
-      ->selectRaw("SUM(activity_payments.bbm_amount) total_bbm")
-      ->selectRaw("SUM(activity_payments.toll_amount) total_toll")
-      ->selectRaw("SUM(activity_payments.parking_amount) total_park")
-      ->selectRaw("SUM(activity_payments.load_amount) total_load")
-      ->selectRaw("SUM(activity_payments.unload_amount) total_unload")
-      ->selectRaw("SUM(activity_payments.maintenance_amount) total_maintenance")
-      ->selectRaw("projects.name as project_name, people.name as person_name, activities.user_id as user_id,
-    activities.project_id as project_id, activity_statuses.status as status")
-      ->groupBy('user_id')
-      ->orderByDesc('activity_payments.id')
-      ->where('activity_statuses.status', '=', 'approved')
-      ->where('activities.project_id', '=', $request->project_id)
-      ->whereBetween('activities.created_at', array($startDate, $endDate))
+
+    $data = DB::table('activities AS a')
+      ->leftJoin('projects AS pro', 'a.project_id', '=', 'pro.id')
+      ->leftJoin('users AS u', 'a.user_id', '=', 'u.id')
+      ->leftJoin('people AS peo', 'u.person_id', '=', 'peo.id')
+      ->leftJoin('activity_statuses AS as', 'a.activity_status_id', '=', 'as.id')
+      ->leftJoin('activity_payments AS ap', 'as.id', '=', 'ap.activity_status_id')
+      ->selectRaw(
+        "
+        pro.name as project_name,
+        peo.name as person_name,
+        a.user_id as user_id,
+        a.project_id as project_id,
+        as.status as status,
+        do_date,
+        ap.bbm_amount,
+        ap.toll_amount,
+        ap.parking_amount,
+        ap.load_amount,
+        ap.unload_amount,
+        ap.maintenance_amount,
+        ap.courier_amount,
+        a.do_date,
+        MONTHNAME(a.do_date) AS activity_month,
+        ap.description
+        "
+      )
+      ->orderBy('peo.name')
+      ->where('as.status', 'approved')
+      ->where('a.project_id', $request->project_id)
       ->get();
+
+    $projectName = $data[0]->project_name;
+
+    $groupedByMonth = $data->groupBy('activity_month')->map(function ($item) {
+      return $item->groupBy('person_name')->map(function ($item) {
+        return collect([
+          'total_bbm' => $item->sum('bbm_amount'),
+          'total_toll' => $item->sum('toll_amount'),
+          'total_park' => $item->sum('parking_amount'),
+          'total_load_unload' => $item->sum('load_amount') + $item->sum('unload_amount'),
+          'total_maintenance' => $item->sum('maintenance_amount'),
+          'total_courier' => $item->sum('courier_amount'),
+          'description' => $item->whereNotNull('description')->pluck('description'),
+        ]);
+      });
+    });
+
+    $subtotal = $groupedByMonth->map(function ($data) {
+      return $data->pipe(function ($data) {
+        return collect([
+          'subtotal_bbm' => $data->sum('total_bbm'),
+          'subtotal_toll' => $data->sum('total_toll'),
+          'subtotal_park' => $data->sum('total_park'),
+          'subtotal_load_unload' => $data->sum('total_load_unload'),
+          'subtotal_maintenance' => $data->sum('total_maintenance'),
+          'subtotal_courier' => $data->sum('total_courier')
+        ]);
+      });
+    });
+
+    $summaryTotal = $subtotal->map(function ($item) {
+      return $item->get('subtotal_bbm') +
+        $item->get('subtotal_toll') +
+        $item->get('subtotal_park') +
+        $item->get('subtotal_load_unload') +
+        $item->get('subtotal_maintenance') +
+        $item->get('subtotal_courier');
+    });
 
     if ($data->isEmpty()) return back()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'No Data Found!'));
 
-    $pdf = Pdf::loadView('pdf.finance', compact('data'));
+    $pdf = Pdf::loadView('pdf.finance', compact('groupedByMonth', 'subtotal', 'summaryTotal', 'projectName'));
 
-    return  $pdf->download('Finance-' .  now()->timestamp . '.pdf');
+    return $pdf->download('Finance-' .  now()->timestamp . '.pdf');
   }
 }

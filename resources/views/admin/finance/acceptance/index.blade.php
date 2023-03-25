@@ -117,12 +117,12 @@
         <x-summary-box summaryTitle="Pending"
           summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'pending')->count() }}"
           icon="bi bi-journal-medical" id="total-pending-activity"
-          link="{{ route('admin.finances.approval') . '?status=pending' }}" :active="Request::getQueryString() === 'status=pending' ? true : false" />
+          link="{{ route('admin.activities.approval') . '?status=pending' }}" :active="Request::getQueryString() === 'status=pending' ? true : false" />
 
         <x-summary-box summaryTitle="Rejected"
           summaryTotal="{{ $activities->filter(fn($item) => $item->status === 'rejected')->count() }}"
           icon="bi bi-journal-x" id="total-rejected-activity"
-          link="{{ route('admin.finances.approval') . '?status=rejected' }}" :active="Request::getQueryString() === 'status=rejected' ? true : false" />
+          link="{{ route('admin.activities.approval') . '?status=rejected' }}" :active="Request::getQueryString() === 'status=rejected' ? true : false" />
       </div>
       <h4 class="text-primary fw-bold">Action</h4>
       <hr>
@@ -138,7 +138,7 @@
             <tr class="header">
               <th>ID</th>
               <th></th>
-              <th><input class="form-check-input" type="checkbox" onclick="checkAll(this, 'checkbox')"></th>
+              {{-- <th><input class="form-check-input" type="checkbox" onclick="checkAll(this, 'checkbox')"></th> --}}
               <th></th>
               <th>Tanggal</th>
               <th>Nomor DO</th>
@@ -157,12 +157,12 @@
               <tr class="my-auto">
                 <td>{{ $activity->id }}</td>
                 <td></td>
-                <td>
+                {{-- <td>
                   <input type="checkbox" class="form-check-input checkbox">
-                </td>
+                </td> --}}
                 <td>
                   <a href="{{ route('admin.finances.approval.edit', $activity->id) }}" class="badge bg-primary fs-6">
-                    <i class="bi bi-currency-dollar"></i>
+                    Detail
                   </a>
                 </td>
                 <td>{{ $activity->departure_date }}</td>

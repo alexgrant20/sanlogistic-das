@@ -16,9 +16,16 @@
         {{-- Activity --}}
         <x-ui.menu-item :backgroundColor="$activityBg" :icon="$activityIcon" :label="__($activityLabel)" :description="$activityDesc" :link="$activityLink" />
 
+
         {{-- Location --}}
         <x-ui.menu-item backgroundColor="bg-purplish" icon="bi bi-map" :label="__('Location')" description="All delivery locations"
           :link="route('driver.menu.location')" />
+
+        @if ($activityId)
+          <x-ui.menu-item backgroundColor="bg-primary" icon="fa-solid fa-motorcycle" :label="__('Public Transport')"
+            description="Only use if using public transport" :link="route('driver.activity.create-gojek')" />
+        @endif
+        {{-- Location --}}
 
         {{-- Finance --}}
         <x-ui.menu-item backgroundColor="bg-darkGreen" icon="bi bi-cash-coin" :label="__('Finance')"
@@ -36,6 +43,7 @@
         <x-ui.menu-item backgroundColor="bg-brown" icon="fa-solid fa-timeline" :label="__('View Checklist')"
           description="View your checklist history" :link="route('driver.checklists.index')" />
       @endcan
+
     </div>
   </section>
 

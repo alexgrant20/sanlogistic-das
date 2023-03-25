@@ -26,6 +26,8 @@
 
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
 
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
   @yield('headCSS')
 
   @yield('headJS')
@@ -60,24 +62,51 @@
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
   <script>
-    @if (Session::has('message'))
+    $(document).ready(function() {
+      $('.select2').select2({
+        width: 'resolve'
+      });
+    });
+
+    @if ($message = Session::has('message'))
       var type = "{{ Session::get('alert-type', 'info') }}"
       switch (type) {
         case 'info':
-          toastr.info(" {{ Session::get('message') }} ");
+          toastr.info(" {{ $message }} ");
           break;
         case 'success':
-          toastr.success(" {{ Session::get('message') }} ");
+          toastr.success(" {{ $message }} ");
           break;
         case 'warning':
-          toastr.warning(" {{ Session::get('message') }} ");
+          toastr.warning(" {{ $message }} ");
           break;
         case 'error':
-          toastr.error(" {{ Session::get('message') }} ");
+          toastr.error(" {{ $message }} ");
           break;
       }
     @endif
   </script>
+
+
+
+  @if ($message = Session::get('success-swal'))
+    <script>
+      swal("Success", '{{ $message }}', "success");
+    </script>
+  @endif
+
+  @if ($message = Session::get('error-swal'))
+    <script>
+      swal("Failed", '{{ $message }}', "error");
+    </script>
+  @endif
+
+  @if ($message = Session::get('warning-swal'))
+    <script>
+      swal("Warning", '{{ $message }}', "warning");
+    </script>
+  @endif
+
   <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
   <script src="https://kit.fontawesome.com/2d78a8b052.js" crossorigin="anonymous"></script>

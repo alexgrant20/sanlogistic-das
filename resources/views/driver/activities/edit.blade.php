@@ -116,20 +116,22 @@
           <hr>
           <div class="row g-3">
             <div class="col-md-6">
-              <label for="arrival_id" class="form-label fs-5 text-primary">Lokasi Tujuan</label>
-              <select id="arrival_id" name="arrival_id"
-                class="form-dark form-select form-select-lg @error('arrival_id') is-invalid @enderror">
+              <label for="arrival_location_id" class="form-label fs-5 text-primary">Lokasi Tujuan</label>
+              <select id="arrival_location_id" name="arrival_location_id"
+                class="form-dark form-select form-select-lg @error('arrival_location_id') is-invalid @enderror">
                 @foreach ($arrival_addresses as $arrival_address)
-                  @if ($arrival_address->address->id == old('arrival_id', $activity->arrival_location_id))
-                    <option value="{{ $arrival_address->address->id }}" selected>{{ $arrival_address->address->name }}
+                  @if ($arrival_address->address->id == old('arrival_location_id', $activity->arrival_location_id))
+                    <option value="{{ $arrival_address->address->id }}" selected>
+                      {{ $arrival_address->address->name }}
                     </option>
                   @else
-                    <option value="{{ $arrival_address->address->id }}">{{ $arrival_address->address->name }}</option>
+                    <option value="{{ $arrival_address->address->id }}">{{ $arrival_address->address->name }}
+                    </option>
                   @endif
                 @endforeach
               </select>
 
-              @error('arrival_id')
+              @error('arrival_location_id')
                 <div class="invalid-feedback d-block">
                   {{ $message }}
                 </div>
@@ -238,7 +240,7 @@
 @section('footJS')
   <script>
     $('#modal-opener').click(function() {
-      const arrival_name = $('#arrival_id').find(':selected').text();
+      const arrival_name = $('#arrival_location_id').find(':selected').text();
       const departureOdo = Number($('#departure_odo').val());
       const arrivalOdo = Number($('#arrival_odo').val());
       const distance = arrivalOdo - departureOdo;

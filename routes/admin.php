@@ -63,9 +63,12 @@ Route::prefix('/admin')->name('admin.')->middleware('auth', 'can:access-admin-pa
    * ACTIVITY
    */
   Route::controller(ActivityController::class)->prefix('/activities')->name('activities.')->group(function () {
-    Route::get('/export/excel', 'exportExcel')->name('export.excel');
+    Route::post('/export/excel', 'exportExcel')->name('export.excel');
     Route::post('/import/excel', 'importExcel')->name('import.excel');
     Route::get('/showLog/{activity:id}', 'showLog')->name('logs');
+    Route::get('/list/{status?}', 'getListIndex')->name('list');
+    Route::post('/cancel', 'cancel')->name('cancel');
+    Route::get('/approval', 'approval')->name('approval');
   });
 
   Route::resource('/activities', ActivityController::class)->except('show', 'destroy');
@@ -146,7 +149,6 @@ Route::prefix('/admin')->name('admin.')->middleware('auth', 'can:access-admin-pa
    * FINANCE
    */
   Route::controller(FinanceController::class)->prefix('/finances')->name('finances.')->group(function () {
-    Route::get('/approval', 'approval')->name('approval');
     Route::post('/approve', 'approve')->name('approve');
     Route::get('/payment', 'payment')->name('payment');
     Route::post('/pay', 'pay')->name('pay');

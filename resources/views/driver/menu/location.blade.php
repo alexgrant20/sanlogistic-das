@@ -3,7 +3,7 @@
 @section('content')
   <section>
     <label for="address" class="form-label fs-5 text-primary">Pilih Lokasi</label>
-    <select id="address" name="address" class="form-dark form-select form-select-lg mb-3">
+    <select id="address" name="address" class="form-dark form-select form-select-lg mb-3 select2">
       <option value="">Select Address</option>
       @foreach ($addresses as $address)
         {{-- TO-DO: Change to current activity destination address --}}

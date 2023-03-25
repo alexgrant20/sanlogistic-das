@@ -22,6 +22,7 @@ class UpdateActivityCostRequest extends FormRequest
       'maintenance_amount' =>  convertMoneyInt($this->get('maintenance_amount')),
       'load_amount' =>  convertMoneyInt($this->get('load_amount')),
       'unload_amount' =>  convertMoneyInt($this->get('unload_amount')),
+      'courier_amount' =>  convertMoneyInt($this->get('courier_amount')),
     ]);
   }
 
@@ -34,6 +35,8 @@ class UpdateActivityCostRequest extends FormRequest
       'load_amount' => 'nullable',
       'unload_amount' => 'nullable',
       'parking_amount' => 'nullable',
+      'courier_amount' => 'nullable',
+      'description' => 'nullable',
     ];
   }
 }

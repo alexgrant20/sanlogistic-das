@@ -11,6 +11,8 @@ Route::prefix('driver')->name('driver.')->middleware('auth')->group(function () 
 
   // Route::get('/activities/create', \App\Http\Livewire\Driver\Activity\Create::class)->name('activity.create');
 
+  Route::get('/activities/gojek', [ActivityController::class, 'createGojek'])->name('activity.create-gojek');
+  Route::post('/activities/gojek', [ActivityController::class, 'storeGojek'])->name('activity.store-gojek');
   Route::resource('/activities', ActivityController::class, [
     'names' => [
       'index' => 'activity.index',
