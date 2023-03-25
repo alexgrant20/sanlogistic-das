@@ -445,6 +445,7 @@ class ActivityController extends Controller
   public function storeGojek(Request $request)
   {
     $departureLocationId = null;
+    $currentUser = auth()->user();
 
     $request->validate([
       'arrival_location_id' => 'required',
@@ -459,23 +460,21 @@ class ActivityController extends Controller
 
     $d_name = strtoupper(Address::find($departureLocationId)->addressType->name);
     $a_name = strtoupper(Address::find($request->arrival_location_id)->addressType->name);
-    $totalCustTrip = auth()->user()->driver->total_cust_trip;
+    $totalCustTrip = $currentUser->driver->total_cust_trip;
 
     $activityType = null;
 
     DB::beginTransaction();
 
     $activity = Activity::create([
-      'user_id' => auth()->user()->id,
+      'user_id' => $currentUser->id,
       'departure_location_id' => $departureLocationId,
       'arrival_location_id' => $request->arrival_location_id,
+      'project_id' => $currentUser->person->project->id,
+      'do_number' => 'Public Transport',
     ]);
 
-    $driver = Driver::where('user_id', auth()->user()->id)->first();
-
-    $driverPayload = [
-      'last_activity_id' => $activity->id
-    ];
+    $driver = Driver::where('user_id', $currentUser->id)->first();
 
     try {
       switch ($a_name) {
