@@ -472,6 +472,7 @@ class ActivityController extends Controller
       'arrival_location_id' => $request->arrival_location_id,
       'project_id' => $currentUser->person->project->id,
       'do_number' => 'Public Transport',
+      'do_date' => now(),
     ]);
 
     $driver = Driver::where('user_id', $currentUser->id)->first();
