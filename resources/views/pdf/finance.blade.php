@@ -122,14 +122,14 @@
       <table>
         <thead>
           <tr>
-            <th>Nama Pengendara</th>
-            <th>BBM</th>
-            <th>Toll</th>
-            <th>Park</th>
-            <th>Courier</th>
-            <th>Un/Load</th>
-            <th>Maintenance</th>
-            <th>Total</th>
+            <th style="width: 25%">Nama Pengendara</th>
+            <th style="width: 10%">BBM</th>
+            <th style="width: 10%">Toll</th>
+            <th style="width: 10%">Park</th>
+            <th style="width: 10%">Courier</th>
+            <th style="width: 10%">Un/Load</th>
+            <th style="width: 10%">Maintenance</th>
+            <th style="width: 15%">Total</th>
           </tr>
         </thead>
         <tbody>
