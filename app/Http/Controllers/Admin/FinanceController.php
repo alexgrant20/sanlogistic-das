@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class FinanceController extends Controller
 {
@@ -288,7 +289,8 @@ class FinanceController extends Controller
         ap.maintenance_amount,
         ap.courier_amount,
         MONTHNAME(a.do_date) AS activity_month,
-        ap.description
+        ap.description,
+        departure_date
         "
       )
       ->orderBy('peo.name')
@@ -299,21 +301,25 @@ class FinanceController extends Controller
     $projectName = $data[0]->project_name;
 
     $groupedByMonth = $data->groupBy('activity_month')->map(function ($item) {
-      return $item->groupBy('person_name')->map(function ($item) {
-        return collect([
-          'total_bbm' => $item->sum('bbm_amount'),
-          'total_toll' => $item->sum('toll_amount'),
-          'total_park' => $item->sum('parking_amount'),
-          'total_load_unload' => $item->sum('load_amount') + $item->sum('unload_amount'),
-          'total_maintenance' => $item->sum('maintenance_amount'),
-          'total_courier' => $item->sum('courier_amount'),
-          'description' => $item->whereNotNull('description')->pluck('description'),
-        ]);
-      });
+      return [
+        'activitiesGroupedByUser' => $item->groupBy('person_name')->map(function ($item) {
+          return collect([
+            'total_bbm' => $item->sum('bbm_amount'),
+            'total_toll' => $item->sum('toll_amount'),
+            'total_park' => $item->sum('parking_amount'),
+            'total_load_unload' => $item->sum('load_amount') + $item->sum('unload_amount'),
+            'total_maintenance' => $item->sum('maintenance_amount'),
+            'total_courier' => $item->sum('courier_amount'),
+            'description' => $item->whereNotNull('description')->pluck('description'),
+          ]);
+        }),
+        'min_date' => date('d', strtotime($item->min('departure_date'))),
+        'max_date' => date('d M Y', strtotime($item->max('departure_date'))),
+      ];
     });
-
+    
     $subtotal = $groupedByMonth->map(function ($data) {
-      return $data->pipe(function ($data) {
+      return $data['activitiesGroupedByUser']->pipe(function ($data) {
         return collect([
           'subtotal_bbm' => $data->sum('total_bbm'),
           'subtotal_toll' => $data->sum('total_toll'),
@@ -324,6 +330,7 @@ class FinanceController extends Controller
         ]);
       });
     });
+
 
     $summaryTotal = $subtotal->map(function ($item) {
       return $item->get('subtotal_bbm') +

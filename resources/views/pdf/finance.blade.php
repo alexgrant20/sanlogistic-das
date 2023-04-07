@@ -98,7 +98,7 @@
       font-weight: bold
     }
   </style>
-  <title>Address</title>
+  <title>Activity Submission</title>
 </head>
 
 <body>
@@ -106,19 +106,23 @@
     $total = 0;
   @endphp
 
+  @foreach ($groupedByMonth as $month => $data)
   <header>
-    <h1>
+  <h1>
       <div>Project {{ $projectName }}</div>
       <div>Periode {{ now()->toFormattedDateString() }}</div>
-    </h1>
+  </h1>
   </header>
 
   <main class="mt-5">
-    @foreach ($groupedByMonth as $month => $groupedByUser)
+  
       @php
         $activityDescriptions = [];
       @endphp
+
+
       <h2>Periode Bulan {{ $month }}</h2>
+      <h3>Pengiriman {{ $data['min_date'] }} - {{ $data['max_date'] }} </h3>
       <table>
         <thead>
           <tr>
@@ -133,7 +137,7 @@
           </tr>
         </thead>
         <tbody>
-          @foreach ($groupedByUser as $personName => $activity)
+          @foreach ($data['activitiesGroupedByUser'] as $personName => $activity)
             @php
               if ($activity->get('description')->isNotEmpty()) {
                   $activityDescriptions[$personName] = $activity->get('description');
@@ -179,7 +183,7 @@
           </div>
         @endforeach
       @endif
-    @endforeach
+ 
     {{--
     <div class="summary">
       <strong>Total Pengeluaran:</strong> @money($total)
@@ -187,7 +191,7 @@
   </main>
 
   <footer>
-    <div class="sign">
+  <div class="sign">
       <div class="sign__box">
         <div>Prepared by</div>
         <div class="mt-5 text-underline">{{ auth()->user()->person->name }}</div>
@@ -204,8 +208,12 @@
         <div>Head Fin & Acc</div>
       </div>
     </div>
-  </footer>
 
+  </footer>
+  @if($loop->first)
+    <div style="page-break-before:always">&nbsp;</div> 
+  @endif
+ @endforeach
 </body>
 
 </html>
