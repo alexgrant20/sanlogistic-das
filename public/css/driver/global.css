@@ -151,7 +151,7 @@ input:focus {
   height: 26px;
   border-radius: 15px;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.4);
-  background: var(--gray);
+  background: var(--pink);
   transition: all 0.3s;
 }
 
