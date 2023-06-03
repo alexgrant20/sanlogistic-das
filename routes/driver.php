@@ -1,18 +1,14 @@
 <?php
 
 use App\Http\Controllers\Driver\ActivityController;
-use App\Http\Controllers\Driver\AddressController;
 use App\Http\Controllers\Driver\ChecklistController;
 use App\Http\Controllers\Driver\MenuController;
-use App\Http\Controllers\Driver\VehicleController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('driver')->name('driver.')->middleware('auth')->group(function () {
 
-  // Route::get('/activities/create', \App\Http\Livewire\Driver\Activity\Create::class)->name('activity.create');
-
-  Route::get('/activities/gojek', [ActivityController::class, 'createGojek'])->name('activity.create-gojek');
-  Route::post('/activities/gojek', [ActivityController::class, 'storeGojek'])->name('activity.store-gojek');
+  Route::get('/activities/public-transport', [ActivityController::class, 'createPublicTransport'])->name('activity.create-public-transport');
+  Route::post('/activities/public-transport', [ActivityController::class, 'storePublicTransport'])->name('activity.store-public-transport');
   Route::resource('/activities', ActivityController::class, [
     'names' => [
       'index' => 'activity.index',
@@ -30,13 +26,6 @@ Route::prefix('driver')->name('driver.')->middleware('auth')->group(function () 
     Route::get('/locations/{id?}', 'location')->name('location');
     Route::get('/last-statuses/{vehicleId}', 'getChecklistLastStatus')->name('lastStatus.get');
   });
-
-  // Route::controller(ChecklistController::class)->name('checklist.')->group(function () {
-  //   Route::get('/checklists', 'index')->name('index');
-  //   Route::get('/checklists/create', 'create')->name('create');
-  //   Route::post('/checklists', 'store')->name('store');
-  //   Route::post('/checklist', 'show')->name('show');
-  // });
 
   Route::resource('/checklists', ChecklistController::class);
 });

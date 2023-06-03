@@ -33,4 +33,17 @@ class StoreActivityRequest extends FormRequest
       'departure_location_id' => 'required|integer',
     ];
   }
+
+  public function attributes()
+  {
+    return [
+      'do_number' => 'Nomor DO',
+      'arrival_location_id' => 'Lokasi Awal',
+      'vehicle_id' => 'Kendaraan',
+      'do_image' => 'Gambar DO',
+      'departure_odo_image' => 'Gambar ODO',
+      'departure_odo' => 'Odometer Awal',
+      'departure_location_id' => 'Lokasi Akhir',
+    ];
+  }
 }

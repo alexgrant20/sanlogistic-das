@@ -8,14 +8,12 @@ use App\Http\Requests\Admin\UpdateActivityCostRequest;
 use App\Models\Activity;
 use App\Models\ActivityPayment;
 use App\Models\ActivityStatus;
-use App\Models\Project;
 use App\Transaction\Constants\NotifactionTypeConstant;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 
 class FinanceController extends Controller
 {
@@ -317,7 +315,7 @@ class FinanceController extends Controller
         'max_date' => date('d M Y', strtotime($item->max('departure_date'))),
       ];
     });
-    
+
     $subtotal = $groupedByMonth->map(function ($data) {
       return $data['activitiesGroupedByUser']->pipe(function ($data) {
         return collect([

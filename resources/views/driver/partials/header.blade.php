@@ -11,7 +11,7 @@
     @include('driver.partials.sidebar')
     {{-- @endif --}}
     <span class="fs-4 fw-bold {{ Request::is('/') ? 'text-center' : 'ms-3' }}" style="flex: 1">
-      {{ $title }}
+      @yield('title')
     </span>
   </div>
 </header>

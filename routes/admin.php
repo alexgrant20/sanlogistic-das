@@ -81,7 +81,7 @@ Route::prefix('/admin')->name('admin.')->middleware('auth', 'can:access-admin-pa
     Route::post('/import/excel', 'importExcel')->name('import.excel');
   });
 
-  Route::resource('/people', PersonController::class)->except('show', 'destroy');
+  Route::resource('/people', PersonController::class)->except('show');
 
   /**
    * VEHICLE

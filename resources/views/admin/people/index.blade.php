@@ -46,14 +46,24 @@
                         <i class="bi bi-three-dots"></i>
                       </button>
                       <ul class="dropdown-menu">
-                        {{-- IF OTHER MENU EXISTS UNCOMENT THIS --}}
-                        {{-- @can('person-edit') --}}
-                        <li>
-                          <a href="{{ route('admin.people.edit', $person->id) }}"class="dropdown-item">
-                            Edit
-                          </a>
-                        </li>
-                        {{-- @endcan --}}
+                        @can('person-edit')
+                          <li>
+                            <a href="{{ route('admin.people.edit', $person->id) }}"class="dropdown-item">
+                              Edit
+                            </a>
+                          </li>
+                        @endcan
+                        @can('person-soft-delete')
+                          <li>
+                            <form action="{{ route('admin.people.destroy', $person->id) }}" method="POST">
+                              @method('DELETE')
+                              @csrf
+                              <button class="dropdown-item">
+                                Delete
+                              </button>
+                            </form>
+                          </li>
+                        @endcan
                       </ul>
                     </div>
                   @endcan

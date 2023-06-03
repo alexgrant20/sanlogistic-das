@@ -5,9 +5,6 @@ use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Str;
 
-use function PHPUnit\Framework\isNan;
-use function PHPUnit\Framework\isNull;
-
 function convertMoneyInt($money)
 {
   return preg_replace("/[^0-9]/", "", $money);
@@ -27,6 +24,8 @@ function getAllPath($image, $mainIdentifier, $timestamp, $type)
 
 function uploadImages($images, $mainIdentifier, $timestamp)
 {
+  $mainIdentifier = str_replace(' ', '_', strtolower(trim($mainIdentifier)));
+
   $arayOfPath = [];
   foreach ($images as $key => $image) {
     $type =  Str::before($key, '_image');
@@ -37,6 +36,7 @@ function uploadImages($images, $mainIdentifier, $timestamp)
     if (!File::isDirectory("storage/{$type}-images")) {
       File::makeDirectory("storage/{$type}-images", 0777, true, true);
     }
+
 
     // compress & saving image
     $img = Image::make($tempPath);

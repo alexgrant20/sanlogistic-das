@@ -35,4 +35,19 @@ class UpdateActivityRequest extends FormRequest
       'parking_image' => 'required_unless:parking_amount,0|prohibited_if:parking_amount, 0|image|mimes:png,jpg,jpeg',
     ];
   }
+
+  public function attributes()
+  {
+    return [
+      'arrival_location_id' => 'Lokasi Tujuan',
+      'arrival_odo' => 'Odometer Akhir',
+      'arrival_odo_image' => 'Gambar ODO',
+      'bbm_amount' => 'Jumlah Pembelian BBM',
+      'toll_amount' => 'Biaya Toll',
+      'parking_amount' => 'Biaya Parkir',
+      'bbm_image' => 'Bukti Pembelian BBM',
+      'toll_image' => 'Bukti Pembayaran Toll',
+      'parking_image' => 'Bukti Pembayaran Parkir',
+    ];
+  }
 }

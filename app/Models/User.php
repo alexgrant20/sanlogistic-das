@@ -4,12 +4,13 @@ namespace App\Models;
 
 use App\Blameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-  use HasFactory, Blameable, HasRoles;
+  use HasFactory, Blameable, HasRoles, SoftDeletes;
 
   protected $guarded = [
     'id'
@@ -24,12 +25,12 @@ class User extends Authenticatable
     return $this->belongsTo(Person::class);
   }
 
-  public function activities()
+  public function activity()
   {
     return $this->hasMany(Activity::class);
   }
 
-  public function Driver()
+  public function driver()
   {
     return $this->hasOne(Driver::class);
   }

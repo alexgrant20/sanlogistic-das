@@ -1,10 +1,12 @@
 @extends('driver.layouts.main')
 
+@section('title', 'Finalisasi Aktivitas')
+
 @section('content')
   <x-modal id="assure-modal" size="modal-lg">
     <x-slot:body>
       <div>
-        <p class="fs-2 fw-bold text-center">Summary</p>
+        <p class="fs-2 fw-bold text-center">Ringkasan Perjalanan</p>
         <div class="row g-4 mb-5">
           <div class="col-xl-6">
             <div class="d-flex align-items-center p-2 gap-3 rounded" style="background-color: #495057;">
@@ -72,8 +74,8 @@
       <div>
       </div>
       <div class="d-grid gap-2 w-100">
-        <button type="submit" class="btn btn-lg btn-primary" id="submit">{{ __('End Activity') }}</button>
-        <button type="button" class="btn btn-lg" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+        <button type="submit" class="btn btn-lg btn-primary" id="submit">Kirim</button>
+        <button type="button" class="btn btn-lg" data-bs-dismiss="modal">Batal</button>
       </div>
     </x-slot:body>
   </x-modal>
@@ -99,7 +101,7 @@
                 class="form-control form-control-lg form-dark" disabled>
             </div>
             <div class="col-md-3">
-              <label for="license_plate" class="form-label fs-5 text-primary">Plat Nomer</label>
+              <label for="license_plate" class="form-label fs-5 text-primary">Nomor Kendaraan</label>
               <input type="text" id="license_plate" value="{{ $activity->vehicle->license_plate }}"
                 class="form-control form-control-lg form-dark" disabled>
             </div>
@@ -228,7 +230,7 @@
         <div class="d-grid order-last align-items-center">
           <button type="button" id="modal-opener" class="btn btn-lg btn-primary" data-bs-toggle="modal"
             data-bs-target="#assure-modal">
-            {{ __('Submit') }}
+            Kirim
           </button>
         </div>
       </div>

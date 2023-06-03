@@ -211,4 +211,17 @@ class PersonController extends Controller
     $ids = preg_split("/[,]/", $params);
     return Excel::download(new PersonExport($ids), "people_export_{$timestamp}.xlsx");
   }
+
+  public function destroy(Person $person)
+  {
+    DB::beginTransaction();
+
+    try {
+      $person->user->delete();
+    } catch (\Exception) {
+      DB::rollBack();
+    }
+
+    DB::commit();
+  }
 }

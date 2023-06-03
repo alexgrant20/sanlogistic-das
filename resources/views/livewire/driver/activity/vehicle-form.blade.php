@@ -1,6 +1,6 @@
 <div class="col-xl-12 row gy-5">
   <div class="col-xl-4">
-    <h4>Choose Vehicle</h4>
+    <h4>Pilih Kendaraan</h4>
     <hr>
     <label for="vehicle_id" class="form-label fs-5 text-primary">Pilih Kendaraan</label>
     <select id="vehicle_id" name="vehicle_id"
@@ -19,7 +19,7 @@
   </div>
 
   <div class="col-xl-4">
-    <h4>Vehicle Detail</h4>
+    <h4>Detail Kendaraan</h4>
     <hr>
     <div class="row g-3">
       <input type="hidden" id="departure_location_id" name="departure_location_id"
@@ -38,7 +38,7 @@
   </div>
 
   <div class="col-xl-4">
-    <h4>Data Input</h4>
+    <h4>Masukan Data</h4>
     <hr>
     <div class="row g-3">
       <div class="col-md-6">
