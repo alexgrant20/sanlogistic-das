@@ -296,7 +296,7 @@ class ActivityController extends Controller
 
     $arrivalAddresses =  AddressProject::where([
       ['project_id', $user->person->project_id],
-      ['address_id', '!=', $departureAddress],
+      ['address_id', '!=', $departureAddress->id],
     ])
       ->with('address')
       ->get()
