@@ -122,16 +122,19 @@ class ActivityService
 		return $activity;
 	}
 
-	private function getActivityParentId(Activity $currentActivity, $totalCustTrip)
+	private function getActivityParentId(Activity $currentActivity)
 	{
-		if ($totalCustTrip == 0) return $currentActivity->id;
-
 		$relatedActivity = Activity::where([
 			['user_id', Auth::id()],
-			['id', '!=', auth()->user()->driver->last_activity_id],
-		])->latest()->first();
+			['type', '!=', 'tbd'],
+		])
+			->latest()
+			->first();
 
-		if ($relatedActivity->parent_activity_id) return $relatedActivity->parent_activity_id;
+		if (
+			!in_array($relatedActivity->type, ['return', 'manuver']) &&
+			$relatedActivity->parent_activity_id
+		) return $relatedActivity->parent_activity_id;
 
 		return $currentActivity->id;
 	}
@@ -213,7 +216,7 @@ class ActivityService
 			return false;
 		}
 
-		$addressessType = Address::whereIn('id', [$departureLocationId, 3])
+		$addressessType = Address::whereIn('id', [$departureLocationId, $request->arrival_location_id])
 			->get()
 			->mapWithKeys(function ($address) use ($departureLocationId) {
 				$key = $address->id == $departureLocationId ? 'departure_location' : 'arrival_location';
@@ -236,8 +239,8 @@ class ActivityService
 
 			$activityType = $this->setActivityConfigAndGetType(
 				$activity,
-				$addressessType['departure_location'],
 				$addressessType['arrival_location'],
+				$addressessType['departure_location'],
 				$totalCustTrip
 			);
 
