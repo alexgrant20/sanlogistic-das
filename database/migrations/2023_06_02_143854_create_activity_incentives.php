@@ -17,10 +17,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('activity_id')->references('id')->on('activities')->restrictOnDelete()->cascadeOnUpdate();
             $table->integer('total_distance');
-            $table->foreignId('trip_type_id')->references('id')->on('trip_types')->restrictOnDelete()->cascadeOnUpdate();
             $table->decimal('incentive');
             $table->decimal('incentive_with_deposit');
-            $table->timestamps();
+            $table->boolean('is_half_trip')->default(false);
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 
