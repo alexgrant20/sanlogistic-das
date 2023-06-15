@@ -2,18 +2,24 @@
 
 namespace App\Services\Driver;
 
+use App\Interface\CompanyInterface;
 use App\Models\Activity;
+use App\Models\ActivityIncentive;
 use App\Models\ActivityPayment;
 use App\Models\ActivityStatus;
 use App\Models\Address;
+use App\Models\IncentiveRate;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
-class ActivityService
+class ActivityService implements CompanyInterface
 {
+	private $needToCaclculateIncentive = false;
+	private $isHalfTrip = false;
+
 	private function setActivityConfigAndGetType($activity, $arrivalType, $departureType, &$totalCustTrip)
 	{
 		$activityType = null;
@@ -37,6 +43,8 @@ class ActivityService
 				break;
 
 			case "STATION":
+				$this->needToCaclculateIncentive = true;
+
 				if ($departureType == "STATION") return 'manuver';
 
 				if ($totalCustTrip != 0) {
@@ -64,7 +72,7 @@ class ActivityService
 		return $activityType;
 	}
 
-	public function getActivityFixedPayload($licensePlate, $activityPayload, $activityFiles, $additionalPayload)
+	private function getActivityFixedPayload($licensePlate, $activityPayload, $activityFiles, $additionalPayload)
 	{
 		['lat' => $lat, 'lon' => $lon, 'loc' => $loc] = get_location_ngt(str_replace(' ', '', $licensePlate));
 
@@ -165,6 +173,7 @@ class ActivityService
 
 			$this->finalizedActivityStep($request, $activity, $fixedPayload, $totalCustTrip);
 		} catch (\Exception $e) {
+			dd($e->getMessage());
 			DB::rollBack();
 			return false;
 		}
@@ -173,7 +182,62 @@ class ActivityService
 		return true;
 	}
 
-	public function finalizedActivityStep($request, $activity, $updatedActivityPayload, $totalCustTrip)
+	private function getTotalDistance($parentActivityId)
+	{
+		$activities = Activity::where('id', $parentActivityId)
+			->orWhere('parent_activity_id', $parentActivityId)
+			->get();
+
+		$totalDistance = 0;
+
+		$halfTripCriteria = [0, $activities->count() - 1];
+
+		$loop = 0;
+
+		$activities->each(function ($activity) use (&$totalDistance, &$loop, $halfTripCriteria) {
+
+			if ($activity->do_number == "PT" && in_array($loop, [0, $halfTripCriteria])) {
+				$this->isHalfTrip = true;
+			}
+
+			if (!in_array(@$activity->vehicle->owner_id, [self::BESTINDO, self::SURYA_ANUGERAH])) {
+				return;
+			}
+
+			$totalDistance += $activity->arrival_odo - $activity->departure_odo;
+
+			$loop++;
+		});
+
+		return $totalDistance;
+	}
+
+	private function getIncentiveType($totalDistance)
+	{
+		if ($this->isHalfTrip) $totalDistance *= 2;
+
+		return IncentiveRate::where('range', '<=', $totalDistance)
+			->latest()
+			->first();
+	}
+
+	private function createActivityIncentiveRate($parentActivityId)
+	{
+		$totalDistance = $this->getTotalDistance($parentActivityId);
+		$incentiveType = $this->getIncentiveType($totalDistance);
+
+		$divider = $this->isHalfTrip ? 2 : 1;
+
+		ActivityIncentive::create([
+			'activity_id' => $parentActivityId,
+			'total_distance' => $totalDistance,
+			'incentive' => $incentiveType->incentive / $divider,
+			'incentive_with_deposit' => $incentiveType->incentive_with_deposit / $divider,
+			'is_half_trip' => $this->isHalfTrip
+		]);
+	}
+
+	private function finalizedActivityStep($request, $activity, $updatedActivityPayload, $totalCustTrip)
 	{
 		$parentActivityId = $this->getActivityParentId($activity, $totalCustTrip);
 
@@ -185,6 +249,10 @@ class ActivityService
 			'status' => 'pending',
 			'activity_id' => $activity->id
 		]);
+
+		if ($this->needToCaclculateIncentive) {
+			$this->createActivityIncentiveRate($parentActivityId);
+		}
 
 		if ($activity->vehicle_id) {
 			$activity->vehicle->update([
