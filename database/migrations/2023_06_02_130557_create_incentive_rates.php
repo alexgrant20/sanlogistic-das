@@ -18,7 +18,8 @@ return new class extends Migration
             $table->integer('range');
             $table->decimal('incentive');
             $table->decimal('incentive_with_deposit');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->softDeletes();
         });
     }
