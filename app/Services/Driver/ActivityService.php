@@ -8,6 +8,7 @@ use App\Models\ActivityIncentive;
 use App\Models\ActivityPayment;
 use App\Models\ActivityStatus;
 use App\Models\Address;
+use App\Models\ErrorLog;
 use App\Models\IncentiveRate;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
@@ -121,8 +122,9 @@ class ActivityService implements CompanyInterface
 			]);
 
 			ActivityStatus::create(['status' => 'draft', 'activity_id' => $activity->id]);
-		} catch (\Exception) {
+		} catch (\Exception $e) {
 			DB::rollBack();
+			ErrorLog::createLog($e);
 			return false;
 		}
 
@@ -173,8 +175,8 @@ class ActivityService implements CompanyInterface
 
 			$this->finalizedActivityStep($request, $activity, $fixedPayload, $totalCustTrip);
 		} catch (\Exception $e) {
-			dd($e->getMessage());
 			DB::rollBack();
+			ErrorLog::createLog($e);
 			return false;
 		}
 
@@ -278,24 +280,20 @@ class ActivityService implements CompanyInterface
 		$user = auth()->user();
 		$driver = $user->driver;
 
-		try {
-			$departureLocationId = Crypt::decryptString($request->departure_location_id);
-		} catch (\Exception $e) {
-			return false;
-		}
-
-		$addressessType = Address::whereIn('id', [$departureLocationId, $request->arrival_location_id])
-			->get()
-			->mapWithKeys(function ($address) use ($departureLocationId) {
-				$key = $address->id == $departureLocationId ? 'departure_location' : 'arrival_location';
-				return [$key => strtoupper($address->addressType->name)];
-			});
-
-		$totalCustTrip = $driver->total_cust_trip;
-
 		DB::beginTransaction();
 
 		try {
+			$departureLocationId = Crypt::decryptString($request->departure_location_id);
+
+			$addressessType = Address::whereIn('id', [$departureLocationId, $request->arrival_location_id])
+				->get()
+				->mapWithKeys(function ($address) use ($departureLocationId) {
+					$key = $address->id == $departureLocationId ? 'departure_location' : 'arrival_location';
+					return [$key => strtoupper($address->addressType->name)];
+				});
+
+			$totalCustTrip = $driver->total_cust_trip;
+
 			$activity = Activity::create([
 				'user_id' => $user->id,
 				'departure_location_id' => $departureLocationId,
@@ -315,6 +313,7 @@ class ActivityService implements CompanyInterface
 			$this->finalizedActivityStep($request, $activity, ['type' => $activityType], $totalCustTrip);
 		} catch (\Exception $e) {
 			DB::rollBack();
+			ErrorLog::createLog($e);
 			return false;
 		}
 
