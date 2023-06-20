@@ -46,20 +46,24 @@ class ActivityService implements CompanyInterface
 			case "STATION":
 				$this->needToCaclculateIncentive = true;
 
-				if ($departureType == "STATION") return 'manuver';
+				if ($departureType == "STATION") {
+					$this->isHalfTrip = true;
+					$activityType = 'manuver';
+				} else {
+					if ($totalCustTrip != 0) {
+						$driver->lastActivity->update([
+							'type' => $totalCustTrip > 1 ? 'mdp-e' : 'sdp'
+						]);
 
-				if ($totalCustTrip != 0) {
-					$driver->lastActivity->update([
-						'type' => $totalCustTrip > 1 ? 'mdp-e' : 'sdp'
-					]);
+						$driver->update([
+							'last_activity_id' => NULL,
+							'total_cust_trip' => 0,
+						]);
+					}
 
-					$driver->update([
-						'last_activity_id' => NULL,
-						'total_cust_trip' => 0,
-					]);
+					$activityType = 'return';
 				}
 
-				$activityType = 'return';
 				break;
 			case "WORKSHOP":
 				$activityType = "maintenance";
@@ -198,7 +202,7 @@ class ActivityService implements CompanyInterface
 
 		$activities->each(function ($activity) use (&$totalDistance, &$loop, $halfTripCriteria) {
 
-			if ($activity->do_number == "PT" && in_array($loop, [0, $halfTripCriteria])) {
+			if (($activity->do_number == "PT" && in_array($loop, [0, $halfTripCriteria]))) {
 				$this->isHalfTrip = true;
 			}
 
