@@ -202,11 +202,14 @@ class ActivityService implements CompanyInterface
 
 		$activities->each(function ($activity) use (&$totalDistance, &$loop, $halfTripCriteria) {
 
-			if (($activity->do_number == "PT" && in_array($loop, [0, $halfTripCriteria]))) {
+			if (($activity->do_number == "PT" && in_array($loop, $halfTripCriteria))) {
 				$this->isHalfTrip = true;
 			}
 
-			if (!in_array(@$activity->vehicle->owner_id, [self::BESTINDO, self::SURYA_ANUGERAH])) {
+			if (
+				in_array(@$activity->vehicle->owner_id, [self::BESTINDO, self::SURYA_ANUGERAH]) &&
+				$activity->type === "maintenance"
+			) {
 				return;
 			}
 
