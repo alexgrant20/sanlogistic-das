@@ -82,8 +82,6 @@
           return;
         }
       });
-
-
     });
   </script>
 @endsection

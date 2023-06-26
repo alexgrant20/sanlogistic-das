@@ -69,6 +69,18 @@
               </div>
             </div>
           </div>
+          <div class="col-xl-6">
+            <div class="d-flex align-items-center p-2 gap-3 rounded" style="background-color: #495057;">
+              <div class="rounded-circle d-flex align-items-center justify-content-center p-2"
+                style="background-color: #212529">
+                <i class="fa-solid fa-gauge text-gray-500" style="width: 30px; height: 30px;"></i>
+              </div>
+              <div class="d-flex flex-column">
+                <span class="fs-5 fw-bold text-ocean-200">Kecepatan</span>
+                <span class="fs-5 text-gray-500 d-flex align-items-center gap-2" id="speed"></span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div>
@@ -249,14 +261,31 @@
       let parking = $('#parking_amount').val();
       let toll = $('#toll_amount').val();
       let bbm = $('#bbm_amount').val();
+      const departureDate = "{{ $activity->departure_date }}";
+
+      const totalTripTimeInHour = (Date.now() - new Date(departureDate).getTime()) / 1000 / 3600;
+      const averageSpeed = Math.round(distance / totalTripTimeInHour);
+      const overspeed = 100;
+      const isOverspeed = averageSpeed > overspeed;
 
       parking = Number(parking.replaceAll('Rp. ', '').replaceAll('.', ''));
-      toll = Number(toll.replaceAll('Rp. ', '').replaceAll('.', ''));
+      toll = Number(toll.replaceAll('Rp. ', '')
+        .replaceAll('.', ''));
       bbm = Number(bbm.replaceAll('Rp. ', '').replaceAll('.', ''));
 
       $('#arrival_name').text(arrival_name.trim());
-      $('#distance').text(distance <= 0 ? 'Value Incorrect' : distance + ' km');
+      $('#distance').text(distance <= 0 ? 'Value Incorrect' : distance +
+        ' km');
       $('#summary_price').text(formatIDR(bbm + toll + parking));
+      $('#speed').removeClass('text-danger text-gray-500');
+      $('#speed').addClass(isOverspeed ? 'text-danger' : 'text-gray-500');
+      $('#speed').text(averageSpeed + ' Km/Jam');
+
+      if (isOverspeed) {
+        $('#speed').append(
+          "<i class='fa-solid fa-circle-exclamation' style='width: 20px; height: 20px;'></i>")
+      }
+
     });
   </script>
   {!! JsValidator::formRequest('App\Http\Requests\Driver\UpdateActivityRequestView', 'form') !!}
