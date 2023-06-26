@@ -305,6 +305,7 @@ class ActivityService implements CompanyInterface
 				'user_id' => $user->id,
 				'departure_location_id' => $departureLocationId,
 				'arrival_location_id' => $request->arrival_location_id,
+				'arrival_date' => now(),
 				'project_id' => $user->person->project->id,
 				'do_number' => 'PT',
 				'do_date' => now(),
