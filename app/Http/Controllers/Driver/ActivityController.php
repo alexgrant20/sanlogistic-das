@@ -61,7 +61,7 @@ class ActivityController extends Controller
   public function create()
   {
     $user = auth()->user();
-    $lastLocation = $this->driverUtility->getLocation();
+    $lastLocation = $this->driverUtility->getLocation($user->driver);
     $projectId = $user->person->project_id;
 
     $vehicles = Vehicle::where('address_id', $lastLocation->id)
@@ -292,7 +292,7 @@ class ActivityController extends Controller
   {
     $user = auth()->user();
 
-    $departureAddress = $this->driverUtility->getLocation();
+    $departureAddress = $this->driverUtility->getLocation($user->driver);
 
     $arrivalAddresses =  AddressProject::where([
       ['project_id', $user->person->project_id],
