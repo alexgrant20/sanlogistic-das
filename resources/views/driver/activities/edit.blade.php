@@ -1,10 +1,12 @@
 @extends('driver.layouts.main')
 
+@section('title', 'Finalisasi Aktivitas')
+
 @section('content')
   <x-modal id="assure-modal" size="modal-lg">
     <x-slot:body>
       <div>
-        <p class="fs-2 fw-bold text-center">Summary</p>
+        <p class="fs-2 fw-bold text-center">Ringkasan Perjalanan</p>
         <div class="row g-4 mb-5">
           <div class="col-xl-6">
             <div class="d-flex align-items-center p-2 gap-3 rounded" style="background-color: #495057;">
@@ -67,13 +69,25 @@
               </div>
             </div>
           </div>
+          <div class="col-xl-6">
+            <div class="d-flex align-items-center p-2 gap-3 rounded" style="background-color: #495057;">
+              <div class="rounded-circle d-flex align-items-center justify-content-center p-2"
+                style="background-color: #212529">
+                <i class="fa-solid fa-gauge text-gray-500" style="width: 30px; height: 30px;"></i>
+              </div>
+              <div class="d-flex flex-column">
+                <span class="fs-5 fw-bold text-ocean-200">Kecepatan</span>
+                <span class="fs-5 text-gray-500 d-flex align-items-center gap-2" id="speed"></span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div>
       </div>
       <div class="d-grid gap-2 w-100">
-        <button type="submit" class="btn btn-lg btn-primary" id="submit">{{ __('End Activity') }}</button>
-        <button type="button" class="btn btn-lg" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+        <button type="submit" class="btn btn-lg btn-primary" id="submit">Kirim</button>
+        <button type="button" class="btn btn-lg" data-bs-dismiss="modal">Batal</button>
       </div>
     </x-slot:body>
   </x-modal>
@@ -99,7 +113,7 @@
                 class="form-control form-control-lg form-dark" disabled>
             </div>
             <div class="col-md-3">
-              <label for="license_plate" class="form-label fs-5 text-primary">Plat Nomer</label>
+              <label for="license_plate" class="form-label fs-5 text-primary">Nomor Kendaraan</label>
               <input type="text" id="license_plate" value="{{ $activity->vehicle->license_plate }}"
                 class="form-control form-control-lg form-dark" disabled>
             </div>
@@ -228,7 +242,7 @@
         <div class="d-grid order-last align-items-center">
           <button type="button" id="modal-opener" class="btn btn-lg btn-primary" data-bs-toggle="modal"
             data-bs-target="#assure-modal">
-            {{ __('Submit') }}
+            Kirim
           </button>
         </div>
       </div>
@@ -247,14 +261,31 @@
       let parking = $('#parking_amount').val();
       let toll = $('#toll_amount').val();
       let bbm = $('#bbm_amount').val();
+      const departureDate = "{{ $activity->departure_date }}";
+
+      const totalTripTimeInHour = (Date.now() - new Date(departureDate).getTime()) / 1000 / 3600;
+      const averageSpeed = Math.round(distance / totalTripTimeInHour);
+      const overspeed = 100;
+      const isOverspeed = averageSpeed > overspeed;
 
       parking = Number(parking.replaceAll('Rp. ', '').replaceAll('.', ''));
-      toll = Number(toll.replaceAll('Rp. ', '').replaceAll('.', ''));
+      toll = Number(toll.replaceAll('Rp. ', '')
+        .replaceAll('.', ''));
       bbm = Number(bbm.replaceAll('Rp. ', '').replaceAll('.', ''));
 
       $('#arrival_name').text(arrival_name.trim());
-      $('#distance').text(distance <= 0 ? 'Value Incorrect' : distance + ' km');
+      $('#distance').text(distance <= 0 ? 'Value Incorrect' : distance +
+        ' km');
       $('#summary_price').text(formatIDR(bbm + toll + parking));
+      $('#speed').removeClass('text-danger text-gray-500');
+      $('#speed').addClass(isOverspeed ? 'text-danger' : 'text-gray-500');
+      $('#speed').text(averageSpeed + ' Km/Jam');
+
+      if (isOverspeed) {
+        $('#speed').append(
+          "<i class='fa-solid fa-circle-exclamation' style='width: 20px; height: 20px;'></i>")
+      }
+
     });
   </script>
   {!! JsValidator::formRequest('App\Http\Requests\Driver\UpdateActivityRequestView', 'form') !!}

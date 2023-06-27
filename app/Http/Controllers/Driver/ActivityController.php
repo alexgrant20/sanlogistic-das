@@ -2,34 +2,32 @@
 
 namespace App\Http\Controllers\Driver;
 
-
 use App\Models\Activity;
-use App\Models\ActivityStatus;
 use App\Models\AddressProject;
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Driver\StoreActivityRequest;
+use App\Http\Requests\Driver\StorePublicTransportActivityRequest;
 use App\Http\Requests\Driver\UpdateActivityRequest;
-use App\Models\ActivityPayment;
-use App\Models\Address;
-use App\Models\Driver;
-use App\Models\User;
 use App\Models\VehicleChecklist;
 use App\Models\VehicleChecklistImage;
 use App\Models\VehicleLastStatus;
+use App\Services\Driver\ActivityService;
 use App\Transaction\Constants\NotifactionTypeConstant;
-use Exception;
+use App\Utilities\DriverUtility;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 
-// TO-DO Make Gate
 class ActivityController extends Controller
 {
+  private $activityService;
+  private $driverUtility;
+
   public function __construct()
   {
+    $this->activityService = new ActivityService();
     $this->middleware('can:activity-create');
+    $this->driverUtility = new DriverUtility();
   }
 
   public function index()
@@ -56,7 +54,6 @@ class ActivityController extends Controller
       ->paginate(6);
 
     return view('driver.activities.index', [
-      'title' => __('Activity History'),
       'activities' => $activities,
     ]);
   }
@@ -64,10 +61,10 @@ class ActivityController extends Controller
   public function create()
   {
     $user = auth()->user();
-    $lastLocationId = $user->activities->sortByDesc('created_at')->first()->arrivalLocation->id ?? 135;
+    $lastLocation = $this->driverUtility->getLocation();
     $projectId = $user->person->project_id;
 
-    $vehicles = Vehicle::where('address_id', $lastLocationId)
+    $vehicles = Vehicle::where('address_id', $lastLocation->id)
       ->orderBy('license_plate')
       ->get();
 
@@ -79,7 +76,6 @@ class ActivityController extends Controller
     $vehicles = $vehicles->whereNotIn('id', $vehicleIdOnDuty);
 
     return view('driver.activities.create', [
-      'title' => 'Create Activity',
       'vehicles' => $vehicles,
       'projectId' => $projectId
     ]);
@@ -87,39 +83,13 @@ class ActivityController extends Controller
 
   public function store(StoreActivityRequest $request)
   {
-    $timestamp = now()->timestamp;
-    $images = collect($request->allFiles());
-    $vehicle = Vehicle::find($request->vehicle_id);
+    $activity = $this->activityService->store($request);
 
-    ['lat' => $lat, 'lon' => $lon, 'loc' => $loc] = get_location_ngt(str_replace(' ', '', $vehicle->license_plate));
-
-    $listOfPath = uploadImages($images, $request->do_number, $timestamp);
-    $data = array_merge(
-      $request->safe()->except(['do_image', 'departure_odo_image']),
-      [
-        'do_date' => now(),
-        'user_id' => auth()->user()->id,
-        'project_id' => $vehicle->project_id,
-        'start_lat' => $lat,
-        'start_lon' => $lon,
-        'start_loc' => $loc,
-      ],
-      $listOfPath
-    );
-
-    try {
-      DB::transaction(function () use ($data, $request) {
-        $activity = Activity::create($data);
-        $activity->vehicle->update([
-          'last_do_number' => $request->do_number,
-          'last_do_date' => now(),
-        ]);
-        ActivityStatus::create(['status' => 'draft', 'activity_id' => $activity->id]);
-        $request->session()->put('activity_id', $activity->id);
-      });
-    } catch (Exception $e) {
+    if (!$activity) {
       return to_route('driver.activity.create')->withInput();
     }
+
+    $request->session()->put('activity_id', $activity->id);
 
     $timestamp = now()->timestamp;
 
@@ -291,15 +261,9 @@ class ActivityController extends Controller
       ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'created'));
   }
 
-  public function show(Activity $activity)
-  {
-    //
-  }
-
   public function edit(Activity $activity)
   {
     return view('driver.activities.edit', [
-      'title' => 'Update Activity',
       'activity' => $activity,
       'arrival_addresses' => AddressProject::where('address_id', '!=', $activity->departure_location_id)
         ->where('project_id', $activity->project_id)
@@ -311,121 +275,24 @@ class ActivityController extends Controller
 
   public function update(UpdateActivityRequest $request, Activity $activity)
   {
-    $driver = auth()->user()->driver;
+    $isUpdated = $this->activityService->update($request, $activity);
 
-    $vehicle = Vehicle::where('id', $activity->vehicle_id)->first();
-    $totalCustTrip = auth()->user()->driver->total_cust_trip;
-
-    $a_name =  strtoupper(Address::find($request->arrival_location_id)->addressType->name);
-    $d_name = strtoupper($activity->departureLocation->addressType->name);
-
-    DB::beginTransaction();
-    try {
-      switch ($a_name) {
-        case "TUJUAN PENGIRIMAN":
-          $totalCustTrip += 1;
-
-          $driver->update([
-            'last_activity_id' => $activity->id,
-            'total_cust_trip' => $totalCustTrip,
-          ]);
-
-          $activityType = "mdp-" . $totalCustTrip;
-          break;
-
-        case "KANTOR UTAMA":
-        case "POOL":
-          $activityType = "pool";
-          break;
-
-        case "STATION":
-          if ($d_name == "STATION") {
-            $activityType = 'manuver';
-          } else {
-
-            $activityType = 'return';
-
-            if ($totalCustTrip == 0) {
-              break;
-            }
-
-            $type = $totalCustTrip > 1 ? 'mdp-e' : 'sdp';
-
-            $driver->lastActivity->update([
-              'type' => $type
-            ]);
-
-            $driver->update([
-              'last_activity_id' => NULL,
-              'total_cust_trip' => 0,
-            ]);
-          }
-          break;
-
-        case "WORKSHOP":
-          $activityType = "maintenance";
-          break;
-
-        case "PKB/SAMSAT":
-          $activityType = "kir";
-          break;
-      }
-
-      ['lat' => $lat, 'lon' => $lon, 'loc' => $loc] = get_location_ngt(str_replace(' ', '', $vehicle->license_plate));
-      $data = $request->safe()->merge(
-        [
-          'end_lat' => $lat,
-          'end_lon' => $lon,
-          'end_loc' => $loc,
-          'type' => $activityType,
-          'arrival_date' => now()
-        ]
-      )->except(
-        ['bbm_image', 'toll_image', 'parking_image', 'arrival_odo_image', 'bbm_amount', 'toll_amount', 'parking_amount']
-      );
-      $images = collect($request->allFiles());
-      $timestamp = now()->timestamp;
-
-      $listOfPath = uploadImages($images, $activity->do_number, $timestamp);
-      $data = array_merge($data, $listOfPath);
-
-      DB::transaction(function () use ($activity, $data, $request) {
-        $activity->update($data);
-
-        $activityStatus = ActivityStatus::create([
-          'status' => 'pending',
-          'activity_id' => $activity->id
-        ]);
-
-        $activity->vehicle->update([
-          'odo' => $request->arrival_odo,
-          'address_id' => $request->arrival_location_id,
-        ]);
-
-        ActivityPayment::create([
-          'activity_status_id' => $activityStatus->id,
-          'bbm_amount' => $request->bbm_amount,
-          'toll_amount' => $request->toll_amount,
-          'parking_amount' => $request->parking_amount,
-        ]);
-      });
-    } catch (Exception $e) {
-      DB::rollBack();
-      return to_route('driver.activity.edit', $activity->id)->withInput();
+    if (!$isUpdated) {
+      return to_route('index')
+        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'finished'));
     }
-    DB::commit();
 
     $request->session()->forget('activity_id');
 
     return to_route('index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'finished'));;
+      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'finished'));
   }
 
-  public function createGojek()
+  public function createPublicTransport()
   {
     $user = auth()->user();
 
-    $departureAddress = auth()->user()->activities->sortByDesc('created_at')->first()->arrivalLocation;
+    $departureAddress = $this->driverUtility->getLocation();
 
     $arrivalAddresses =  AddressProject::where([
       ['project_id', $user->person->project_id],
@@ -435,119 +302,20 @@ class ActivityController extends Controller
       ->get()
       ->sortBy('address.name');
 
-    return view('driver.activities.create-gojek', [
-      'title' => 'Create Activity',
+    return view('driver.activities.create-public-transport', [
       'arrivalAddresses' => $arrivalAddresses,
       'departureAddress' => $departureAddress,
     ]);
   }
 
-  public function storeGojek(Request $request)
+  public function storePublicTransport(StorePublicTransportActivityRequest $request)
   {
-    $departureLocationId = null;
-    $currentUser = auth()->user();
+    $isStored = $this->activityService->storePublicTransport($request);
 
-    $request->validate([
-      'arrival_location_id' => 'required',
-      'departure_location_id' => 'required',
-    ]);
-
-    try {
-      $departureLocationId = Crypt::decryptString($request->departure_location_id);
-    } catch (\Exception $e) {
-      return back()->withInput();
+    if (!$isStored) {
+      return back()->with('error-swal', 'Aktivitas Gagal Dibuat');
     }
 
-    $d_name = strtoupper(Address::find($departureLocationId)->addressType->name);
-    $a_name = strtoupper(Address::find($request->arrival_location_id)->addressType->name);
-    $totalCustTrip = $currentUser->driver->total_cust_trip;
-
-    $activityType = null;
-
-    DB::beginTransaction();
-
-    $activity = Activity::create([
-      'user_id' => $currentUser->id,
-      'departure_location_id' => $departureLocationId,
-      'arrival_location_id' => $request->arrival_location_id,
-      'project_id' => $currentUser->person->project->id,
-      'do_number' => 'Public Transport',
-      'do_date' => now(),
-    ]);
-
-    $driver = Driver::where('user_id', $currentUser->id)->first();
-
-    try {
-      switch ($a_name) {
-        case "TUJUAN PENGIRIMAN":
-          $totalCustTrip += 1;
-
-          $driver->update([
-            'last_activity_id' => $activity->id,
-            'total_cust_trip' => $totalCustTrip,
-          ]);
-
-          $activityType = "mdp-" . $totalCustTrip;
-          break;
-
-        case "KANTOR UTAMA":
-        case "POOL":
-          $activityType = "pool";
-          break;
-
-        case "STATION":
-          if ($d_name == "STATION") {
-            $activityType = 'manuver';
-          } else {
-
-            $activityType = 'return';
-
-            if ($totalCustTrip == 0) {
-              break;
-            }
-
-            $type = $totalCustTrip > 1 ? 'mdp-e' : 'sdp';
-
-            $driver->lastActivity->update([
-              'type' => $type
-            ]);
-
-            $driver->update([
-              'total_cust_trip' => 0,
-              'last_activity_id' => NULL
-            ]);
-          }
-          break;
-
-        case "WORKSHOP":
-          $activityType = "maintenance";
-          break;
-
-        case "PKB/SAMSAT":
-          $activityType = "kir";
-          break;
-      }
-
-      $activity->update([
-        'type' => $activityType,
-      ]);
-
-      $activityStatus = ActivityStatus::create([
-        'status' => 'pending',
-        'activity_id' => $activity->id
-      ]);
-
-      ActivityPayment::create([
-        'activity_status_id' => $activityStatus->id,
-        'bbm_amount' => 0,
-        'toll_amount' => 0,
-        'parking_amount' => 0,
-      ]);
-    } catch (Exception $e) {
-      DB::rollBack();
-      return back()->withInput();
-    }
-    DB::commit();
     return to_route('index')->with('success-swal', 'Aktivitas Sukses Dibuat!');
   }
 }

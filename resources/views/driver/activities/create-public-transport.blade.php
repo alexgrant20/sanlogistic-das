@@ -1,5 +1,7 @@
 @extends('driver.layouts.main')
 
+@section('title', 'Transportasi Umum')
+
 @section('content')
   <x-modal id="assure-modal" size="modal-lg">
     <x-slot:body>
@@ -15,7 +17,8 @@
     </x-slot:body>
   </x-modal>
   <section>
-    <form method="POST" action="{{ route('driver.activity.store-gojek') }}" enctype="multipart/form-data" id="form">
+    <form method="POST" action="{{ route('driver.activity.store-public-transport') }}" enctype="multipart/form-data"
+      id="form">
       @csrf
 
       <div class="row gy-5 mb-5">

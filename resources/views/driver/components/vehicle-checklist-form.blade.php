@@ -5,7 +5,7 @@
       <button class="accordion-button d-flex justify-content-center" type="button" data-bs-toggle="collapse"
         data-bs-target="#lamp-btn" aria-expanded="true" aria-controls="lamp-btn">
         <i class="fa-solid fa-lightbulb fa-1x border-end border-secondary pe-3"></i>
-        <span class="fw-bold fs-5 ms-3">{{ __('Vehicle Lamp') }}</span>
+        <span class="fw-bold fs-5 ms-3">Lampu Kendaraan</span>
         <span class="fw-bold fs-5 ms-1" id="lamp-text"></span>
       </button>
     </h2>
@@ -33,7 +33,7 @@
       <button class="accordion-button d-flex justify-content-center" type="button" data-bs-toggle="collapse"
         data-bs-target="#glass-btn" aria-expanded="true" aria-controls="glass-btn">
         <i class="fa-solid fa-car-rear fa-1x border-end border-secondary pe-3"></i>
-        <span class="fw-bold fs-5 ms-3">{{ __('Vehicle Glass') }}</span>
+        <span class="fw-bold fs-5 ms-3">Kaca Kendaraan</span>
         <span class="fw-bold fs-5 ms-1" id="glass-text"></span>
       </button>
     </h2>
@@ -57,7 +57,7 @@
       <button class="accordion-button d-flex justify-content-center" type="button" data-bs-toggle="collapse"
         data-bs-target="#tire-btn" aria-expanded="true" aria-controls="tire-btn">
         <i class="fa-solid fa-circle fa-1x border-end border-secondary pe-3"></i>
-        <span class="fw-bold fs-5 ms-3">{{ __('Vehicle Tire') }}</span>
+        <span class="fw-bold fs-5 ms-3">Ban Kendaraan</span>
         <span class="fw-bold fs-5 ms-1" id="tire-text"></span>
       </button>
     </h2>
@@ -91,7 +91,7 @@
       <button class="accordion-button d-flex justify-content-center" type="button" data-bs-toggle="collapse"
         data-bs-target="#equipment-btn" aria-expanded="true" aria-controls="equipment-btn">
         <i class="fa-solid fa-screwdriver-wrench fa-1x border-end border-secondary pe-3"></i>
-        <span class="fw-bold fs-5 ms-3">{{ __('Equipment') }}</span>
+        <span class="fw-bold fs-5 ms-3">Perlengkapan Kendaraan</span>
         <span class="fw-bold fs-5 ms-1" id="equipment-text"></span>
       </button>
     </h2>
@@ -120,7 +120,7 @@
       <button class="accordion-button d-flex justify-content-center" type="button" data-bs-toggle="collapse"
         data-bs-target="#gear-btn" aria-expanded="true" aria-controls="gear-btn">
         <i class="fa-solid fa-toolbox fa-1x border-end border-secondary pe-3"></i>
-        <span class="fw-bold fs-5 ms-3">{{ __('Gear') }}</span>
+        <span class="fw-bold fs-5 ms-3">Perlengkapan Driver</span>
         <span class="fw-bold fs-5 ms-1" id="gear-text"></span>
       </button>
     </h2>
@@ -150,7 +150,7 @@
       <button class="accordion-button d-flex justify-content-center" type="button" data-bs-toggle="collapse"
         data-bs-target="#other-btn" aria-expanded="true" aria-controls="other-btn">
         <i class="fa-solid fa-ellipsis fa-1x border-end border-secondary pe-3"></i>
-        <span class="fw-bold fs-5 ms-3">{{ __('Other') }}</span>
+        <span class="fw-bold fs-5 ms-3">Lainnya</span>
         <span class="fw-bold fs-5 ms-1" id="other-text"></span>
       </button>
     </h2>
@@ -206,7 +206,7 @@
     <div class="d-grid">
       <button type="button" id="add-image" class="btn btn-lg btn-info">
         <i class="fa-solid fa-plus fa-1x me-2"></i>
-        {{ __('Add Image') }}
+        Tambahkan Gambar
       </button>
     </div>
   </div>

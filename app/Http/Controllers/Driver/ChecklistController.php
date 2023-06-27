@@ -52,7 +52,6 @@ class ChecklistController extends Controller
       ]);
 
     return view('driver.checklists.index', [
-      'title' => 'Checklist',
       'checlists' => $checklists
     ]);
   }
@@ -66,7 +65,6 @@ class ChecklistController extends Controller
     })->orderBy('license_plate')->get();
 
     return view('driver.checklists.create', [
-      'title' => 'Checklist',
       'vehicles' => $vehicles
     ]);
   }

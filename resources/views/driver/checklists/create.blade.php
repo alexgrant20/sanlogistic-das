@@ -25,7 +25,7 @@
             <option value="{{ $vehicle->id }}">{{ $vehicle->license_plate }}</option>
           @endforeach
         </select>
- 
+
         @error('vehicle_id')
           <div class="invalid-feedback d-block">
             {{ $message }}

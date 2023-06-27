@@ -1,5 +1,7 @@
 @extends('driver.layouts.main')
 
+@section('title', 'Aktivitas')
+
 @section('content')
   <section>
     <div class="row gy-5">
@@ -8,15 +10,15 @@
           <div class="card rounded">
             <div class="card-header rounded">
               <div class="d-flex justify-content-between">
-                <span class="text-muted">{{ __('Departure Date') }}</span>
-                <span class="text-muted">{{ __('Arrival Date') }}</span>
+                <span class="text-muted">Waktu Keberangkatan</span>
+                <span class="text-muted">Waktu Kedatangan</span>
               </div>
               <div class="row align-items-center mb-2">
                 <div class="col-6 text-truncate">
                   {{ $activity->departure_date }}
                 </div>
                 <div class="col-6 text-end text-truncate @if (!$activity->arrival_date) text-primary @endif">
-                  {{ $activity->arrival_date ?? 'On Going' }}
+                  {{ $activity->arrival_date ?? 'Sedang Berlangsung' }}
                 </div>
               </div>
               <div class="row align-items-center">
@@ -34,33 +36,33 @@
             <div class="card-body border-top border-gray">
               <div class="row align-items-center gy-3">
                 <div class="col-4">
-                  <div class="fs-6">{{ __('Status') }}</div>
+                  <div class="fs-6">Status</div>
                   <div class="badge rounded-pill text-uppercase {{ $activity->activityStatusColor ?? 'bg-primary' }}">
                     {{ $activity->status }}
                   </div>
                 </div>
                 <div class="col-4">
-                  <div class="fs-6 w-100 text-truncate text-center">{{ __('DO Number') }}</div>
+                  <div class="fs-6 w-100 text-truncate text-center">Nomor DO</div>
                   <div class="w-100 text-truncate text-center">{{ $activity->do_number }}</div>
                 </div>
                 <div class="col-4">
-                  <div class="fs-6 w-100 text-truncate text-end">Total Cost</div>
+                  <div class="fs-6 w-100 text-truncate text-end">Total Biaya</div>
                   <div class="fs-3 w-100 text-truncate text-end">Rp
                     {{ $activity->total_cost ? number_format($activity->total_cost, 0, ',', '.') : 0 }}</div>
                 </div>
                 <div class="col-6 d-flex align-items-center justify-content-center">
                   <i class="bi bi-geo-alt fs-1"></i>
                   <div class="ms-2 text-truncate">
-                    <div class="text-muted text-truncate">Total Distance</div>
+                    <div class="text-muted text-truncate">Jarak Total</div>
                     <div class="fw-bold text-truncate @if (!$activity->distance) text-primary @endif">
-                      {{ $activity->distance ? number_format($activity->distance, 0, ',', '.') . ' Km' : 'On Going' }}
+                      {{ $activity->distance ? number_format($activity->distance, 0, ',', '.') . ' Km' : 'N\A' }}
                     </div>
                   </div>
                 </div>
                 <div class="col-6 d-flex align-items-center justify-content-center">
                   <i class="bi bi-truck fs-1"></i>
                   <div class="ms-2 text-truncate">
-                    <div class="text-muted text-truncate">License Plate</div>
+                    <div class="text-muted text-truncate">Nomor Kendaraan</div>
                     <div class="fw-bold text-truncate">
                       {{ $activity->license_plate }}
                     </div>

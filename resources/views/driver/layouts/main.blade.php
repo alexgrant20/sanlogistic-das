@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Sanlogistic | {{ $title }}</title>
+  <title>Sanlogistic | @yield('title')</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no,maximum-scale=1, user-scalable=0">
   <meta name="robots" content="all,follow">
@@ -50,6 +50,9 @@
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     @if (Session::has('message'))
       toastr.options = {
@@ -81,19 +84,19 @@
 
   @if ($message = Session::get('success-swal'))
     <script>
-      swal("Success", '{{ $message }}', "success");
+      Swal.fire('Success', '{{ $message }}', 'success');
     </script>
   @endif
 
   @if ($message = Session::get('error-swal'))
     <script>
-      swal("Failed", '{{ $message }}', "error");
+      Swal.fire("Failed", '{{ $message }}', "error");
     </script>
   @endif
 
   @if ($message = Session::get('warning-swal'))
     <script>
-      swal("Warning", '{{ $message }}', "warning");
+      Swal.fire("Warning", '{{ $message }}', "warning");
     </script>
   @endif
 

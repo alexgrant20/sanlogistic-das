@@ -22,4 +22,9 @@ class Driver extends Model
   {
     return $this->belongsTo(User::class);
   }
+
+  public function lastLocation()
+  {
+    return $this->belongsTo(Address::class, 'last_location_id');
+  }
 }

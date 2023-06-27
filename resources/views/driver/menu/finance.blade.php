@@ -1,5 +1,7 @@
 @extends('driver.layouts.main')
 
+@section('title', 'Keuangan')
+
 @section('content')
   <section>
     <div class="row g-3 mb-3">
@@ -12,7 +14,7 @@
             </div>
             <div class="d-flex justify-content-between w-100">
               <div class="d-flex flex-column">
-                <span class="fs-5 fw-bold text-gray-400">Activity Payment</span>
+                <span class="fs-5 fw-bold text-gray-400">Pembayaran Aktivitas</span>
                 <span class="fs-5 text-gray-600">Cash</span>
               </div>
               <div class="d-flex flex-column text-end">
@@ -26,8 +28,7 @@
       @empty
         <div class="col card bg-dash-dark-3">
           <div class="card-body text-center">
-            <h1>No <span class="text-primary">Activity</span></h1>
-            <p>No Activity, Go Create One Right Now!</p>
+            <h1>Tidak Ada <span class="text-primary">Aktivitas</span></h1>
           </div>
         </div>
       @endforelse
