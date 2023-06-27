@@ -34,6 +34,8 @@ Route::prefix('/admin')->name('admin.')->middleware('auth', 'can:access-admin-pa
   Route::post('/users/{user}/permissions', [UserController::class, 'givePermission'])->name('users.permissions');
   Route::delete('/users/{user}/permissions/{permission}', [UserController::class, 'revokePermission'])->name('users.permissions.revoke');
 
+  Route::get('/driver/{driver}/location', [UserController::class, 'editLastLocation'])->name('driver.edit-last-location');
+  Route::put('/driver/{driver}/location', [UserController::class, 'updateLastLocation'])->name('driver.update-last-location');
 
   /**
    * USER ROLES & PERMISSION

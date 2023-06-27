@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
+use App\Models\Address;
 use App\Models\Driver;
 use App\Models\Person;
 use App\Models\User;
 use App\Transaction\Constants\NotifactionTypeConstant;
+use App\Utilities\DriverUtility;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,11 +20,15 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-  public function __construct()
+  private DriverUtility $driverUtility;
+
+  public function __construct(DriverUtility $driverUtility)
   {
     $this->middleware('can:assign-user-role-and-permission', ['only' => [
       'show', 'create', 'removeRole',  'assignRole', 'givePermission', 'revokePermission'
     ]]);
+
+    $this->driverUtility = $driverUtility;
   }
 
   public function create(Person $person)
@@ -51,9 +57,6 @@ class UserController extends Controller
       $request->role !== "driver" ?: Driver::create(array('user_id' => $user->id));
       $user->assignRole($request->role);
     } catch (Exception $e) {
-
-      dd($e->getMessage());
-
       DB::rollBack();
 
       return back()->withInput()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'user', 'create'));
@@ -153,5 +156,25 @@ class UserController extends Controller
       return back()->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'permission', 'revoked'));
     }
     return back()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'permission', 'revoked'));
+  }
+
+  public function editLastLocation(Driver $driver)
+  {
+    $lastLocationId = $this->driverUtility->getLocation($driver)->id;
+    $addresses = Address::orderBy('name')->get();
+
+    return view('admin.user.edit-last-location', [
+      'last_location_id' => $lastLocationId,
+      'addressess' => $addresses,
+      'driver' => $driver,
+      'title' => 'Update Lokasi Terahkir'
+    ]);
+  }
+
+  public function updateLastLocation(Request $request, Driver $driver)
+  {
+    $driver->update(['last_location_id' => $request->last_location_id]);
+
+    return to_route('admin.people.index');
   }
 }
