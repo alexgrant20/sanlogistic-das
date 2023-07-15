@@ -24,8 +24,6 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
 
   public function collection()
   {
-    $idsExists = count($this->ids) !== 0;
-
     $activities = DB::table('activities')
       ->selectRaw(
         "activities.do_number AS do_number,
@@ -65,7 +63,7 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
         '' AS IFRETRIBUTION_EXPENSES,
         '' AS ZONE,
         '' AS DCODE,
-        CONCAT(arrival_odo - departure_odo, ' Km') AS DISTANCE,
+        arrival_odo - departure_odo AS DISTANCE,
         activity_payments.bbm_amount + activity_payments.toll_amount
    + activity_payments.parking_amount + activity_payments.load_amount + activity_payments.unload_amount + activity_payments.maintenance_amount AS total_cost,
         projects.name AS projects_name,
@@ -75,7 +73,7 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
         CONCAT(ROUND((arrival_odo - departure_odo) / (TIMESTAMPDIFF(SECOND, departure_date, arrival_date) / 3600)), ' Km/Jam') AS average_speed,
         activities.id,
         activities.parent_activity_id,
-        CONCAT(ai.total_distance, ' Km'),
+        ai.total_distance,
         CASE WHEN ai.is_half_trip = 1 THEN 'half'
         WHEN ai.is_half_trip = 0 THEN 'full'
         END,
