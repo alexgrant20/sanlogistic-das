@@ -225,8 +225,8 @@ class ActivityService implements CompanyInterface
   {
     if ($this->isHalfTrip) $totalDistance *= 2;
 
-    return IncentiveRate::where('range', '<=', $totalDistance)
-      ->orderByDesc('id')
+    return IncentiveRate::where('range', '>=', $totalDistance)
+      ->orderBy('id', 'asc')
       ->first();
   }
 
@@ -237,11 +237,14 @@ class ActivityService implements CompanyInterface
 
     $divider = $this->isHalfTrip ? 2 : 1;
 
+    $incentive = $incentiveType ? ($incentiveType->incentive / $divider) : 9;
+    $incentiveWithDepsoit = $incentiveType ? ($incentiveType->incentive_with_deposit / $divider) : 9;
+
     ActivityIncentive::create([
       'activity_id' => $parentActivityId,
       'total_distance' => $totalDistance,
-      'incentive' => $incentiveType->incentive / $divider,
-      'incentive_with_deposit' => $incentiveType->incentive_with_deposit / $divider,
+      'incentive' => $incentive,
+      'incentive_with_deposit' => $incentiveWithDepsoit,
       'is_half_trip' => $this->isHalfTrip
     ]);
   }
