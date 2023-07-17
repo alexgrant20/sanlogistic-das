@@ -226,7 +226,7 @@ class ActivityService implements CompanyInterface
     if ($this->isHalfTrip) $totalDistance *= 2;
 
     return IncentiveRate::where('range', '>=', $totalDistance)
-      ->orderBy('id', 'asc')
+      ->orderBy('incentive', 'asc')
       ->first();
   }
 
