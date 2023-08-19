@@ -98,6 +98,7 @@
               <th>ID</th>
               <th>Tanggal</th>
               <th>Nama Pengendara</th>
+              <th>Project</th>
               <th>Nomor Kendaraan</th>
               <th>Nomor DO</th>
               <th>Lokasi Keberangkatan</th>
@@ -182,6 +183,10 @@
           {
             data: 'person_name',
             name: 'person_name'
+          },
+          {
+            data: 'project_name',
+            name: 'project_name'
           },
           {
             data: 'license_plate',

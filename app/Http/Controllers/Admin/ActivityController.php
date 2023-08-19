@@ -53,6 +53,7 @@ class ActivityController extends Controller
       ->leftJoin('activity_statuses', 'activities.activity_status_id', 'activity_statuses.id')
       ->leftJoin('users', 'activities.user_id', 'users.id')
       ->leftJoin('people', 'users.person_id', 'people.id')
+      ->leftJoin('projects', 'people.project_id', 'projects.id')
       ->leftJoin('vehicles', 'activities.vehicle_id', 'vehicles.id')
       ->leftJoin(DB::raw('addresses dep'), 'activities.departure_location_id', 'dep.id')
       ->leftJoin(DB::raw('addresses arr'), 'activities.arrival_location_id', 'arr.id')
@@ -69,9 +70,9 @@ class ActivityController extends Controller
          activities.do_number,
          dep.name AS departure_name,
          arr.name AS arrival_name,
-        activity_statuses.status AS status'
+         activity_statuses.status AS status,
+         projects.name AS project_name'
       )
-
       ->get();
 
     return DataTables::of($activities)->addIndexColumn()->toJson();
