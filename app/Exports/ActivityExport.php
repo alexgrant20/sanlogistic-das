@@ -104,7 +104,8 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
                //Projectname
                'projects.name AS projects_name',
                //DDateTime
-               DB::raw('(departure_date) AS dep_datetime')
+               DB::raw('(departure_date) AS dep_datetime'),
+               'nik'
             ]
          );
 
@@ -155,8 +156,7 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
          'TOTAL COST',
          'PROJECT',
          'DDateTime',
-
-
+         'NIK',
       ];
    }
 }
