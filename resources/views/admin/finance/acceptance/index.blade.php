@@ -143,6 +143,7 @@
               <th>Tanggal</th>
               <th>Nomor DO</th>
               <th>Nama Pengendara</th>
+              <th>Project</th>
               <th>BBM</th>
               <th>Toll</th>
               <th>Parkir</th>
@@ -168,6 +169,7 @@
                 <td>{{ $activity->departure_date }}</td>
                 <td>{{ $activity->do_number }}</td>
                 <td>{{ $activity->name }}</td>
+                <td>{{ $activity->project_name }}</td>
                 <td>@money($activity->bbm_amount)</td>
                 <td>@money($activity->toll_amount)</td>
                 <td>@money($activity->parking_amount)</td>
