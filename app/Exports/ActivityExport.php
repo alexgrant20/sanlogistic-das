@@ -78,7 +78,8 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
         WHEN ai.is_half_trip = 0 THEN 'full'
         END,
         incentive,
-        incentive_with_deposit
+        incentive_with_deposit,
+        nik
         "
       )
       ->leftJoin('activity_statuses', 'activities.activity_status_id', 'activity_statuses.id')
@@ -153,6 +154,7 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
       'TRIP',
       'INCENNTIVE',
       'INCENNTIVE WITH RATE',
+      'NIK'
     ];
   }
 }
