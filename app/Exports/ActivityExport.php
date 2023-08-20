@@ -79,7 +79,11 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
         END,
         incentive,
         incentive_with_deposit,
-        nik
+        nik,
+        CASE 
+         WHEN activity_statuses.status = 'paid' THEN activity_statuses.created_at
+         ELSE '' 
+        END AS activity_paid_date
         "
       )
       ->leftJoin('activity_statuses', 'activities.activity_status_id', 'activity_statuses.id')
@@ -154,7 +158,8 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
       'TRIP',
       'INCENNTIVE',
       'INCENNTIVE WITH RATE',
-      'NIK'
+      'NIK',
+      'PAID DATE'
     ];
   }
 }
