@@ -58,7 +58,7 @@ class AuthController extends Controller
 
       Auth::logoutOtherDevices(request('password'));
 
-      return to_route('index')
+      return to_route($user->hasRole('driver') ? 'index' : 'admin.activities.index')
         ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'Login Successfull!'));
     }
 
