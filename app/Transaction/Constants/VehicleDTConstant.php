@@ -5,7 +5,7 @@ namespace App\Transaction\Constants;
 final class VehicleDTConstant
 {
   public const DOCUMENT_TYPE = ['kir', 'stnk'];
-  public const IMAGE_TYPE = ['front', 'left', 'right', 'back'];
+  public const IMAGE_TYPE = ['front', 'left', 'right', 'back', 'mypertamina'];
   public const DOCUMENT_TYPE_INPUT = [
     'kir_number',
     'kir_expire',
