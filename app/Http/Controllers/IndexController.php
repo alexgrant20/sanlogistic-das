@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
+use App\Models\VehicleImage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
@@ -26,7 +27,13 @@ class IndexController extends Controller
         ->latest()
         ->first();
 
+      $vehicleImage = VehicleImage::where([
+        ['vehicle_id', $activity->vehicle_id],
+        ['type', 'mypertamina']
+      ])->first();
+
       $params['activity'] = $activity;
+      $params['mypertamina'] =  @$vehicleImage['image'];
     }
 
     return view('driver.index', $params);

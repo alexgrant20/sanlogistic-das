@@ -148,12 +148,12 @@ class VehicleController extends Controller
 
   public function edit(Vehicle $vehicle)
   {
-    $kir = $vehicle->vehiclesDocuments->where('type', 'kir')->first();
-    $stnk = $vehicle->vehiclesDocuments->where('type', 'stnk')->first();
-    $front = $vehicle->vehicleImages->where('type', 'front')->first();
-    $back = $vehicle->vehicleImages->where('type', 'back')->first();
-    $left = $vehicle->vehicleImages->where('type', 'left')->first();
-    $right = $vehicle->vehicleImages->where('type', 'right')->first();
+    $vehicle->loadMissing('vehiclesDocuments', 'vehicleImages');
+
+    $vehicleDocuments = $vehicle->vehiclesDocuments->mapWithKeys(function ($vehicleDocument) {
+      return [$vehicleDocument->type => $vehicleDocument];
+    });
+    $vehicleImages = $vehicle->vehicleImages->pluck('image', 'type');
 
     return view('admin.vehicles.edit', [
       'vehiclesBrands' => VehicleBrand::orderBy('name')->get(),
@@ -164,12 +164,8 @@ class VehicleController extends Controller
       'vehiclesTowings' => VehicleTowing::orderBy('name')->get(),
       'vehiclesLPColors' => VehicleLicensePlateColor::orderBy('name')->get(),
       'vehicle' => $vehicle,
-      'stnk' => $stnk ?? new VehicleDocument(),
-      'kir' => $kir ?? new VehicleDocument(),
-      'front' => $front ?? new VehicleImage(),
-      'back' => $back ?? new VehicleImage(),
-      'left' => $left ?? new VehicleImage(),
-      'right' => $right ?? new VehicleImage(),
+      'vehicleDocuments' => $vehicleDocuments,
+      'vehicleImages' => $vehicleImages,
       'title' => "Update Vehicle {$vehicle->license_plate}"
     ]);
   }
