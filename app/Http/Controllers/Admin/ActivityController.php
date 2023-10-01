@@ -35,13 +35,35 @@ class ActivityController extends Controller
   {
     $q_status = $request->status;
 
-    $activities = Activity::with('activityStatus')->get();
+    $box = [
+      '' => 0,
+      'draft' => 0,
+      'pending' => 0,
+      'approved' => 0,
+      'rejected' => 0,
+      'paid' => 0
+    ];
+
+    $totalActivity = 0;
+
+    DB::table('activities AS ac')
+      ->join('activity_statuses AS as', 'ac.activity_status_id', 'as.id')
+      ->selectRaw("COUNT(ac.id) AS total_activity, as.status")
+      ->groupBy('as.status')
+      ->get()
+      ->each(function ($item) use (&$box, &$totalActivity) {
+        $box[$item->status] = $item->total_activity;
+
+        $totalActivity += $item->total_activity;
+      });
+
+    $box[''] = $totalActivity;
 
     return view('admin.activities.index', [
       'title' => 'Activities',
-      'activities' => $activities,
+      'box' => $box,
       'importPath' => route('admin.activities.export.excel'),
-      'status' => $q_status,
+      'queryStatus' => $q_status,
     ]);
   }
 
@@ -325,7 +347,7 @@ class ActivityController extends Controller
         [
           'activities.id',
           'activities.departure_date',
-          'do_number', 
+          'do_number',
           'people.name',
           'projects.name AS project_name',
           'activity_payments.bbm_amount',
@@ -337,7 +359,7 @@ class ActivityController extends Controller
           'activity_statuses.status as status'
         ]
       );
-      
+
     $activities_filtered = empty($q_status) ?  $activities : $activities->filter(fn ($item) => $item->status === $q_status);
 
     return view('admin.finance.acceptance.index', [
