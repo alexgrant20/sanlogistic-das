@@ -20,7 +20,7 @@
             <x-ui.menu-item backgroundColor="bg-purplish" icon="bi bi-map" label="Lokasi Pengantaran"
                description="Seluruh Lokasi Pengantaran" :link="route('driver.menu.location')" />
 
-            @if ($isActivityActive)
+            @if (!$isActivityActive)
                <x-ui.menu-item backgroundColor="bg-primary" icon="fa-solid fa-motorcycle" label="Kendaraan Umum"
                   description="Aktivitas Dengan Kendaraan Umum" :link="route('driver.activity.create-public-transport')" />
             @endif
