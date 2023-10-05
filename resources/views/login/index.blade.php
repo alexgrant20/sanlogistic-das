@@ -24,7 +24,7 @@
          <div class="col-xl-4 m-auto">
             <div class="row flex-column align-items-center">
                <div class="col-xxl-12 text-center">
-                  <img src="{{ asset('img/logo.jpg') }}" class="img-fluid mb-5" height="100px" alt="">
+                  <img src="{{ asset('img/logo.png') }}" class="img-fluid mb-5" height="100px" alt="">
                </div>
                <div class="col-xxl-12">
                   <h1 class="fs-1 text-light">Welcome</h1>

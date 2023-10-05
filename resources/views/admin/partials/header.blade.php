@@ -13,7 +13,7 @@
       <div class="container-fluid d-flex align-items-center justify-content-between py-1">
          <div class="navbar-header d-flex align-items-center">
             <a class="navbar-brand text-uppercase text-reset" href="{{ route('index') }}">
-               <img class="w-auto" src="{{ asset('img/logo.jpg') }}" alt="" style="height: 50px">
+               <img class="w-auto" src="{{ asset('img/logo.png') }}" alt="" style="height: 50px">
             </a>
             <button class="sidebar-toggle">
                <i class="bi bi-caret-left-fill"></i>
