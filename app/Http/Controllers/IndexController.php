@@ -12,10 +12,13 @@ class IndexController extends Controller
   public function index()
   {
     $params = [
-      'title' => 'Home'
+      'title' => 'Home',
+      'activity' => null,
+      'mypertamina' => null
     ];
 
     $user = auth()->user();
+    $activity = null;
 
     if ($user->hasRole('super-admin') || $user->hasPermissionTo('access-admin-panel')) {
       return view('admin.index', $params);
@@ -26,15 +29,17 @@ class IndexController extends Controller
         ->with(['departureLocation', 'arrivalLocation'])
         ->latest()
         ->first();
+      }
 
-      $vehicleImage = VehicleImage::where([
-        ['vehicle_id', $activity->vehicle_id],
-        ['type', 'mypertamina']
-      ])->first();
+      if($activity) {
+        $vehicleImage = VehicleImage::where([
+          ['vehicle_id', $activity->vehicle_id],
+          ['type', 'mypertamina']
+        ])->first();
 
-      $params['activity'] = $activity;
-      $params['mypertamina'] =  @$vehicleImage['image'];
-    }
+        $params['activity'] = $activity;
+        $params['mypertamina'] =  @$vehicleImage['image'];
+      }
 
     return view('driver.index', $params);
   }
