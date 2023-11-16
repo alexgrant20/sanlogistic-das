@@ -19,8 +19,8 @@ class FinanceController extends Controller
 {
   public function __construct()
   {
-    $this->middleware('can:finance-acceptance', ['only' => ['acceptance', 'approve']]);
-    $this->middleware('can:finance-payment', ['only' => ['payment', 'pay', 'edit', 'audit', 'reject']]);
+    $this->middleware('can:finance-acceptance', ['only' => ['acceptance', 'approve', 'edit']]);
+    $this->middleware('can:finance-payment', ['only' => ['payment', 'pay', 'audit', 'reject']]);
   }
 
   public function approve(Request $request)
