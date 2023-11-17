@@ -14,10 +14,10 @@ class StoreUserRequest extends FormRequest
   public function rules()
   {
     return [
-      'username' => 'required|unique:users,username',
+      'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
       'password' => 'required|min:5',
       'role' => 'required|exists:roles,name',
-      'person_id' => 'required|unique:users,person_id|exists:people,id'
+      'person_id' => 'required|unique:users,person_id|exists:people,id,NULL,id,deleted_at,NULL'
     ];
   }
 }
