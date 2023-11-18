@@ -92,7 +92,7 @@
     </x-slot:body>
   </x-modal>
   <section>
-    <form action="{{ url('/driver/activities/' . $activity->id) }}" method="POST" enctype="multipart/form-data"
+    <form action="{{ route('driver.activity.update', $activity->id) }}" method="POST" enctype="multipart/form-data"
       id="form">
       @csrf
       @method('PUT')
@@ -157,7 +157,7 @@
               <input type="number" id="arrival_odo" name="arrival_odo"
                 class="form-control form-control-lg form-dark  @error('arrival_odo') is-invalid @enderror"
                 value="{{ old('arrival_odo', $activity->arrival_odo) }}"
-                onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57">
+                onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" min="0">
 
               @error('arrival_odo')
                 <div class="invalid-feedback d-block">

@@ -155,14 +155,22 @@ class ActivityService implements CompanyInterface
 
   public function update($request, Activity $activity)
   {
-    $vehicle = $activity->vehicle;
-    $totalCustTrip = auth()->user()->driver->total_cust_trip;
-    $arrivalType =  strtoupper(Address::find($request->arrival_location_id)->addressType->name);
-    $departureType = strtoupper($activity->departureLocation->addressType->name);
-
     DB::beginTransaction();
 
+    $userValidationError = "400";
+
     try {
+      $activity = Activity::lockForUpdate()->find($activity->id);
+
+      if ($activity->parent_activity_id) {
+        throw new \Exception("", $userValidationError);
+      }
+
+      $vehicle = $activity->vehicle;
+      $totalCustTrip = auth()->user()->driver->total_cust_trip;
+      $arrivalType =  strtoupper(Address::find($request->arrival_location_id)->addressType->name);
+      $departureType = strtoupper($activity->departureLocation->addressType->name);
+
       $activityType = $this->setActivityConfigAndGetType($activity, $arrivalType, $departureType, $totalCustTrip);
 
       $finalizedAdditionalPayload = [
@@ -180,6 +188,11 @@ class ActivityService implements CompanyInterface
       $this->finalizedActivityStep($request, $activity, $fixedPayload, $totalCustTrip);
     } catch (\Exception $e) {
       DB::rollBack();
+
+      if ($e->getCode() == $userValidationError) {
+        return true;
+      }
+
       ErrorLog::createLog($e);
       return false;
     }
