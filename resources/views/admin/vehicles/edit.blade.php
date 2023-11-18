@@ -24,7 +24,6 @@
 @section('footJS')
   <script>
     $(document).ready(function() {
-      console.log($('#vehicle_license_plate_color_id').val());
       plateNumberHandler($('#license_plate').val() || "X XXX XE", 'number');
       plateNumberHandler($('#vehicle_license_plate_color_id').val() || 1, 'color');
       plateNumberHandler($('#kir_expire').val() || null, 'kir');

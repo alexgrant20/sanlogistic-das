@@ -145,7 +145,6 @@ class CompanyController extends Controller
       }
     } catch (Exception $e) {
       DB::rollback();
-      dd($e->getMessage());
 
       return redirect("/admin/companies/{$request->name}/edit")
         ->withInput()
