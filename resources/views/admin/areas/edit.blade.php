@@ -1,9 +1,5 @@
 @extends('admin.layouts.main')
 
-@php
-dd('add: ' . 1 + 1);
-@endphp
-
 @section('container')
   <div class="page-content">
     <div class="bg-dash-dark-2 py-4">
