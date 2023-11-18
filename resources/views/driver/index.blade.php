@@ -89,8 +89,7 @@
          <div class="card">
             <div class="card-body">
                <h2 class="fs-3 mb-4 text-ocean-100">QR MyPertamina</h2>
-               <img class="w-100" src="{{ asset('storage/' . $mypertamina) }}" alt="" height="400px"
-                  style="max-width: 400px">
+               <img class="w-100" src="{{ asset('storage/' . $mypertamina) }}" alt="" style="aspect-ratio:1; max-width: 500px">
             </div>
          </div>
       </section>

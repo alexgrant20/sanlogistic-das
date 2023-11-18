@@ -225,8 +225,6 @@ class VehicleController extends Controller
         );
       }
     } catch (Exception $e) {
-
-      dd($e->getMessage());
       DB::rollback();
 
       return back()->withInput()->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'vehicle', 'updated'));
