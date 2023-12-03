@@ -14,27 +14,29 @@
   {{-- theme stylesheet --}}
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-  {{-- theme stylesheet --}}
-  <link rel="stylesheet" href="{{ asset('/css/style.sea.css') }}" id="theme-stylesheet">
-  {{-- Custom Stylesheet --}}
-  <link rel="stylesheet" type="text/css" href="{{ asset('/css/driver/global.css') }}" />
-  <link rel="stylesheet" type="text/css" href="{{ asset('/css/custom.css') }}" />
+
   {{-- Favicon --}}
   <link rel="shortcut icon" href="{{ asset('/img/favicon.ico') }}">
 
   {{-- Jquery --}}
   <script type='text/javascript' src="{{ asset('/vendor/jquery/jquery-3.6.0.min.js') }}"></script>
 
-  {{-- Toastr --}}
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
 
   {{-- Zoom CSS --}}
   <link href="{{ asset('/vendor/zoom/zoom.css') }}" rel="stylesheet">
 
+  {{-- theme stylesheet --}}
+  <link rel="stylesheet" href="{{ asset('/css/style.sea.css') }}" id="theme-stylesheet">
+
+  {{-- Toastr --}}
+  {{-- Toastr must be below theme stylesheet --}}
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
+
+  <link rel="stylesheet" type="text/css" href="{{ asset('/css/driver/global.css') }}" />
+  <link rel="stylesheet" type="text/css" href="{{ asset('/css/custom.css') }}" />
+
   @yield('headCSS')
-
   @yield('headJS')
-
 </head>
 
 <body class="min-vh-100 min-vw-100 background">
@@ -44,84 +46,12 @@
   </div>
   @include('driver.partials.footer')
 
-  <script src="{{ asset('/vendor/currency/currency.js') }}"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script>
-    @if (Session::has('message'))
-      toastr.options = {
-        "progressBar": true,
-      }
-      var type = "{{ Session::get('alert-type', 'info') }}"
-      switch (type) {
-        case 'info':
-          toastr.info(" {{ Session::get('message') }} ");
-          break;
-        case 'success':
-          toastr.success(" {{ Session::get('message') }} ");
-          break;
-        case 'warning':
-          toastr.warning(" {{ Session::get('message') }} ");
-          break;
-        case 'error':
-          toastr.error(" {{ Session::get('message') }} ");
-          break;
-      }
-    @endif
-
-    $(document).ready(function() {
-      $('.select2').select2({
-        width: 'resolve'
-      });
-    });
-  </script>
-
-  @if ($message = Session::get('success-swal'))
-    <script>
-      Swal.fire('Success', '{{ $message }}', 'success');
-    </script>
-  @endif
-
-  @if ($message = Session::get('error-swal'))
-    <script>
-      Swal.fire("Failed", '{{ $message }}', "error");
-    </script>
-  @endif
-
-  @if ($message = Session::get('warning-swal'))
-    <script>
-      Swal.fire("Warning", '{{ $message }}', "warning");
-    </script>
-  @endif
-
-  <!-- JavaScript files-->
-  <script src="{{ asset('/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
-  <!-- Main File-->
-  <script src="{{ asset('/js/function.js') }}" defer></script>
-  <script src="{{ asset('/js/front.js') }}" defer></script>
-
-  {{-- Zoom JS --}}
-  <script src="{{ asset('/vendor/zoom/zoom.js') }}"></script>
-
-  {{-- Currency --}}
-  <script src="{{ asset('/vendor/currency/currency.js') }}"></script>
-
-  <!-- Laravel Javascript Validation -->
-  <script type="text/javascript" src="{{ asset('vendor/jsvalidation/jsvalidation.min.js') }}"></script>
-
-
-  <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-  <script src="https://kit.fontawesome.com/2d78a8b052.js" crossorigin="anonymous"></script>
+  @include('driver.layouts.jssection')
+  @include('layouts.alert-swal')
+  @include('layouts.toastr')
 
   @yield('footJS')
+
   @livewireScripts
 </body>
 
