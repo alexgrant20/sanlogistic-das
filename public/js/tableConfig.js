@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", function () {
     ],
   });
 
+  if(table.context.length == 0) return;
+
   $.fn.dataTable.Buttons.defaults.dom.button.className =
     "btn btn-outline-primary";
 

@@ -2,7 +2,9 @@
 
 namespace App\Services\Driver;
 
+use App\Interface\ActivityStatusInterface;
 use App\Interface\CompanyInterface;
+use App\Interface\ResponseCodeInterface;
 use App\Models\Activity;
 use App\Models\ActivityIncentive;
 use App\Models\ActivityPayment;
@@ -10,13 +12,15 @@ use App\Models\ActivityStatus;
 use App\Models\Address;
 use App\Models\ErrorLog;
 use App\Models\IncentiveRate;
+use App\Models\User;
 use App\Models\Vehicle;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
-class ActivityService implements CompanyInterface
+class ActivityService implements CompanyInterface, ActivityStatusInterface, ResponseCodeInterface
 {
   private $needToCaclculateIncentive = false;
   private $isHalfTrip = false;
@@ -89,6 +93,7 @@ class ActivityService implements CompanyInterface
 
     $payload = $activityPayload->merge($additionalPayload)->toArray();
 
+
     $images = collect($activityFiles);
     $timestamp = now()->timestamp;
 
@@ -100,24 +105,36 @@ class ActivityService implements CompanyInterface
 
   public function store($request)
   {
-    $vehicle = Vehicle::find($request->vehicle_id);
-
-    $storeAdditionalPayload = [
-      'do_date' => now(),
-      'user_id' => auth()->user()->id,
-      'project_id' => $vehicle->project_id,
-    ];
-
-    $fixedPayload = $this->getActivityFixedPayload(
-      $vehicle->license_plate,
-      $request->safe(),
-      $request->allFiles(),
-      $storeAdditionalPayload
-    );
-
     DB::beginTransaction();
 
     try {
+      $user = User::lockForUpdate()->find(Auth::id());
+      $vehicle = Vehicle::find($request->vehicle_id);
+
+      $userActiveActivty = Activity::where('user_id', $user->id)
+        ->status(self::STATUS_DRAFT)
+        ->get();
+
+      if($userActiveActivty->isNotEmpty())  {
+        throw new Exception(
+        "User memiliki usulan aktif dengan ID: " . $userActiveActivty->pluck('id')->join(', '),
+        self::ERROR_REDIRECT_INDEX
+      );
+    }
+
+      $storeAdditionalPayload = [
+        'do_date' => now(),
+        'user_id' => $user->id,
+        'project_id' => $vehicle->project_id,
+      ];
+
+      $fixedPayload = $this->getActivityFixedPayload(
+        $vehicle->license_plate,
+        $request->safe(),
+        $request->allFiles(),
+        $storeAdditionalPayload
+      );
+
       $activity = Activity::create($fixedPayload);
 
       $vehicle->update([
@@ -129,7 +146,7 @@ class ActivityService implements CompanyInterface
     } catch (\Exception $e) {
       DB::rollBack();
       ErrorLog::createLog($e);
-      return false;
+      throw $e;
     }
 
     DB::commit();
