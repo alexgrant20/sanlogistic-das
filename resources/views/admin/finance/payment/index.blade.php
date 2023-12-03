@@ -1,15 +1,13 @@
-@extends('admin.layouts.index-custom')
+@extends('admin.layouts.main')
 
 @section('container')
    <div class="page-content">
-      <!-- Page Header-->
       <div class="bg-dash-dark-2 py-4">
          <div class="container-fluid">
             <h2 class="h5 mb-0">Pay Activity</h2>
          </div>
       </div>
 
-      {{-- MAKE SURE MODAL --}}
       <x-modal id="modal" size="modal-lg">
          <x-slot:body>
             <div class="container-fluid text-center pt-3">
@@ -32,17 +30,6 @@
             <form id="exportExcelForm" method="post" action="{{ route('admin.finances.export.excel') }}"
                enctype="multipart/form-data">
                @csrf
-
-               {{-- <div class="mb-3">
-            <label class="form-label">Pilih Bulan</label>
-            <div class="form-group">
-              <select class="form-select" name="month">
-                <option value="{{ now()->format('m') }}">{{ now()->format('F') }}</option>
-                <option value="{{ now()->submonth(1)->format('m') }}">{{ now()->submonth(1)->format('F') }}
-                </option>
-              </select>
-            </div>
-          </div> --}}
 
                <label class="form-label">Pilih Project</label>
                <div class="form-group">
@@ -93,7 +80,7 @@
 
          <h4 class="text-primary fw-bold">Table</h4>
          <hr>
-         <table class="table table-hover text-center  table-dark nowrap" style="width: 100%" data-display="datatables">
+         <table class="table table-hover text-center  table-dark nowrap" style="width: 100%" id="activities">
             <thead>
                <tr class="header">
                   <th>User ID</th>
@@ -144,10 +131,10 @@
    </div>
 @endsection
 
-@section('add_headJS')
+@section('headJS')
    <script>
       document.addEventListener("DOMContentLoaded", function() {
-         const table = $('table[data-display="datatables"]').DataTable({
+         const table = $('#activities').DataTable({
             responsive: true,
             columnDefs: [{
                targets: [0],
@@ -216,9 +203,6 @@
                },
                body: data,
             });
-
-            // location.reload();
-
          }
       });
    </script>

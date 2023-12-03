@@ -1,4 +1,4 @@
-@extends('admin.layouts.index-custom')
+@extends('admin.layouts.main')
 
 @section('container')
    <div class="page-content">
@@ -70,7 +70,7 @@
          <h4 class="text-primary fw-bold">Table</h4>
          <hr>
          <div class="table-responsive">
-            <table class="table table-striped table-dark text-center" data-display="datatables" id="activities">
+            <table class="table table-striped table-dark text-center" id="activities">
                <thead>
                   <tr class="header">
                      <th>ID</th>
@@ -93,7 +93,7 @@
    </div>
 @endsection
 
-@section('add_headJS')
+@section('headJS')
    <script>
       document.addEventListener("DOMContentLoaded", function() {
          $('#activities').DataTable({
