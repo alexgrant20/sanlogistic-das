@@ -1,4 +1,4 @@
-@extends('admin.layouts.index')
+@extends('admin.layouts.main')
 
 @section('container')
   <div class="page-content">
@@ -26,17 +26,9 @@
                 <td>{{ $area->id }}</td>
                 <td></td>
                 <td class="d-flex gap-2">
-                  {{-- @canany('area-edit') --}}
                   <a href="{{ route('admin.areas.edit', $area->id) }}" class="btn btn-primary">
                     Edit
                   </a>
-
-                  {{-- <form action="{{ route('admin.areas.destroy', $area->id) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                  </form> --}}
-                  {{-- @endcan --}}
                 </td>
                 <td>{{ $area->name }}</td>
                 <td>{{ $area->regional->name }}</td>

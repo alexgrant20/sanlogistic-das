@@ -1,4 +1,4 @@
-@extends('admin.layouts.index')
+@extends('admin.layouts.main')
 
 @section('container')
   <div class="page-content">
@@ -49,14 +49,11 @@
                         <i class="bi bi-three-dots"></i>
                       </button>
                       <ul class="dropdown-menu">
-                        {{-- IF OTHER MENU EXISTS UNCOMENT THIS --}}
-                        {{-- @can('company-edit') --}}
                         <li>
                           <a href="{{ route('admin.companies.edit', $company->name) }}" class="dropdown-item">
                             Edit
                           </a>
                         </li>
-                        {{-- @endcan --}}
                       </ul>
                     </div>
                   @endcanany
@@ -77,7 +74,6 @@
                 @else
                   <td>No Data</td>
                 @endif
-
               </tr>
             @endforeach
           </tbody>
