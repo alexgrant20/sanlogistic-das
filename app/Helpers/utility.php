@@ -155,8 +155,8 @@ function genereateNotifaction(string $notifType, string $subject = "", string $a
   }
 
   return [
-    'message' => $message,
-    'alert-type' => $notifType,
+    'toastr-message' => $message,
+    'toastr-type' => $notifType,
   ];
 }
 

@@ -1,9 +1,9 @@
-@extends('admin.layouts.index-custom')
+@extends('admin.layouts.main')
 
-@section('add_headJS')
+@section('headJS')
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      const table = $('table[data-display="datatables"]').DataTable({
+      const table = $('#activities').DataTable({
         responsive: true,
         columnDefs: [{
           targets: [0],
@@ -129,13 +129,11 @@
       <h4 class="text-primary fw-bold">Table</h4>
       <hr>
       <div class="table-responsive">
-        <table class="table table-responsive table-hover text-center  table-dark nowrap" style="width: 100%"
-          data-display="datatables">
+        <table class="table table-responsive table-hover text-center table-dark nowrap" style="width: 100%" id="activities">
           <thead>
             <tr class="header">
               <th>ID</th>
               <th></th>
-              {{-- <th><input class="form-check-input" type="checkbox" onclick="checkAll(this, 'checkbox')"></th> --}}
               <th></th>
               <th>Tanggal</th>
               <th>Nomor DO</th>
