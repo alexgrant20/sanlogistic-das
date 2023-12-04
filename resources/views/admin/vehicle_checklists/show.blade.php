@@ -1,4 +1,4 @@
-@extends('admin.layouts.index-custom')
+@extends('admin.layouts.main')
 
 @php
 function checkChecklist($checklist)
@@ -97,7 +97,7 @@ function checkChecklist($checklist)
           <div class="card rounded h-100">
             <div class="card-body">
               <div class="w-100">
-                <table class="table table-striped table-dark text-center nowrap" data-display="datatables">
+                <table class="table table-striped table-dark text-center nowrap" id="activities">
                   <thead>
                     <tr>
                       <th></th>
@@ -241,10 +241,10 @@ function checkChecklist($checklist)
   </div>
 @endsection
 
-@section('add_footJS')
+@section('footJS')
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      const table = $('table').DataTable({
+      const table = $('#activities').DataTable({
         order: [],
         responsive: true,
         columnDefs: [{

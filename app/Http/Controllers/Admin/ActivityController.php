@@ -304,10 +304,10 @@ class ActivityController extends Controller
   public function showLog(Activity $activity)
   {
     $activityStatus = DB::table('activity_statuses')
-      ->leftJoin('users', 'activity_statuses.created_by', '=', 'users.id')
-      ->leftJoin('people', 'users.person_id', '=', 'people.id')
-      ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-      ->leftJoin('roles', 'roles.id', '=', 'model_has_roles.role_id')
+      ->leftJoin('users', 'activity_statuses.created_by', 'users.id')
+      ->leftJoin('people', 'users.person_id', 'people.id')
+      ->leftJoin('model_has_roles', 'users.id', 'model_has_roles.model_id')
+      ->leftJoin('roles', 'roles.id', 'model_has_roles.role_id')
       ->where('activity_id', $activity->id)
       ->get(['status', 'people.name', 'activity_statuses.created_at', 'roles.name AS role']);
 
@@ -337,16 +337,17 @@ class ActivityController extends Controller
     $q_status = $request->status;
 
     $activities = DB::table('activities')
-      ->leftJoin('users', 'activities.user_id', '=', 'users.id')
-      ->leftJoin('people', 'users.person_id', '=', 'people.id')
+      ->leftJoin('users', 'activities.user_id', 'users.id')
+      ->leftJoin('people', 'users.person_id', 'people.id')
       ->leftJoin('projects', 'people.project_id', 'projects.id')
-      ->leftJoin('activity_statuses', 'activities.activity_status_id', '=', 'activity_statuses.id')
-      ->leftJoin('activity_payments', 'activity_statuses.id', '=', 'activity_payments.activity_status_id')
+      ->leftJoin('activity_statuses', 'activities.activity_status_id', 'activity_statuses.id')
+      ->leftJoin('activity_payments', 'activity_statuses.id', 'activity_payments.activity_status_id')
       ->whereIn('activity_statuses.status', ['pending', 'rejected'])
       ->get(
         [
           'activities.id',
           'activities.departure_date',
+          'activities.type',
           'do_number',
           'people.name',
           'projects.name AS project_name',

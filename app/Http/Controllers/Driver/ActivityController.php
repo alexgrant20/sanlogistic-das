@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Driver\StoreActivityRequest;
 use App\Http\Requests\Driver\StorePublicTransportActivityRequest;
 use App\Http\Requests\Driver\UpdateActivityRequest;
+use App\Interface\ResponseCodeInterface;
 use App\Models\VehicleChecklist;
 use App\Models\VehicleChecklistImage;
 use App\Models\VehicleLastStatus;
@@ -18,7 +19,7 @@ use App\Transaction\Constants\NotifactionTypeConstant;
 use App\Utilities\DriverUtility;
 use Illuminate\Http\Request;
 
-class ActivityController extends Controller
+class ActivityController extends Controller implements ResponseCodeInterface
 {
   private $activityService;
   private $driverUtility;
@@ -83,10 +84,15 @@ class ActivityController extends Controller
 
   public function store(StoreActivityRequest $request)
   {
-    $activity = $this->activityService->store($request);
+    try {
+      $activity = $this->activityService->store($request);
+    } catch (\Exception $e) {
+      $errorCode = $e->getCode();
 
-    if (!$activity) {
-      return to_route('driver.activity.create')->withInput();
+      $route = $errorCode == self::ERROR_REDIRECT_INDEX ? to_route('index') : back();
+      $errorMessage = 'Aktivitas Gagal Dibuat, Terjadi Kesalahan!';
+
+      return $route->with('error-swal', $errorMessage);
     }
 
     $request->session()->put('activity_id', $activity->id);

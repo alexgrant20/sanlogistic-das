@@ -1,4 +1,4 @@
-@extends('admin.layouts.index')
+@extends('admin.layouts.main')
 
 @section('container')
    <div class="page-content">
@@ -91,12 +91,6 @@
                                     <i class="fa-solid fa-location-dot"></i>
                                  </a>
                               @endif
-
-                              {{-- @can('user-role-assign')
-                      <a href="{{ route('admin.users.show', $person->user->id) }}" class="badge bg-primary fs-6">
-                        <i class="bi bi-person-plus-fill"></i>
-                      </a>
-                    @endcan --}}
                            @else
                               <a href="{{ route('admin.users.create', $person->id) }}" class="badge bg-info fs-6">
                                  <i class="bi bi-person-plus-fill"></i>

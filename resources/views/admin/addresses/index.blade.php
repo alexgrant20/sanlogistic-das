@@ -1,6 +1,6 @@
-@extends('admin.layouts.index')
+@extends('admin.layouts.main')
 
-@section('add_headJS')
+@section('headJS')
   <script type='text/javascript' src="{{ asset('/vendor/leaflet/js/leaflet/leaflet.js') }}"></script>
   <script type='text/javascript' src="{{ asset('/vendor/leaflet/js/gestureHandling/leaflet-gesture-handling.min.js') }}">
   </script>
@@ -11,7 +11,7 @@
   </script>
 @endsection
 
-@section('add_headCSS')
+@section('headCSS')
   <link rel="stylesheet" type="text/css" href="{{ asset('/vendor/leaflet/css/esriLeaflet/esri-leaflet-geocoder-old.css') }}">
   <link rel="stylesheet" href="{{ asset('/vendor/leaflet/css/gestureHandling/leaflet-gesture-handling.min.css') }}"
     type="text/css">
@@ -20,7 +20,7 @@
 
 @section('container')
   <div class="page-content">
-    <!-- Page Header-->
+
     <div class="bg-dash-dark-2 py-4">
       <div class="container-fluid">
         <h2 class="h5 mb-0">Addresses</h2>
@@ -77,14 +77,11 @@
                         <i class="bi bi-three-dots"></i>
                       </button>
                       <ul class="dropdown-menu">
-                        {{-- IF OTHER MENU EXISTS UNCOMENT THIS --}}
-                        {{-- @can('address-edit') --}}
                         <li>
                           <a href="{{ route('admin.addresses.edit', $address->name) }}" class="dropdown-item">
                             Edit
                           </a>
                         </li>
-                        {{-- @endcan --}}
                       </ul>
                     </div>
                   @endcan
@@ -101,6 +98,9 @@
       </div>
     </section>
   </div>
+@endsection
+
+@section('footJS')
   <script>
     const map = L.map('map', {
       scrollWheelZoom: false,
