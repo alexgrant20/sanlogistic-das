@@ -1,12 +1,11 @@
 <script>
   function generateSwalPayload(title, message, icon) {
-    let form = document.createElement("div");
+    const form = document.createElement("div");
     form.innerHTML = message;
     return {
       icon,
       title,
-      html: true,
-      content: form,
+      html: form,
       confirmButtonText: "Tutup"
     }
   }
