@@ -263,8 +263,7 @@ class ActivityController extends Controller implements ResponseCodeInterface
       $vehicleChecklistImage->save();
     }
 
-    return to_route('index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'created'));
+    return to_route('index')->with('success-swal', 'Aktivitas Berhasil Dibuat');
   }
 
   public function edit(Activity $activity)
@@ -281,17 +280,24 @@ class ActivityController extends Controller implements ResponseCodeInterface
 
   public function update(UpdateActivityRequest $request, Activity $activity)
   {
-    $isUpdated = $this->activityService->update($request, $activity);
+    try {
+      $this->activityService->update($request, $activity);
 
-    if (!$isUpdated) {
-      return to_route('index')
-        ->with(genereateNotifaction(NotifactionTypeConstant::ERROR, 'activity', 'finished'));
+      $request->session()->forget('activity_id');
+    } catch (\Exception $e) {
+      $errorMessage = "Aktivitas Gagal Diselesaikan, Silahkan Hubungi Admin!";
+
+      if($e->getCode() == self::ERROR_REDIRECT_INDEX)
+      {
+        $errorMessage = $e->getMessage();
+
+        $request->session()->forget('activity_id');
+      }
+
+      return to_route('index')->with('error-swal', $errorMessage);
     }
 
-    $request->session()->forget('activity_id');
-
-    return to_route('index')
-      ->with(genereateNotifaction(NotifactionTypeConstant::SUCCESS, 'activity', 'finished'));
+    return to_route('index')->with('success-swal', 'Aktivitas Berhasil Diselesaikan');
   }
 
   public function createPublicTransport()

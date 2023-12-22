@@ -318,18 +318,19 @@ class ActivityController extends Controller
   {
     $activity_id = $request->activity_id;
 
-    $activity = Activity::where('id', $activity_id)
+    $activity = Activity::find($activity_id)
       ->whereRelation('activityStatus', 'status', 'draft')
+      ->lockForUpdate()
       ->first();
 
-    if (!$activity) return back()->with('error-swal', 'Activity not exists');
+    if (!$activity) return back()->with('error-swal', 'Activity Not Exists');
 
     ActivityStatus::create([
       'status' => 'cancel',
       'activity_id' => $activity->id,
     ]);
 
-    return back()->with('success-swal', 'Activity successfully canceled');
+    return back()->with('success-swal', 'Activity Successfully Canceled');
   }
 
   public function approval(Request $request)
