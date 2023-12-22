@@ -1,12 +1,12 @@
 <script>
   function generateSwalPayload(title, message, icon) {
-    let form = document.createElement("div");
+    const form = document.createElement("div");
     form.innerHTML = message;
     return {
       icon,
+      color: "#ddd",
       title,
-      html: true,
-      content: form,
+      html: form,
       confirmButtonText: "Tutup"
     }
   }
@@ -20,7 +20,7 @@
 
 @if ($message = Session::get('error-swal'))
   <script>
-    Swal.fire("Failed", `{!! $message !!}`, "error");
+    Swal.fire(generateSwalPayload("Failed", `{!! $message !!}`, "error"));
   </script>
 @endif
 
