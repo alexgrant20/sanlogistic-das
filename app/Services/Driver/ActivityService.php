@@ -179,8 +179,10 @@ class ActivityService implements CompanyInterface, ActivityStatusInterface, Resp
     try {
       $activity = Activity::lockForUpdate()->find($activity->id);
 
-      if ($activity->parent_activity_id) {
-        throw new \Exception("", $userValidationError);
+      $statusIsNotDraft = $activity->activityStatus->status != 'draft';
+
+      if ($activity->parent_activity_id || $statusIsNotDraft) {
+        throw new \Exception("Aktivitas Sudah Dikerjakan / Dibatalkan!", self::ERROR_REDIRECT_INDEX);
       }
 
       $vehicle = $activity->vehicle;
@@ -206,12 +208,11 @@ class ActivityService implements CompanyInterface, ActivityStatusInterface, Resp
     } catch (\Exception $e) {
       DB::rollBack();
 
-      if ($e->getCode() == $userValidationError) {
-        return true;
+      if ($e->getCode() != $userValidationError) {
+        ErrorLog::createLog( $e);
       }
 
-      ErrorLog::createLog($e);
-      return false;
+      throw ($e);
     }
 
     DB::commit();
