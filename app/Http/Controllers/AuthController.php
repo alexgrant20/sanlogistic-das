@@ -46,7 +46,7 @@ class AuthController extends Controller
       Auth::login($user);
       $request->session()->regenerate();
 
-      if ($user->hasRole('driver')) {
+      if ($user->hasRole(['driver', 'mechanic'])) {
         $activity = Activity::whereRelation('activityStatus', 'status', 'draft')
           ->where('user_id', $user->id)
           ->where('created_by', $user->id)
