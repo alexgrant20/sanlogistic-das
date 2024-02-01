@@ -195,7 +195,7 @@ class ActivityController extends Controller
     ]);
   }
 
-  public function update($request, Activity $activity)
+  public function update(UpdateActivityRequest $request, Activity $activity)
   {
     $images = collect($request->allFiles());
     $timestamp = now()->timestamp;
