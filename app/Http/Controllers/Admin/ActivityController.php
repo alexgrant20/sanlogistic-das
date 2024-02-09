@@ -195,7 +195,7 @@ class ActivityController extends Controller
     ]);
   }
 
-  public function update($request, Activity $activity)
+  public function update(UpdateActivityRequest $request, Activity $activity)
   {
     $images = collect($request->allFiles());
     $timestamp = now()->timestamp;
@@ -296,9 +296,8 @@ class ActivityController extends Controller
     ]);
 
     $timestamp = now()->timestamp;
-    $params = $request->input('ids');
-    $ids = preg_split("/[,]/", $params);
-    return Excel::download(new ActivityExport($ids, $request->start_date, $request->end_date), "activities_export_{$timestamp}.xlsx");
+
+    return Excel::download(new ActivityExport($request->start_date, $request->end_date, $request->use_incentive), "activities_export_{$timestamp}.xlsx");
   }
 
   public function showLog(Activity $activity)
