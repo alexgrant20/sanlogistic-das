@@ -24,14 +24,19 @@ class ActivityRecapExport implements FromCollection, WithHeadings, ShouldAutoSiz
       ->join('people', 'users.person_id', 'people.id')
       ->join('activity_statuses', 'activities.activity_status_id', 'activity_statuses.id')
       ->join('activity_payments', 'activity_statuses.id', 'activity_payments.activity_status_id')
-      ->selectRaw("projects.name as project_name, people.name as person_name")
-      ->selectRaw("SUM(activity_payments.bbm_amount) total_bbm")
-      ->selectRaw("SUM(activity_payments.toll_amount) total_toll")
-      ->selectRaw("SUM(activity_payments.parking_amount) total_park")
-      ->selectRaw("SUM(activity_payments.load_amount) + SUM(activity_payments.unload_amount) total_load")
-      ->selectRaw("SUM(activity_payments.maintenance_amount) total_maintenance")
-      ->selectRaw("SUM(activity_payments.courier_amount) total_courier")
-      ->selectRaw("SUM(activity_payments.bbm_amount) + SUM(activity_payments.toll_amount) + SUM(activity_payments.parking_amount) + SUM(activity_payments.load_amount) + SUM(activity_payments.unload_amount) + SUM(activity_payments.maintenance_amount) + SUM(activity_payments.courier_amount)  as total")
+      ->leftJoin('activity_incentives AS ai', 'ai.activity_id', 'activities.id')
+      ->selectRaw("
+          projects.name as project_name, people.name as person_name,
+          SUM(activity_payments.bbm_amount) total_bbm,
+          SUM(activity_payments.toll_amount) total_toll,
+          SUM(activity_payments.parking_amount) total_park,
+          SUM(activity_payments.load_amount) + SUM(activity_payments.unload_amount) total_load,
+          SUM(activity_payments.maintenance_amount) total_maintenance,
+          SUM(activity_payments.courier_amount) total_courier,
+          SUM(activity_payments.bbm_amount) + SUM(activity_payments.toll_amount) + SUM(activity_payments.parking_amount) + SUM(activity_payments.load_amount) + SUM(activity_payments.unload_amount) + SUM(activity_payments.maintenance_amount) + SUM(activity_payments.courier_amount)  as total,
+          incentive,
+          incentive_with_deposit
+      ")
       ->where('activities.project_id', $this->params['project_id'])
       ->where('activity_statuses.status', 'approved');
 
@@ -59,7 +64,9 @@ class ActivityRecapExport implements FromCollection, WithHeadings, ShouldAutoSiz
       'TOTAL COURIER',
       'TOTAL',
       'TOTAL_TRIP',
-      'AVERAGE'
+      'AVERAGE',
+      'INCENNTIVE',
+      'INCENNTIVE WITH RATE',
     ];
   }
 }
