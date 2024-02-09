@@ -11,15 +11,15 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
-  private $ids;
   private $startDate;
   private $endDate;
+  private $useIncentive;
 
-  public function __construct(array $ids, $startDate, $endDate)
+  public function __construct($startDate, $endDate, $useIncentive = false)
   {
-    $this->ids = $ids;
     $this->startDate = $startDate;
     $this->endDate = $endDate;
+    $this->useIncentive = $useIncentive;
   }
 
   public function collection()
@@ -75,14 +75,13 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
         activities.parent_activity_id,
         ai.total_distance,
         CASE WHEN ai.is_half_trip = 1 THEN 'half'
-        WHEN ai.is_half_trip = 0 THEN 'full'
-        END,
-        incentive,
-        incentive_with_deposit,
+        WHEN ai.is_half_trip = 0 THEN 'full' END,"
+        . ($this->useIncentive ? 'incentive,incentive_with_deposit,' : '').
+        "
         nik,
-        CASE 
+        CASE
          WHEN activity_statuses.status = 'paid' THEN activity_statuses.created_at
-         ELSE '' 
+         ELSE ''
         END AS activity_paid_date
         "
       )
@@ -107,59 +106,59 @@ class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
 
   public function headings(): array
   {
-    return [
-      'NO DO',
-      'DODATE',
-      'DOMONTH',
-      'ORIGIN',
-      'DDATE',
-      'DMONTH',
-      'DTIME',
-      'DODOMETER',
-      'DESTINATION',
-      'ADATE',
-      'AMONTH',
-      'ATIME',
-      'AODOMETER',
-      'VEHICLE REG',
-      'DRIVER',
-      'CUSTOMER',
-      'FREIGHT',
-      'PRODUCT NAME',
-      'QUANTITY',
-      'FREIGHT RETURNED',
-      'FREIGHT LOST',
-      'VOLUMEPENGISIAN',
-      'DELIVERY CATEGORY',
-      'DELIVERY REMARKS I',
-      'DELIVERY REMARKS II',
-      'Fuel Note',
-      'FUEL EXPENSES',
-      'TOLL ROAD EXPENSES',
-      'PARKING EXPENSES',
-      'MAINTENANCE',
-      'LOADING EXPENSES',
-      'UNLOADING EXPENSES',
-      'Transport',
-      'FRETRIBUTION EXPENSES',
-      'IFRETRIBUTION EXPENSES',
-      'ZONE',
-      'DCODE',
-      'DISTANCE',
-      'TOTAL COST',
-      'PROJECT',
-      'DDateTime',
-      'AREA',
-      'DURATION',
-      'AVGSPEED',
-      'ACTIVITY ID',
-      'PARENT ACTIVITY ID',
-      'DISTANCE',
-      'TRIP',
-      'INCENNTIVE',
-      'INCENNTIVE WITH RATE',
-      'NIK',
-      'PAID DATE'
-    ];
+    $headers =
+    "NO DO,
+    DODATE,
+    DOMONTH,
+    ORIGIN,
+    DDATE,
+    DMONTH,
+    DTIME,
+    DODOMETER,
+    DESTINATION,
+    ADATE,
+    AMONTH,
+    ATIME,
+    AODOMETER,
+    VEHICLE REG,
+    DRIVER,
+    CUSTOMER,
+    FREIGHT,
+    PRODUCT NAME,
+    QUANTITY,
+    FREIGHT RETURNED,
+    FREIGHT LOST,
+    VOLUMEPENGISIAN,
+    DELIVERY CATEGORY,
+    DELIVERY REMARKS I,
+    DELIVERY REMARKS II,
+    Fuel Note,
+    FUEL EXPENSES,
+    TOLL ROAD EXPENSES,
+    PARKING EXPENSES,
+    MAINTENANCE,
+    LOADING EXPENSES,
+    UNLOADING EXPENSES,
+    Transport,
+    FRETRIBUTION EXPENSES,
+    IFRETRIBUTION EXPENSES,
+    ZONE,
+    DCODE,
+    DISTANCE,
+    TOTAL COST,
+    PROJECT,
+    DDateTime,
+    AREA,
+    DURATION,
+    AVGSPEED,
+    ACTIVITY ID,
+    PARENT ACTIVITY ID,
+    DISTANCE,
+    TRIP,"
+    . ($this->useIncentive ? 'INCENNTIVE, INCENNTIVE WITH RATE,' : '').
+    "NIK,
+    PAID DATE";
+
+    return explode(",", str_replace(array("\r", "\n", "  "), '', $headers));
   }
 }
