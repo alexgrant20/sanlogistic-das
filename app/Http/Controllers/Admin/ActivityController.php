@@ -317,7 +317,8 @@ class ActivityController extends Controller
   {
     $activity_id = $request->activity_id;
 
-    $activity = Activity::find($activity_id)
+
+    $activity = Activity::where('id', $activity_id)
       ->whereRelation('activityStatus', 'status', 'draft')
       ->lockForUpdate()
       ->first();
@@ -329,7 +330,7 @@ class ActivityController extends Controller
       'activity_id' => $activity->id,
     ]);
 
-    return back()->with('success-swal', 'Activity Successfully Canceled');
+    return response()->json();
   }
 
   public function approval(Request $request)
@@ -361,7 +362,7 @@ class ActivityController extends Controller
         ]
       );
 
-    $activities_filtered = empty($q_status) ?  $activities : $activities->filter(fn ($item) => $item->status === $q_status);
+    $activities_filtered = empty($q_status) ?  $activities : $activities->filter(fn($item) => $item->status === $q_status);
 
     return view('admin.finance.acceptance.index', [
       'activities' => $activities,
