@@ -8,8 +8,8 @@
    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no,maximum-scale=1, user-scalable=0">
 
    <!-- Script -->
-   <script src="https://kit.fontawesome.com/2d78a8b052.js" crossorigin="anonymous"></script>
    {{-- theme stylesheet --}}
+   <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
    <link rel="stylesheet" href="{{ asset('/css/style.default.css') }}" id="theme-stylesheet">
    {{-- Custom Stylesheet --}}
    <link rel="stylesheet" href="{{ asset('/css/custom.css') }}">
@@ -62,34 +62,18 @@
          </div>
       </div>
    </div>
-</body>
 
+   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+   <script>
+      $("form").on("submit", () => {
+         $("button").attr("disabled", true);
+         $("input, textarea").attr("readonly", true);
+         return true;
+      });
+   </script>
+
+   @include('layouts.toastr')
+</body>
 </html>
 
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-<script>
-   $("form").on("submit", () => {
-      $("button").attr("disabled", true);
-      $("input, textarea").attr("readonly", true);
-      return true;
-   });
-
-   @if (Session::has('message'))
-      var type = "{{ Session::get('alert-type', 'info') }}"
-      switch (type) {
-         case 'info':
-            toastr.info(" {{ Session::get('message') }} ");
-            break;
-         case 'success':
-            toastr.success(" {{ Session::get('message') }} ");
-            break;
-         case 'warning':
-            toastr.warning(" {{ Session::get('message') }} ");
-            break;
-         case 'error':
-            toastr.error(" {{ Session::get('message') }} ");
-            break;
-      }
-   @endif
-</script>
