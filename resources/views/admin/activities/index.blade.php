@@ -69,11 +69,11 @@
 
          <h4 class="text-primary fw-bold">Table</h4>
          <hr>
-         <div class="table-responsive">
+         <div class="table-responsive" style="max-width: 100%; overflow:hidden;">
             <table class="table table-striped table-dark text-center" id="activities">
                <thead>
                   <tr class="header">
-                     <th>ID</th>
+                     <th></th>
                      <th>Tanggal</th>
                      <th>Nama Pengendara</th>
                      <th>Project</th>
@@ -99,10 +99,11 @@
          $('#activities').DataTable({
             processing: true,
             serverSide: true,
-            autoWidth: false,
+            scrollX: true, // Enable horizontal scrolling
+            autoWidth: false, // Disable auto-adjusting column width to prevent overflow
             ajax: "{{ route('admin.activities.list', $queryStatus) }}",
             columns: [{
-                  data: 'action',
+                  data: 'id',
                   searchable: 'false',
                   orderable: false,
                   render: function(row, display, data) {
@@ -110,41 +111,40 @@
                      edit = edit.replace('id', data.id);
 
                      let templateActionForm = `
-              <div class="dropdown">
-                <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots"></i>
-                </button>
-                <ul class="dropdown-menu">
-                    @can('activity-edit')
-                      <li>
-                          <a href="${edit}" class="dropdown-item">
-                            Edit
-                          </a>
-                      </li>
-                    @endcan
-                    <li>
-                      <form method="post" class="logForm">
-                        @csrf
-                        <input type="hidden" name="id" value=${data.id} />
-                        <button class="dropdown-item">
-                            History Log
-                        </button>
-                      </form>
-                    </li>
-                    {addon}
-                </ul>
-              </div>`
+                        <div class="dropdown">
+                           <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              <i class="bi bi-three-dots"></i>
+                           </button>
+                           <ul class="dropdown-menu">
+                              @can('activity-edit')
+                                 <li>
+                                    <a href="${edit}" class="dropdown-item">
+                                       Edit
+                                    </a>
+                                 </li>
+                              @endcan
+                              <li>
+                                 <form method="post" class="logForm">
+                                    @csrf
+                                    <input type="hidden" name="id" value=${data.id} />
+                                    <button class="dropdown-item">
+                                       History Log
+                                    </button>
+                                 </form>
+                              </li>
+                              {addon}
+                           </ul>
+                        </div>`
 
                      let replaceTemp = '';
 
                      if (data.status === 'draft') {
                         replaceTemp = `
-                  <li>
-                    <button class="dropdown-item abort-btn" data-id="${data.id}">
-                        Abort Activity
-                    </button>
-                  </li>
-                `
+                        <li>
+                        <button class="dropdown-item abort-btn" data-id="${data.id}">
+                              Abort Activity
+                        </button>
+                        </li>`
                      }
 
                      templateActionForm = templateActionForm.replace('{addon}', replaceTemp);

@@ -282,3 +282,9 @@ input[data-autocompleted] {
 .btn-hover:hover {
   filter: brightness(85%);
 }
+
+.content-container {
+  flex-grow: 1; /* Take the remaining space dynamically */
+  min-width: 0; /* Prevents content from forcing the container to expand */
+  overflow-x: auto; /* Allow scrolling if content is too wide */
+}

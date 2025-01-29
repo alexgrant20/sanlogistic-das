@@ -123,7 +123,6 @@
                 class="form-control form-control-lg form-dark" disabled>
             </div>
           </div>
-
         </div>
         <div class="col-xxl-4 col-md-6 order-xl-1">
           <h4>Data Input</h4>
@@ -133,15 +132,11 @@
               <label for="arrival_location_id" class="form-label fs-5 text-primary">Lokasi Tujuan</label>
               <select id="arrival_location_id" name="arrival_location_id"
                 class="form-dark form-select form-select-lg @error('arrival_location_id') is-invalid @enderror">
+                <option value="" hidden></option>
                 @foreach ($arrival_addresses as $arrival_address)
-                  @if ($arrival_address->address->id == old('arrival_location_id', $activity->arrival_location_id))
-                    <option value="{{ $arrival_address->address->id }}" selected>
-                      {{ $arrival_address->address->name }}
-                    </option>
-                  @else
-                    <option value="{{ $arrival_address->address->id }}">{{ $arrival_address->address->name }}
-                    </option>
-                  @endif
+                  <option value="{{ $arrival_address->address->id }}" @selected($arrival_address->address->id == $activity->arrival_location_id)>
+                    {{ $arrival_address->address->name }}
+                  </option>
                 @endforeach
               </select>
 

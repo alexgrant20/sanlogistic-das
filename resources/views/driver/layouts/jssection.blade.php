@@ -26,7 +26,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 
 {{-- FontAwesome CSS --}}
-<script src="https://kit.fontawesome.com/2d78a8b052.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
 
 <script src="{{ asset('/js/function.js') }}" defer></script>
 <script src="{{ asset('/js/front.js') }}" defer></script>

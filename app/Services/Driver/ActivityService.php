@@ -2,6 +2,7 @@
 
 namespace App\Services\Driver;
 
+use App\Helpers\ActivityHelper;
 use App\Interface\ActivityStatusInterface;
 use App\Interface\CompanyInterface;
 use App\Interface\ResponseCodeInterface;
@@ -23,7 +24,12 @@ use Illuminate\Support\Facades\DB;
 class ActivityService implements CompanyInterface, ActivityStatusInterface, ResponseCodeInterface
 {
   private $needToCaclculateIncentive = false;
-  private $isHalfTrip = false;
+  private $activityHelper;
+
+  public function __construct(ActivityHelper $activityHelper)
+  {
+    $this->activityHelper = $activityHelper;
+  }
 
   private function setActivityConfigAndGetType($activity, $arrivalType, $departureType, &$totalCustTrip)
   {
@@ -51,7 +57,6 @@ class ActivityService implements CompanyInterface, ActivityStatusInterface, Resp
         $this->needToCaclculateIncentive = true;
 
         if ($departureType == "STATION") {
-          $this->isHalfTrip = true;
           $activityType = 'manuver';
         } else {
           if ($totalCustTrip != 0) {
@@ -115,12 +120,12 @@ class ActivityService implements CompanyInterface, ActivityStatusInterface, Resp
         ->status(self::STATUS_DRAFT)
         ->get();
 
-      if($userActiveActivty->isNotEmpty())  {
+      if ($userActiveActivty->isNotEmpty()) {
         throw new Exception(
-        "User memiliki usulan aktif dengan ID: " . $userActiveActivty->pluck('id')->join(', '),
-        self::ERROR_REDIRECT_INDEX
-      );
-    }
+          "User memiliki usulan aktif dengan ID: " . $userActiveActivty->pluck('id')->join(', '),
+          self::ERROR_REDIRECT_INDEX
+        );
+      }
 
       $storeAdditionalPayload = [
         'do_date' => now(),
@@ -209,7 +214,7 @@ class ActivityService implements CompanyInterface, ActivityStatusInterface, Resp
       DB::rollBack();
 
       if ($e->getCode() != $userValidationError) {
-        ErrorLog::createLog( $e);
+        ErrorLog::createLog($e);
       }
 
       throw ($e);
@@ -219,65 +224,11 @@ class ActivityService implements CompanyInterface, ActivityStatusInterface, Resp
     return true;
   }
 
-  private function getTotalDistance($parentActivityId)
-  {
-    $activities = Activity::where('id', $parentActivityId)
-      ->orWhere('parent_activity_id', $parentActivityId)
-      ->get();
-
-    $totalDistance = 0;
-
-    $halfTripCriteria = [0, $activities->count() - 1];
-
-    $loop = 0;
-
-    $activities->each(function ($activity) use (&$totalDistance, &$loop, $halfTripCriteria) {
-
-      if (($activity->do_number == "PT" && in_array($loop, $halfTripCriteria))) {
-        $this->isHalfTrip = true;
-      }
-
-      if (
-        in_array(@$activity->vehicle->owner_id, [self::BESTINDO, self::SURYA_ANUGERAH]) &&
-        $activity->type === "maintenance"
-      ) {
-        return;
-      }
-
-      $totalDistance += $activity->arrival_odo - $activity->departure_odo;
-
-      $loop++;
-    });
-
-    return $totalDistance;
-  }
-
-  private function getIncentiveType($totalDistance)
-  {
-    if ($this->isHalfTrip) $totalDistance *= 2;
-
-    return IncentiveRate::where('range', '>=', $totalDistance)
-      ->orderBy('incentive', 'asc')
-      ->first();
-  }
-
   private function createActivityIncentiveRate($parentActivityId)
   {
-    $totalDistance = $this->getTotalDistance($parentActivityId);
-    $incentiveType = $this->getIncentiveType($totalDistance);
+    $incentiveRatePayload = $this->activityHelper->getActivityIncentiveRatePayload($parentActivityId);
 
-    $divider = $this->isHalfTrip ? 2 : 1;
-
-    $incentive = $incentiveType ? ($incentiveType->incentive / $divider) : 9;
-    $incentiveWithDepsoit = $incentiveType ? ($incentiveType->incentive_with_deposit / $divider) : 9;
-
-    ActivityIncentive::create([
-      'activity_id' => $parentActivityId,
-      'total_distance' => $totalDistance,
-      'incentive' => $incentive,
-      'incentive_with_deposit' => $incentiveWithDepsoit,
-      'is_half_trip' => $this->isHalfTrip
-    ]);
+    ActivityIncentive::create($incentiveRatePayload);
   }
 
   private function finalizedActivityStep($request, $activity, $updatedActivityPayload, $totalCustTrip)

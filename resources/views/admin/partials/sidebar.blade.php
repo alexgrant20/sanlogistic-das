@@ -15,7 +15,7 @@
 
     <li class="sidebar-item {{ Request::is('/') ? 'active' : '' }}">
       <a class="sidebar-link" href="{{ route('index') }}">
-        <i class="bi bi-house-door svg-icon svg-icon-sm svg-icon-heavy"></i>
+        <i class="fa-solid fa-house svg-icon svg-icon-sm"></i>
         <span>Home</span>
       </a>
     </li>
@@ -26,7 +26,7 @@
     @canany(['address-create', 'address-view'])
       <li class="sidebar-item {{ Request::is('admin/addresses*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#addressesDropDown" data-bs-toggle="collapse">
-          <i class="bi bi-cursor svg-icon svg-icon-sm svg-icon-heavy"></i>
+          <i class="fa-solid fa-address-book svg-icon svg-icon-sm"></i>
           <span>Addresses</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/addresses*') ? 'show' : '' }}" id="addressesDropDown">
@@ -53,7 +53,7 @@
     @canany(['activity-create', 'activity-view', 'finance-acceptance'])
       <li class="sidebar-item {{ Request::is('admin/activities*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#activitiesDropDown" data-bs-toggle="collapse">
-          <i class="bi bi-list-task svg-icon svg-icon-sm svg-icon-heavy"></i>
+          <i class="fa-solid fa-memo-circle-info svg-icon svg-icon-sm"></i>
           <span>Activities</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/activities*') ? 'show' : '' }}" id="activitiesDropDown">
@@ -88,7 +88,7 @@
     @canany(['person-create', 'person-view'])
       <li class="sidebar-item {{ Request::is('admin/people*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#peopleDropDown" data-bs-toggle="collapse">
-          <i class="bi bi-people-fill svg-icon svg-icon-sm svg-icon-heavy"></i>
+          <i class="fa-regular fa-users svg-icon svg-icon-sm"></i>
           <span>People</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/people*') ? 'show' : '' }}" id="peopleDropDown">
@@ -115,7 +115,7 @@
     @canany(['user-role-create', 'user-role-view'])
       <li class="sidebar-item {{ Request::is('admin/roles*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#rolesDropDown" data-bs-toggle="collapse">
-          <i class="fa-solid fa-user-gear svg-icon svg-icon-sm svg-icon-heavy"></i>
+          <i class="fa-solid fa-user-gear svg-icon svg-icon-sm"></i>
           <span>Roles</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/roles*') ? 'show' : '' }}" id="rolesDropDown">
@@ -140,7 +140,7 @@
 
       {{-- <li class="sidebar-item {{ Request::is('admin/permission*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#permissionDropDown" data-bs-toggle="collapse">
-          <i class="fa-solid fa-gavel svg-icon svg-icon-sm svg-icon-heavy"></i>
+          <i class="fa-solid fa-gavel svg-icon svg-icon-sm"></i>
           <span>Permission</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/permission*') ? 'show' : '' }}" id="permissionDropDown">
@@ -163,7 +163,7 @@
     @canany(['vehicle-create', 'vehicle-view', 'vehicle-condition-view'])
       <li class="sidebar-item {{ Request::is('admin/vehicles*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#vehiclesDropDown" data-bs-toggle="collapse">
-          <i class="bi bi-truck svg-icon svg-icon-sm svg-icon-heavy"></i>
+          <i class="fa-solid fa-truck svg-icon svg-icon-sm"></i>
           <span>Vehicles</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/vehicles*') ? 'show' : '' }}" id="vehiclesDropDown">
@@ -198,7 +198,7 @@
     @canany(['company-create', 'company-view'])
       <li class="sidebar-item {{ Request::is('admin/companies*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#companiesDropDown" data-bs-toggle="collapse">
-          <i class="bi bi-building svg-icon svg-icon-sm svg-icon-heavy"></i>
+          <i class="fa-regular fa-building-memo svg-icon svg-icon-sm"></i>
           <span>Companies</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/companies*') ? 'show' : '' }}" id="companiesDropDown">
@@ -225,7 +225,7 @@
     @canany(['project-create', 'project-view'])
       <li class="sidebar-item {{ Request::is('admin/projects*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#projectsDropDown" data-bs-toggle="collapse">
-          <i class="bi bi-kanban svg-icon svg-icon-sm svg-icon-heavy"></i>
+          <i class="fa-solid fa-square-kanban svg-icon svg-icon-sm"></i>
           <span>Projects</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/projects*') ? 'show' : '' }}" id="projectsDropDown">
@@ -252,7 +252,7 @@
     @canany(['finance-payment'])
       <li class="sidebar-item {{ Request::is('admin/finances*') ? 'active' : '' }}">
         <a class="sidebar-link" href="#financesDropDown" data-bs-toggle="collapse">
-          <i class="bi bi-currency-dollar svg-icon svg-icon-sm svg-icon-heavy"></i>
+          <i class="fa-light fa-chart-mixed-up-circle-dollar svg-icon svg-icon-sm"></i>
           <span>Finance</span>
         </a>
         <ul class="collapse list-unstyled {{ Request::is('admin/finances*') ? 'show' : '' }}" id="financesDropDown">
@@ -271,7 +271,7 @@
 
     <li class="sidebar-item {{ Request::is('admin/areas*') ? 'active' : '' }}">
       <a class="sidebar-link" href="#areasDropDown" data-bs-toggle="collapse">
-        <i class="bi bi-geo svg-icon svg-icon-sm svg-icon-heavy"></i>
+        <i class="fa-solid fa-map-location svg-icon svg-icon-sm"></i>
         <span>Area</span>
       </a>
       <ul class="collapse list-unstyled {{ Request::is('admin/areas*') ? 'show' : '' }}" id="areasDropDown">

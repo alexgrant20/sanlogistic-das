@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Exports\ActivityExport;
+use App\Helpers\ActivityHelper;
 use App\Http\Requests\Admin\StoreActivityRequest;
 use App\Http\Requests\Admin\UpdateActivityRequest;
 use App\Models\Activity;
 use App\Imports\ActivityImport;
+use App\Models\ActivityIncentive;
 use App\Models\ActivityPayment;
 use App\Models\ActivityStatus;
 use App\Models\Address;
@@ -23,12 +25,15 @@ use Yajra\DataTables\DataTables;
 
 class ActivityController extends Controller
 {
+  public $activityHelper;
 
   public function __construct()
   {
     $this->middleware('can:activity-create', ['only' => ['create', 'store']]);
     $this->middleware('can:activity-edit', ['only' => ['edit', 'update']]);
     $this->middleware('can:activity-view', ['only' => ['index']]);
+
+    $this->activityHelper = new ActivityHelper();
   }
 
   public function index(Request $request)
@@ -235,6 +240,15 @@ class ActivityController extends Controller
 
     try {
       $activity->update($activityPayload);
+
+      $parentActivityId = $activity->parent_activity_id ?? $activity->id;
+
+      $activityIncentive = ActivityIncentive::where('activity_id', $parentActivityId)->first();
+
+      if($activityIncentive) {
+        $incentiveRatePayload = $this->activityHelper->getActivityIncentiveRatePayload($parentActivityId);
+        $activityIncentive->update($incentiveRatePayload);
+      }
 
       if ($activity->activityStatus->status !== $request->status) {
 

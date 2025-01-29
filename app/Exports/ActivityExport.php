@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Schema;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns;
 
 class ActivityExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
